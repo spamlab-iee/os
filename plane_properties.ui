@@ -1,0 +1,2662 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>620</width>
+    <height>502</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="locale">
+      <locale language="English" country="UnitedStates"/>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Projection</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_20">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Poles</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Symbol</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Size</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Color</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="prop_color_point_c">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="prop_point_marker">
+                <item>
+                 <property name="text">
+                  <string extracomment="(circle)">o</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>^</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>v</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>&lt;</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>&gt;</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>s</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>+</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>x</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>D</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>d</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>h</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>H</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>p</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>|</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>_</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>*</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>3</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>4</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QDoubleSpinBox" name="prop_point_ms"/>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>Great Circles</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Symbol</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Width</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Color</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="prop_color_GC_colors">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="prop_GC_linestyles">
+                <item>
+                 <property name="text">
+                  <string>-</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>:</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>--</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>-.</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QDoubleSpinBox" name="prop_GC_linewidths"/>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_4">
+           <property name="title">
+            <string>Mean Vector</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <layout class="QGridLayout" name="gridLayout_4">
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>Symbol</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>Color</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>Size</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="prop_meanpoint_marker">
+                <item>
+                 <property name="text">
+                  <string extracomment="(circle)">o</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>^</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>v</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>&lt;</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>&gt;</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>s</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>+</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>x</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>D</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>d</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>h</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>H</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>p</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>|</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>_</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>*</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>3</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>4</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QDoubleSpinBox" name="prop_meanpoint_ms"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="prop_color_meanpoint_c">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QCheckBox" name="prop_check_meanpoint">
+                <property name="text">
+                 <string>Plot Mean</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="2">
+               <widget class="QCheckBox" name="prop_check_meanpointeiv">
+                <property name="text">
+                 <string>Mean around first eigenvector</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Eigenvectors</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="prop_check_v1point">
+              <property name="text">
+               <string>Pole</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QCheckBox" name="prop_check_v1GC">
+              <property name="text">
+               <string>Great Circle</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Size</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QComboBox" name="prop_v1point_marker">
+              <item>
+               <property name="text">
+                <string extracomment="(circle)">o</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>^</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>v</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>&lt;</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>&gt;</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>s</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>+</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>x</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>D</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>d</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>h</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>H</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>p</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>|</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>_</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>*</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>4</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="prop_color_v1point_c">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Color</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Symbol</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QComboBox" name="prop_v1GC_linestyles">
+              <item>
+               <property name="text">
+                <string>-</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>:</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>--</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>-.</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QDoubleSpinBox" name="prop_v1point_ms"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="prop_color_v1GC_colors">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QPushButton" name="prop_color_v2point_c">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QCheckBox" name="prop_check_v2GC">
+              <property name="text">
+               <string>Great Circle</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QCheckBox" name="prop_check_v2point">
+              <property name="text">
+               <string>Pole</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
+             <widget class="QDoubleSpinBox" name="prop_v1GC_linewidths"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Second</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="2">
+             <widget class="QComboBox" name="prop_v2point_marker">
+              <item>
+               <property name="text">
+                <string extracomment="(circle)">o</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>^</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>v</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>&lt;</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>&gt;</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>s</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>+</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>x</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>D</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>d</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>h</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>H</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>p</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>|</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>_</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>*</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>4</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="7" column="0">
+             <widget class="QCheckBox" name="prop_check_v3point">
+              <property name="text">
+               <string>Pole</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="2">
+             <widget class="QComboBox" name="prop_v3point_marker">
+              <item>
+               <property name="text">
+                <string extracomment="(circle)">o</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>^</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>v</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>&lt;</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>&gt;</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>s</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>+</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>x</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>D</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>d</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>h</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>H</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>p</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>|</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>_</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>*</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>4</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QPushButton" name="prop_color_v2GC_colors">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="3">
+             <widget class="QDoubleSpinBox" name="prop_v2GC_linewidths"/>
+            </item>
+            <item row="4" column="3">
+             <widget class="QDoubleSpinBox" name="prop_v2point_ms"/>
+            </item>
+            <item row="8" column="0">
+             <widget class="QCheckBox" name="prop_check_v3GC">
+              <property name="text">
+               <string>Great Circle</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QPushButton" name="prop_color_v3point_c">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Third</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="2">
+             <widget class="QComboBox" name="prop_v2GC_linestyles">
+              <item>
+               <property name="text">
+                <string>-</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>:</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>--</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>-.</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="8" column="3">
+             <widget class="QDoubleSpinBox" name="prop_v3GC_linewidths"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>First</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="2">
+             <widget class="QComboBox" name="prop_v3GC_linestyles">
+              <item>
+               <property name="text">
+                <string>-</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>:</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>--</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>-.</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="7" column="3">
+             <widget class="QDoubleSpinBox" name="prop_v3point_ms"/>
+            </item>
+            <item row="8" column="1">
+             <widget class="QPushButton" name="prop_color_v3GC_colors">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QGroupBox" name="groupBox_11">
+         <property name="title">
+          <string>Fitted Small Circle</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_19">
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_41">
+              <property name="text">
+               <string>Color</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="prop_check_scaxis">
+              <property name="text">
+               <string>Axis</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="prop_color_scaxis_c">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_40">
+              <property name="text">
+               <string>Symbol</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QComboBox" name="prop_scaxis_marker">
+              <item>
+               <property name="text">
+                <string extracomment="(circle)">o</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>^</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>v</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>&lt;</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>&gt;</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>s</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>+</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>x</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>D</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>d</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>h</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>H</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>p</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>|</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>_</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>*</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>3</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>4</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLabel" name="label_43">
+              <property name="text">
+               <string>Size</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QDoubleSpinBox" name="prop_scaxis_ms"/>
+            </item>
+            <item row="2" column="2">
+             <widget class="QComboBox" name="prop_sccirc_linestyles">
+              <item>
+               <property name="text">
+                <string>-</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>:</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>--</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>-.</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QCheckBox" name="prop_check_sccirc">
+              <property name="text">
+               <string>Circle</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
+             <widget class="QDoubleSpinBox" name="prop_sccirc_linewidths"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="prop_color_sccirc_colors">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QCheckBox" name="prop_check_concentratesc">
+              <property name="text">
+               <string>Concentrate Data around Eigenvector:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="prop_sccalc_eiv"/>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Contours</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_12">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_13">
+         <item>
+          <widget class="QGroupBox" name="groupBox_12">
+           <property name="title">
+            <string>Graphic properties</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <item>
+             <layout class="QGridLayout" name="gridLayout_9">
+              <item row="3" column="0">
+               <widget class="QRadioButton" name="prop_contour_check_gradientline">
+                <property name="text">
+                 <string>Gradient</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QCheckBox" name="prop_contour_check_fillcontours">
+                <property name="text">
+                 <string>Fill contours</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QComboBox" name="prop_contour_cmap">
+                <item>
+                 <property name="text">
+                  <string>jet</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>jet_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>hsv</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>hsv_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Greys</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Greys_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Blues</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Blues_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Greens</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Greens_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Oranges</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Oranges_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Reds</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Reds_r</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_30">
+                <property name="text">
+                 <string>Width</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="prop_contour_linestyles">
+                <item>
+                 <property name="text">
+                  <string>-</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>:</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>--</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>-.</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QPushButton" name="prop_color_contour_line_colors">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QDoubleSpinBox" name="prop_contour_line_linewidths"/>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_23">
+                <property name="text">
+                 <string>Style</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="prop_contour_check_drawover">
+                <property name="text">
+                 <string>Contour Lines</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QComboBox" name="prop_contour_line_cmap">
+                <item>
+                 <property name="text">
+                  <string>jet</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>jet_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>hsv</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>hsv_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Greys</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Greys_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Blues</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Blues_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Greens</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Greens_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Oranges</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Oranges_r</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Reds</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Reds_r</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QRadioButton" name="prop_contour_check_solidline">
+                <property name="text">
+                 <string>Solid Color</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <item>
+               <widget class="QLabel" name="label_36">
+                <property name="text">
+                 <string>Resolution</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="prop_contour_cresolution">
+                <property name="maximum">
+                 <number>100000</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="prop_contour_antialiased">
+                <property name="text">
+                 <string>Antialiased</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_13">
+           <property name="title">
+            <string>Contour Intervals</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_12">
+            <item>
+             <widget class="QRadioButton" name="prop_contour_check_minmax">
+              <property name="text">
+               <string>From minimum to maximum</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="prop_contour_check_zeromax">
+              <property name="text">
+               <string>From zero to maximum</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QFormLayout" name="formLayout">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_31">
+                <property name="text">
+                 <string>Number of contours</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_17">
+                <item>
+                 <widget class="QSpinBox" name="prop_contour_ncontours"/>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item row="1" column="0">
+               <widget class="QRadioButton" name="prop_contour_check_customintervals">
+                <property name="text">
+                 <string>Custom list</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="prop_contour_intervals"/>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>14</width>
+             <height>13</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_10">
+         <item>
+          <widget class="QGroupBox" name="groupBox_14">
+           <property name="title">
+            <string>Contour Method</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_14">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_18">
+              <item>
+               <widget class="QLabel" name="label_32">
+                <property name="text">
+                 <string>Grid spacing</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="prop_contour_calc_spacing"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QGridLayout" name="gridLayout_10">
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="prop_contour_check_fisher">
+                <property name="text">
+                 <string>Fisher Distribution</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_33">
+                <property name="text">
+                 <string>(K)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QDoubleSpinBox" name="prop_contour_calc_K">
+                <property name="maximum">
+                 <double>10000.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QRadioButton" name="prop_contour_check_scperc">
+                <property name="text">
+                 <string>Small circle count</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="label_34">
+                <property name="text">
+                 <string>(% area)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2" rowspan="2">
+               <widget class="QDoubleSpinBox" name="prop_contour_calc_scperc">
+                <property name="maximum">
+                 <double>100.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" rowspan="2">
+               <widget class="QRadioButton" name="prop_contour_check_scangle">
+                <property name="text">
+                 <string>Small circle count</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLabel" name="label_35">
+                <property name="text">
+                 <string>(angle)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QDoubleSpinBox" name="prop_contour_calc_scangle">
+                <property name="maximum">
+                 <double>90.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="prop_contour_check_autocount">
+              <property name="text">
+               <string>Estimate parameters from data</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_15">
+              <property name="title">
+               <string>Estimation Method</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_15">
+               <item>
+                <widget class="QRadioButton" name="prop_contour_check_robinjowett">
+                 <property name="text">
+                  <string>Robin &amp;&amp; Jowett 1986</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="prop_contour_check_digglefisher">
+                 <property name="text">
+                  <string>Diggle &amp;&amp; Fisher 1985</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="roseDiagram">
+      <attribute name="title">
+       <string>Rose Diagram</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_8">
+       <item>
+        <layout class="QGridLayout" name="gridLayout_6">
+         <item row="2" column="0">
+          <widget class="QGroupBox" name="groupBox_9">
+           <property name="title">
+            <string>Mean direction</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <item>
+             <layout class="QGridLayout" name="gridLayout_7">
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_25">
+                <property name="text">
+                 <string>Color</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QDoubleSpinBox" name="prop_rose_mean_linewidth"/>
+              </item>
+              <item row="1" column="2">
+               <widget class="QPushButton" name="prop_color_rose_mean_color">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="prop_rose_check_mean">
+                <property name="text">
+                 <string>Show</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLabel" name="label_26">
+                <property name="text">
+                 <string>Size</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="prop_rose_mean_linestyle">
+                <item>
+                 <property name="text">
+                  <string>-</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>:</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>--</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>-.</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="label_37">
+                <property name="text">
+                 <string>Style</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="2">
+               <widget class="QCheckBox" name="prop_rose_check_confidence">
+                <property name="text">
+                 <string>Confidence Interval (%)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="3">
+               <widget class="QDoubleSpinBox" name="prop_rose_confidence">
+                <property name="maximum">
+                 <double>100.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QGroupBox" name="groupBox_6">
+           <property name="title">
+            <string>Type</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="QRadioButton" name="prop_rose_check_360d">
+              <property name="text">
+               <string>360 degrees</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="prop_rose_check_180d">
+              <property name="text">
+               <string>180 degrees</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <widget class="QRadioButton" name="prop_rose_check_interval">
+                <property name="text">
+                 <string>Interval:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="prop_rose_intervalfrom">
+                <property name="minimum">
+                 <number>-360</number>
+                </property>
+                <property name="maximum">
+                 <number>360</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="prop_rose_intervalto">
+                <property name="minimum">
+                 <number>-360</number>
+                </property>
+                <property name="maximum">
+                 <number>360</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QGroupBox" name="groupBox_16">
+           <property name="title">
+            <string>Counting Method</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_5">
+            <item row="0" column="0">
+             <widget class="QRadioButton" name="prop_rose_check_standard">
+              <property name="text">
+               <string>Standard</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QDoubleSpinBox" name="prop_rose_binwidth">
+              <property name="maximum">
+               <double>360.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="label_18">
+              <property name="text">
+               <string>Bin Width</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="4">
+             <widget class="QDoubleSpinBox" name="prop_rose_offset">
+              <property name="minimum">
+               <double>-360.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>360.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLabel" name="label_24">
+              <property name="text">
+               <string>Offset</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="label_19">
+              <property name="text">
+               <string>Aperture</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QRadioButton" name="prop_rose_check_continuous">
+              <property name="text">
+               <string>Continuous</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QDoubleSpinBox" name="prop_rose_aperture">
+              <property name="maximum">
+               <double>360.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QDoubleSpinBox" name="prop_rose_weightmunro">
+              <property name="maximum">
+               <double>1.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.010000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QCheckBox" name="prop_rose_check_weightmunro">
+              <property name="text">
+               <string>Weight</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QDoubleSpinBox" name="prop_rose_spacing">
+              <property name="maximum">
+               <double>360.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="label_38">
+              <property name="text">
+               <string>Spacing</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3">
+             <widget class="QLabel" name="label_39">
+              <property name="text">
+               <string>Offset</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="4">
+             <widget class="QDoubleSpinBox" name="prop_rose_offsetcont">
+              <property name="minimum">
+               <double>-360.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>360.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="0" column="1" rowspan="2">
+          <widget class="QGroupBox" name="groupBox_7">
+           <property name="title">
+            <string>Graphic Properties</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="0" column="1">
+               <widget class="QCheckBox" name="prop_rose_check_petalsfill">
+                <property name="text">
+                 <string>Fill</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QCheckBox" name="prop_rose_check_petalsoutline">
+                <property name="text">
+                 <string>Outline</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLabel" name="label_20">
+                <property name="text">
+                 <string>Width</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QRadioButton" name="prop_rose_check_petals">
+                <property name="text">
+                 <string>Petals</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="prop_color_petals_facecolor">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QPushButton" name="prop_color_petals_edgecolor">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QDoubleSpinBox" name="prop_petals_linewidth"/>
+              </item>
+              <item row="2" column="1">
+               <widget class="QCheckBox" name="prop_rose_check_kitefill">
+                <property name="text">
+                 <string>Fill</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QCheckBox" name="prop_rose_check_kiteoutline">
+                <property name="text">
+                 <string>Outline</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="3">
+               <widget class="QLabel" name="label_22">
+                <property name="text">
+                 <string>Width</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QRadioButton" name="prop_rose_check_kite">
+                <property name="text">
+                 <string>Kite</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QPushButton" name="prop_color_kite_facecolor">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QPushButton" name="prop_color_kite_edgecolor">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="3">
+               <widget class="QDoubleSpinBox" name="prop_kite_linewidth"/>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLabel" name="label_29">
+                <property name="text">
+                 <string>Style</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QLabel" name="label_28">
+                <property name="text">
+                 <string>Color</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="3">
+               <widget class="QLabel" name="label_27">
+                <property name="text">
+                 <string>Size</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QRadioButton" name="prop_rose_check_lines">
+                <property name="text">
+                 <string>Lines</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QComboBox" name="prop_lines_linestyle">
+                <item>
+                 <property name="text">
+                  <string>:</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>-</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>--</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>-.</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="5" column="2">
+               <widget class="QPushButton" name="prop_color_lines_color">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="3">
+               <widget class="QDoubleSpinBox" name="prop_lines_linewidth"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_11">
+              <item>
+               <widget class="QCheckBox" name="prop_rose_check_meandeviation">
+                <property name="text">
+                 <string>Mean Deviation</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QGroupBox" name="groupBox_5">
+           <property name="title">
+            <string>Data</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <widget class="QRadioButton" name="prop_rose_check_dd">
+                <property name="text">
+                 <string>dip direction</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="prop_rose_check_dir">
+                <property name="text">
+                 <string>strike (RHR)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <item>
+                 <widget class="QCheckBox" name="prop_rose_check_diraxial">
+                  <property name="text">
+                   <string>Axial</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="prop_rose_check_weightcolumn">
+                  <property name="text">
+                   <string>Weight by column:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="prop_rose_weightcolumn">
+                  <property name="maximum">
+                   <number>16384</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>75</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+      <zorder></zorder>
+      <zorder>verticalSpacer</zorder>
+     </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Statistics</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QTextEdit" name="show_auttitude_data_statistics"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_5">
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_19">
+         <item>
+          <widget class="QGroupBox" name="groupBox_8">
+           <property name="title">
+            <string>Data Legend</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_11">
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="prop_legend_point"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_GC">
+              <property name="text">
+               <string>Great Circles</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="prop_legend_GC"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_point">
+              <property name="text">
+               <string>Poles</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_meanpoint">
+              <property name="text">
+               <string>Mean</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="prop_legend_meanpoint"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_16">
+         <item>
+          <widget class="QGroupBox" name="groupBox_10">
+           <property name="title">
+            <string>Eigenvector Legend</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_16">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_16">
+              <property name="text">
+               <string>First</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_v1point">
+              <property name="text">
+               <string>Poles</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="prop_legend_v1point"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_v1GC">
+              <property name="text">
+               <string>Great Circles</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="prop_legend_v1GC"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_17">
+              <property name="text">
+               <string>Second</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_v2point">
+              <property name="text">
+               <string>Poles</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QLineEdit" name="prop_legend_v2point"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_v2GC">
+              <property name="text">
+               <string>Great Circles</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QLineEdit" name="prop_legend_v2GC"/>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_21">
+              <property name="text">
+               <string>Third</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_v3point">
+              <property name="text">
+               <string>Poles</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QLineEdit" name="prop_legend_v3point"/>
+            </item>
+            <item row="8" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_v3GC">
+              <property name="text">
+               <string>Great Circles</string>
+              </property>
+             </widget>
+            </item>
+            <item row="8" column="1">
+             <widget class="QLineEdit" name="prop_legend_v3GC"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_17">
+           <property name="title">
+            <string>Small Circle Legend</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_21">
+            <item row="0" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_scaxis">
+              <property name="text">
+               <string>Axis</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="prop_legend_scaxis"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QCheckBox" name="prop_checklegend_sccirc">
+              <property name="text">
+               <string>Small Circle</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="prop_legend_sccirc"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>Data Source</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QTextEdit" name="show_auttitude_data_source"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="ok_button">
+       <property name="text">
+        <string>OK</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancel_button">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="apply">
+       <property name="text">
+        <string>Apply</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>prop_legend_sccirc</tabstop>
+  <tabstop>prop_color_point_c</tabstop>
+  <tabstop>prop_point_marker</tabstop>
+  <tabstop>prop_point_ms</tabstop>
+  <tabstop>prop_color_GC_colors</tabstop>
+  <tabstop>prop_GC_linestyles</tabstop>
+  <tabstop>prop_GC_linewidths</tabstop>
+  <tabstop>prop_color_meanpoint_c</tabstop>
+  <tabstop>prop_meanpoint_marker</tabstop>
+  <tabstop>prop_meanpoint_ms</tabstop>
+  <tabstop>prop_check_meanpoint</tabstop>
+  <tabstop>prop_check_meanpointeiv</tabstop>
+  <tabstop>prop_check_v1point</tabstop>
+  <tabstop>prop_color_v1point_c</tabstop>
+  <tabstop>prop_v1point_marker</tabstop>
+  <tabstop>prop_v1point_ms</tabstop>
+  <tabstop>prop_check_v1GC</tabstop>
+  <tabstop>prop_color_v1GC_colors</tabstop>
+  <tabstop>prop_v1GC_linestyles</tabstop>
+  <tabstop>prop_v1GC_linewidths</tabstop>
+  <tabstop>prop_check_v2point</tabstop>
+  <tabstop>prop_color_v2point_c</tabstop>
+  <tabstop>prop_v2point_marker</tabstop>
+  <tabstop>prop_v2point_ms</tabstop>
+  <tabstop>prop_check_v2GC</tabstop>
+  <tabstop>prop_color_v2GC_colors</tabstop>
+  <tabstop>prop_v2GC_linestyles</tabstop>
+  <tabstop>prop_v2GC_linewidths</tabstop>
+  <tabstop>prop_check_v3point</tabstop>
+  <tabstop>prop_color_v3point_c</tabstop>
+  <tabstop>prop_v3point_marker</tabstop>
+  <tabstop>prop_v3point_ms</tabstop>
+  <tabstop>prop_check_v3GC</tabstop>
+  <tabstop>prop_color_v3GC_colors</tabstop>
+  <tabstop>prop_v3GC_linestyles</tabstop>
+  <tabstop>prop_v3GC_linewidths</tabstop>
+  <tabstop>prop_check_scaxis</tabstop>
+  <tabstop>prop_color_scaxis_c</tabstop>
+  <tabstop>prop_scaxis_marker</tabstop>
+  <tabstop>prop_scaxis_ms</tabstop>
+  <tabstop>prop_check_sccirc</tabstop>
+  <tabstop>prop_color_sccirc_colors</tabstop>
+  <tabstop>prop_sccirc_linestyles</tabstop>
+  <tabstop>prop_sccirc_linewidths</tabstop>
+  <tabstop>prop_check_concentratesc</tabstop>
+  <tabstop>prop_sccalc_eiv</tabstop>
+  <tabstop>show_auttitude_data_source</tabstop>
+  <tabstop>cancel_button</tabstop>
+  <tabstop>apply</tabstop>
+  <tabstop>show_auttitude_data_statistics</tabstop>
+  <tabstop>ok_button</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>prop_contour_check_drawover</tabstop>
+  <tabstop>prop_contour_linestyles</tabstop>
+  <tabstop>prop_contour_line_linewidths</tabstop>
+  <tabstop>prop_contour_check_solidline</tabstop>
+  <tabstop>prop_color_contour_line_colors</tabstop>
+  <tabstop>prop_contour_check_gradientline</tabstop>
+  <tabstop>prop_contour_line_cmap</tabstop>
+  <tabstop>prop_contour_check_fillcontours</tabstop>
+  <tabstop>prop_contour_cmap</tabstop>
+  <tabstop>prop_contour_cresolution</tabstop>
+  <tabstop>prop_contour_antialiased</tabstop>
+  <tabstop>prop_contour_check_minmax</tabstop>
+  <tabstop>prop_contour_check_zeromax</tabstop>
+  <tabstop>prop_contour_ncontours</tabstop>
+  <tabstop>prop_contour_check_customintervals</tabstop>
+  <tabstop>prop_contour_intervals</tabstop>
+  <tabstop>prop_contour_calc_spacing</tabstop>
+  <tabstop>prop_contour_check_fisher</tabstop>
+  <tabstop>prop_contour_calc_K</tabstop>
+  <tabstop>prop_contour_check_scperc</tabstop>
+  <tabstop>prop_contour_calc_scperc</tabstop>
+  <tabstop>prop_contour_check_scangle</tabstop>
+  <tabstop>prop_contour_calc_scangle</tabstop>
+  <tabstop>prop_contour_check_autocount</tabstop>
+  <tabstop>prop_contour_check_robinjowett</tabstop>
+  <tabstop>prop_contour_check_digglefisher</tabstop>
+  <tabstop>prop_rose_check_standard</tabstop>
+  <tabstop>prop_rose_binwidth</tabstop>
+  <tabstop>prop_rose_offset</tabstop>
+  <tabstop>prop_rose_check_continuous</tabstop>
+  <tabstop>prop_rose_aperture</tabstop>
+  <tabstop>prop_rose_check_weightmunro</tabstop>
+  <tabstop>prop_rose_weightmunro</tabstop>
+  <tabstop>prop_rose_spacing</tabstop>
+  <tabstop>prop_rose_offsetcont</tabstop>
+  <tabstop>prop_rose_check_dd</tabstop>
+  <tabstop>prop_rose_check_dir</tabstop>
+  <tabstop>prop_rose_check_diraxial</tabstop>
+  <tabstop>prop_rose_check_weightcolumn</tabstop>
+  <tabstop>prop_rose_weightcolumn</tabstop>
+  <tabstop>prop_rose_check_mean</tabstop>
+  <tabstop>prop_rose_mean_linestyle</tabstop>
+  <tabstop>prop_color_rose_mean_color</tabstop>
+  <tabstop>prop_rose_mean_linewidth</tabstop>
+  <tabstop>prop_rose_check_confidence</tabstop>
+  <tabstop>prop_rose_confidence</tabstop>
+  <tabstop>prop_rose_check_petals</tabstop>
+  <tabstop>prop_rose_check_petalsfill</tabstop>
+  <tabstop>prop_rose_check_petalsoutline</tabstop>
+  <tabstop>prop_color_petals_facecolor</tabstop>
+  <tabstop>prop_color_petals_edgecolor</tabstop>
+  <tabstop>prop_petals_linewidth</tabstop>
+  <tabstop>prop_rose_check_kite</tabstop>
+  <tabstop>prop_rose_check_kitefill</tabstop>
+  <tabstop>prop_rose_check_kiteoutline</tabstop>
+  <tabstop>prop_color_kite_facecolor</tabstop>
+  <tabstop>prop_color_kite_edgecolor</tabstop>
+  <tabstop>prop_kite_linewidth</tabstop>
+  <tabstop>prop_rose_check_lines</tabstop>
+  <tabstop>prop_lines_linestyle</tabstop>
+  <tabstop>prop_color_lines_color</tabstop>
+  <tabstop>prop_lines_linewidth</tabstop>
+  <tabstop>prop_rose_check_meandeviation</tabstop>
+  <tabstop>prop_rose_check_360d</tabstop>
+  <tabstop>prop_rose_check_180d</tabstop>
+  <tabstop>prop_rose_check_interval</tabstop>
+  <tabstop>prop_rose_intervalfrom</tabstop>
+  <tabstop>prop_rose_intervalto</tabstop>
+  <tabstop>prop_checklegend_point</tabstop>
+  <tabstop>prop_legend_point</tabstop>
+  <tabstop>prop_checklegend_GC</tabstop>
+  <tabstop>prop_legend_GC</tabstop>
+  <tabstop>prop_checklegend_meanpoint</tabstop>
+  <tabstop>prop_legend_meanpoint</tabstop>
+  <tabstop>prop_checklegend_v1point</tabstop>
+  <tabstop>prop_legend_v1point</tabstop>
+  <tabstop>prop_checklegend_v1GC</tabstop>
+  <tabstop>prop_legend_v1GC</tabstop>
+  <tabstop>prop_checklegend_v2point</tabstop>
+  <tabstop>prop_legend_v2point</tabstop>
+  <tabstop>prop_checklegend_v2GC</tabstop>
+  <tabstop>prop_legend_v2GC</tabstop>
+  <tabstop>prop_checklegend_v3point</tabstop>
+  <tabstop>prop_legend_v3point</tabstop>
+  <tabstop>prop_checklegend_v3GC</tabstop>
+  <tabstop>prop_legend_v3GC</tabstop>
+  <tabstop>prop_checklegend_scaxis</tabstop>
+  <tabstop>prop_legend_scaxis</tabstop>
+  <tabstop>prop_checklegend_sccirc</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>ok_button</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>442</x>
+     <y>381</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancel_button</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>523</x>
+     <y>381</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>915</width>
+    <height>572</height>
+   </rect>
+  </property>
+  <property name="acceptDrops">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string>OpenStereo - Open-source, Multiplatform Stereonet Analysis</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QTreeWidget" name="treeWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>1</string>
+        </property>
+       </column>
+      </widget>
+      <widget class="QWidget" name="verticalLayoutWidget">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>600</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="projectionTab">
+           <attribute name="title">
+            <string>Projection</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="roseTab">
+           <attribute name="title">
+            <string>Rose diagram</string>
+           </attribute>
+          </widget>
+          <widget class="QWidget" name="classificationTab">
+           <attribute name="title">
+            <string>Classification</string>
+           </attribute>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="plotButton">
+            <property name="text">
+             <string>Plot</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="clearButton">
+            <property name="text">
+             <string>Clear</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="settingsButton">
+            <property name="text">
+             <string>Settings</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>915</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_as"/>
+    <addaction name="actionSave_as_Packed_Project"/>
+    <addaction name="separator"/>
+    <addaction name="actionImport_Plane_Data_DD"/>
+    <addaction name="actionImport_Plane_Data_Dir"/>
+    <addaction name="actionImport_Line_Data_Trend"/>
+    <addaction name="actionImport_Small_Circle_Data"/>
+    <addaction name="actionImport_Circular_Data_Trend"/>
+    <addaction name="actionImport"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionPlot_on_Apply"/>
+    <addaction name="actionPlot_on_Accept"/>
+    <addaction name="separator"/>
+    <addaction name="actionSettings"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionUnpack_Project_to"/>
+    <addaction name="separator"/>
+    <addaction name="actionMerge_Data"/>
+    <addaction name="actionRotate_Data"/>
+    <addaction name="separator"/>
+    <addaction name="actionConvert_Shapefile_to_Azimuth_data"/>
+    <addaction name="actionConvert_Mesh_to_Plane_Data"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuSettings"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open...</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="text">
+    <string>Save as...</string>
+   </property>
+  </action>
+  <action name="actionImport_Plane_Data_DD">
+   <property name="text">
+    <string>Import Plane Data (DD)</string>
+   </property>
+  </action>
+  <action name="actionImport_Plane_Data_Dir">
+   <property name="text">
+    <string>Import Plane Data (Dir)</string>
+   </property>
+  </action>
+  <action name="actionImport_Line_Data_Trend">
+   <property name="text">
+    <string>Import Line Data (Trend)</string>
+   </property>
+  </action>
+  <action name="actionImport">
+   <property name="text">
+    <string>Import...</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Project Settings</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionEqual_Area">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Equal Area</string>
+   </property>
+  </action>
+  <action name="actionEqual_Angle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Equal Angle</string>
+   </property>
+  </action>
+  <action name="actionMerge_Data">
+   <property name="text">
+    <string>Merge Data</string>
+   </property>
+  </action>
+  <action name="actionRotate_Data">
+   <property name="text">
+    <string>Rotate Data</string>
+   </property>
+  </action>
+  <action name="actionSave_as_Packed_Project">
+   <property name="text">
+    <string>Save as Packed Project...</string>
+   </property>
+  </action>
+  <action name="actionBla">
+   <property name="text">
+    <string>Reopen Last File</string>
+   </property>
+  </action>
+  <action name="actionBlabla">
+   <property name="text">
+    <string>blabla</string>
+   </property>
+  </action>
+  <action name="actionReopen_Last_File">
+   <property name="text">
+    <string>Reopen Last File</string>
+   </property>
+  </action>
+  <action name="actionUnpack_Project_to">
+   <property name="text">
+    <string>Unpack Project to...</string>
+   </property>
+  </action>
+  <action name="actionPlot_on_Apply">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Plot on Apply</string>
+   </property>
+  </action>
+  <action name="actionImport_Circular_Data_Trend">
+   <property name="text">
+    <string>Import Azimuth Data</string>
+   </property>
+  </action>
+  <action name="actionImport_Fault_Data">
+   <property name="text">
+    <string>Import Fault Data</string>
+   </property>
+  </action>
+  <action name="actionPlot_on_Accept">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Plot on Accept</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionImport_Small_Circle_Data">
+   <property name="text">
+    <string>Import Small Circle Data</string>
+   </property>
+  </action>
+  <action name="actionConvert_Shapefile_to_Azimuth_data">
+   <property name="text">
+    <string>Convert Shapefile to Azimuth Data</string>
+   </property>
+  </action>
+  <action name="actionConvert_Mesh_to_Plane_Data">
+   <property name="text">
+    <string>Convert Mesh to Plane Data</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionQuit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>440</x>
+     <y>285</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
