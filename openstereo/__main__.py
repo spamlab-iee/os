@@ -2,7 +2,7 @@ if __name__ == '__main__':
     import sys
     from os import path
 
-    from openstereo.openstereo_base import Main
+    from openstereo.os_base import Main
     from PyQt5 import QtWidgets
 
     app = QtWidgets.QApplication(sys.argv)
