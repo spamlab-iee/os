@@ -26,9 +26,7 @@ from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 
 import matplotlib
-#thanks to Silmathoron http://stackoverflow.com/a/36674182/1457481
 matplotlib.use('Qt5Agg')
-#matplotlib.rcParams['backend.qt4'] = 'PySide'
 from matplotlib.pyplot import colorbar
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (
@@ -49,28 +47,26 @@ import shapefile
 
 import xlrd
 
-from ply2atti import extract_colored_faces
+from openstereo.ply2atti import extract_colored_faces
 
-#http://it.toolbox.com/blogs/enlightenment/pyside-tutorial-using-qt-designer-with-pyside-66012
-#pyside-uic mainWindow.ui > ui_mainWindow.py
-from openstereo_ui import Ui_MainWindow
+from openstereo.auttitude import load, DirectionalData
+import openstereo.auttitude as autti
 
-from auttitude import load, DirectionalData
-import auttitude as autti
+from openstereo.ui.openstereo_ui import Ui_MainWindow
 
-from os_settings_ui import Ui_Dialog as os_settings_Ui_Dialog
-from import_dialog_ui import Ui_Dialog as import_dialog_Ui_Dialog
+from openstereo.ui.os_settings_ui import Ui_Dialog as os_settings_Ui_Dialog
+from openstereo.ui.import_dialog_ui import Ui_Dialog as import_dialog_Ui_Dialog
 
-from plane_properties_ui import Ui_Dialog as plane_Ui_Dialog
-from line_properties_ui import Ui_Dialog as line_Ui_Dialog
-from smallcircle_properties_ui import Ui_Dialog as smallcircle_Ui_Dialog
-from circular_properties_ui import Ui_Dialog as circular_Ui_Dialog
+from openstereo.ui.plane_properties_ui import Ui_Dialog as plane_Ui_Dialog
+from openstereo.ui.line_properties_ui import Ui_Dialog as line_Ui_Dialog
+from openstereo.ui.smallcircle_properties_ui import Ui_Dialog as smallcircle_Ui_Dialog
+from openstereo.ui.circular_properties_ui import Ui_Dialog as circular_Ui_Dialog
 
-from merge_data_ui import Ui_Dialog as merge_data_Ui_Dialog
-from rotate_data_ui import Ui_Dialog as rotate_data_Ui_Dialog
-from import_ply_ui import Ui_Dialog as import_ply_Ui_Dialog
+from openstereo.ui.merge_data_ui import Ui_Dialog as merge_data_Ui_Dialog
+from openstereo.ui.rotate_data_ui import Ui_Dialog as rotate_data_Ui_Dialog
+from openstereo.ui.import_ply_ui import Ui_Dialog as import_ply_Ui_Dialog
 
-__version__ = "0.9"
+__version__ = "0.9q"
 
 sqrt2 = sqrt(2.0)
 sqrt3_2 = sqrt(3.0) / 2.
@@ -3198,17 +3194,3 @@ def PlotStereoNetCircle(axes, caxes, fontsize, rotate):
         clip_box='None',label='_nolegend_')
     axes.add_patch(circ)
     return circ
-
-
-if __name__ == '__main__':
-    import numpy as np
-
-    app = QtWidgets.QApplication(sys.argv)
-    main = Main()
-    main.add_plots()
-    if len(sys.argv) > 1:
-        main.open_project(sys.argv[1])
-        main.current_project = path.abspath(sys.argv[1])
-        main.set_title()
-    main.show()
-    sys.exit(app.exec_())

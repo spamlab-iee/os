@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'merge_data.ui'
+# Form implementation generated from reading ui file 'ui_files/rotate_data.ui'
 #
 # Created by: PyQt5 UI code generator 5.6
 #
@@ -11,15 +11,42 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(285, 174)
+        Dialog.resize(283, 185)
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.A = QtWidgets.QComboBox(Dialog)
         self.A.setObjectName("A")
         self.verticalLayout.addWidget(self.A)
-        self.B = QtWidgets.QComboBox(Dialog)
-        self.B.setObjectName("B")
-        self.verticalLayout.addWidget(self.B)
+        self.gridLayout = QtWidgets.QGridLayout()
+        self.gridLayout.setObjectName("gridLayout")
+        self.label_3 = QtWidgets.QLabel(Dialog)
+        self.label_3.setObjectName("label_3")
+        self.gridLayout.addWidget(self.label_3, 0, 1, 1, 1)
+        self.label_4 = QtWidgets.QLabel(Dialog)
+        self.label_4.setObjectName("label_4")
+        self.gridLayout.addWidget(self.label_4, 0, 2, 1, 1)
+        self.label_2 = QtWidgets.QLabel(Dialog)
+        self.label_2.setObjectName("label_2")
+        self.gridLayout.addWidget(self.label_2, 0, 3, 1, 1)
+        self.label = QtWidgets.QLabel(Dialog)
+        self.label.setObjectName("label")
+        self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
+        self.trend = QtWidgets.QDoubleSpinBox(Dialog)
+        self.trend.setMinimum(-360.0)
+        self.trend.setMaximum(360.0)
+        self.trend.setObjectName("trend")
+        self.gridLayout.addWidget(self.trend, 1, 1, 1, 1)
+        self.plunge = QtWidgets.QDoubleSpinBox(Dialog)
+        self.plunge.setMinimum(-90.0)
+        self.plunge.setMaximum(90.0)
+        self.plunge.setObjectName("plunge")
+        self.gridLayout.addWidget(self.plunge, 1, 2, 1, 1)
+        self.angle = QtWidgets.QDoubleSpinBox(Dialog)
+        self.angle.setMinimum(-360.0)
+        self.angle.setMaximum(360.0)
+        self.angle.setObjectName("angle")
+        self.gridLayout.addWidget(self.angle, 1, 3, 1, 1)
+        self.verticalLayout.addLayout(self.gridLayout)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.savename = QtWidgets.QLineEdit(Dialog)
@@ -59,9 +86,13 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Merge Data"))
+        Dialog.setWindowTitle(_translate("Dialog", "Rotate Data"))
+        self.label_3.setText(_translate("Dialog", "Trend"))
+        self.label_4.setText(_translate("Dialog", "Plunge"))
+        self.label_2.setText(_translate("Dialog", "Angle"))
+        self.label.setText(_translate("Dialog", "Axis"))
         self.browse.setText(_translate("Dialog", "Browse..."))
-        self.keep.setText(_translate("Dialog", "Load merged data"))
+        self.keep.setText(_translate("Dialog", "Load rotated data"))
         self.ok_button.setText(_translate("Dialog", "OK"))
         self.cancel_button.setText(_translate("Dialog", "Cancel"))
 

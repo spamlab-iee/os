@@ -8,7 +8,7 @@ import multiprocessing
 from multiprocessing import cpu_count, Pipe
 
 import numpy as np
-from conversion import Attitude
+from openstereo.conversion import Attitude
 translator = Attitude()
 
 import_scipy = True
