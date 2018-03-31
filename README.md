@@ -11,7 +11,7 @@ OpenStereo is released under the GNU General Public License v.3.
 You can install this version of openstereo using:
 
 ```bash
-$ pip install -e git+git://github.com/endarthr/openstereo.git
+$ pip install -e git+https://github.com/endarthur/openstereo.git
 ```
 
 Additionally, install PyQt5 from PyPI (for python 2.7, use package python-qt5 instead).
