@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 setup(
     name="OpenStereo",
     version="0.9.0",
-    py_modules=find_packages(),
+    packages=find_packages(),
     entry_points={
         'console_scripts': [
             'openstereo = openstereo.os_base:os_main',
