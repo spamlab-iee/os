@@ -16,6 +16,7 @@ setup(
         'numpy',
         'matplotlib',
         # 'PyQt5',
+        'xlrd',
         'PyShp',
         'networkx'
     ],
