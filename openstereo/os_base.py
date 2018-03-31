@@ -1067,3 +1067,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         while item.parent():
             item = item.parent()
         return item
+
+
+def os_main():
+    app = QtWidgets.QApplication(sys.argv)
+    main = Main()
+    main.add_plots()
+    if len(sys.argv) > 1:
+        main.open_project(sys.argv[1])
+        main.current_project = path.abspath(sys.argv[1])
+        main.set_title()
+    main.show()
+    sys.exit(app.exec_())
