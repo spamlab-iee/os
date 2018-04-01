@@ -28,8 +28,6 @@ or
 $ python -m openstereo
 ```
 
-## Troubleshooting
+## Known Issues
 
-1. Installing matplotlib on ubuntu 17.10 didn't work for this software. Install the package python3-matplotlib instead from apt.
-
-2. Python 2.7 only works with excel spreadsheet files (.xls|.xlsx) for now, thanks to unicode literals headaches. Should sort this soon, if possible.
+1. Python 2.7 only works with excel spreadsheet files (.xls|.xlsx) for now, thanks to unicode literals headaches. Should sort this soon, if possible.
