@@ -709,7 +709,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def open_project(self, fname, ask_for_missing=False):
         ozf = zipfile.ZipFile(fname, mode='r')
-        project_data = json.load(ozf.open("project_data.json"))
+        project_data = json.load(ozf.open("project_data.json"), encoding="utf-8")
         project_dir = path.dirname(fname)
         self.OS_settings.item_settings = project_data['global_settings']
         packed = True if self.OS_settings.general_settings[
@@ -747,7 +747,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 item_settings_name = data['name'] + ".os_lyr"
                 item_file = None
-            item_settings = json.load(ozf.open(item_settings_name))
+            item_settings = json.load(ozf.open(item_settings_name), encoding="utf-8")
             data_type = list(item_settings.keys())[0]
             item_data = get_data(item_file, data['kwargs'])\
                 if item_file is not None else None
@@ -972,7 +972,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             return
         try:
             with open(fname, "rb") as f:
-                item.item_settings = json.load(f)
+                item.item_settings = json.load(f, encoding="utf-8")
                 self.statusBar().showMessage(
                     'Imported properties to %s from %s' % (item.text(0),
                                                            fname))
