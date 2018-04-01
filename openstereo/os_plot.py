@@ -422,7 +422,6 @@ class RosePlot(PlotPanel):
                                 math.ceil(100*self.max_frequency/rings_interval))
             else:
                 self.scale = 100. / self.settings.rose_settings["outerperc"]
-            print(self.scale)
             self.plot_scale()
             for plot_item in self.plot_list:
                 if hasattr(plot_item, "radii"):
@@ -479,7 +478,7 @@ class RosePlot(PlotPanel):
                     ec=self.settings.rose_settings["outerc"],
                     lw=self.settings.rose_settings["outerwidth"],
                     fill=False,\
-                    zorder=0
+                    zorder=0)
             else:
                 circ = Arc((0,0), 2., 2.,
                     theta2=360., theta1=0.,
