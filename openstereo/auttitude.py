@@ -16,9 +16,9 @@ if import_scipy:
     try:
         from scipy.special import ndtri
     except ImportError:
-        from ndtri_back import ndtri
+        from openstereo.ndtri_back import ndtri
 else:
-    from ndtri_back import ndtri
+    from openstereo.ndtri_back import ndtri
 
 #set this for experimental multi-core support.
 multicore_when_possible = False

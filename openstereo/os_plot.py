@@ -1,3 +1,4 @@
+import math
 from math import pi, sin, cos, acos, atan2, degrees, radians, sqrt
 import re
 
@@ -28,7 +29,8 @@ from openstereo.os_math import (
     great_circle_arc,
     great_circle_simple,
     sphere,
-    clip_lines, )
+    clip_lines,
+    in_interval)
 
 sqrt3_2 = sqrt(3.0) / 2.
 sqrt3 = sqrt(3.0)
@@ -386,8 +388,8 @@ class RosePlot(PlotPanel):
 
         self.settings = settings
 
-        self.plotaxes = self.plotFigure.add_axes([0.01, 0.01, 0.98, 0.98], \
-                        clip_on='True',xlim=(-1.2,1.2), ylim=(-1.15,1.15), \
+        self.plotaxes = self.plotFigure.add_axes([0.01, 0.01, 0.98, 0.98],
+                        clip_on='True',xlim=(-1.2,1.2), ylim=(-1.15,1.15),
                         adjustable='box',autoscale_on='False',label='rose')
         self.plotaxes.set_axis_off()
         self.plotaxes.set_aspect(aspect='equal', adjustable=None, anchor='W')
@@ -420,6 +422,7 @@ class RosePlot(PlotPanel):
                                 math.ceil(100*self.max_frequency/rings_interval))
             else:
                 self.scale = 100. / self.settings.rose_settings["outerperc"]
+            print(self.scale)
             self.plot_scale()
             for plot_item in self.plot_list:
                 if hasattr(plot_item, "radii"):
@@ -471,16 +474,16 @@ class RosePlot(PlotPanel):
 
         if self.settings.rose_check_settings["outer"]:
             if interval:
-                circ = Wedge((0,0), 1.,\
-                    theta2=90-from_, theta1=90-to_,\
-                    ec=self.settings.rose_settings["outerc"],\
+                circ = Wedge((0,0), 1.,
+                    theta2=90-from_, theta1=90-to_,
+                    ec=self.settings.rose_settings["outerc"],
                     lw=self.settings.rose_settings["outerwidth"],
                     fill=False,\
-                    zorder=0)
+                    zorder=0
             else:
-                circ = Arc((0,0), 2., 2.,\
-                    theta2=90-from_, theta1=90-to_,\
-                    ec=self.settings.rose_settings["outerc"],\
+                circ = Arc((0,0), 2., 2.,
+                    theta2=360., theta1=0.,
+                    ec=self.settings.rose_settings["outerc"],
                     lw=self.settings.rose_settings["outerwidth"],
                     zorder=0)
             axes.add_patch(circ)
@@ -495,8 +498,8 @@ class RosePlot(PlotPanel):
         if self.settings.rose_check_settings["rings"]:
             rings_interval = self.scale * self.settings.rose_settings[
                 "ringsperc"] / 100.
-            for i in np.arange(0.0, 1.0, rings_interval):
-                ring = Arc((0,0), 2*i, 2*i, theta2=90-from_, theta1=90-to_,\
+            for i in np.arange(rings_interval, 1.0, rings_interval):
+                ring = Arc((0,0), 2*i, 2*i, theta2=360., theta1=0.,\
                     ec=self.settings.rose_settings["ringsc"],\
                     lw=self.settings.rose_settings["ringswidth"],\
                     zorder=0)
