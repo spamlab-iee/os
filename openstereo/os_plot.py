@@ -498,7 +498,7 @@ class RosePlot(PlotPanel):
             rings_interval = self.scale * self.settings.rose_settings[
                 "ringsperc"] / 100.
             for i in np.arange(rings_interval, 1.0, rings_interval):
-                ring = Arc((0,0), 2*i, 2*i, theta2=360., theta1=0.,\
+                ring = Arc((0,0), 2*i, 2*i, theta2=90.-from_, theta1=90.-to_,\
                     ec=self.settings.rose_settings["ringsc"],\
                     lw=self.settings.rose_settings["ringswidth"],\
                     zorder=0)

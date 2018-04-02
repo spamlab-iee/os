@@ -681,7 +681,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     i = 1
                     while item_fname in packed_paths and \
                             item_path != packed_paths[item_fname]:
-                        item_fname = "{}({}){}".fomart(name, i, ext)
+                        item_fname = "{}({}){}".format(name, i, ext)
                         i += 1
                     packed_paths[item_fname] = item_path
                     item_path = item_fname
