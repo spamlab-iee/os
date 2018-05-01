@@ -12,8 +12,8 @@ from openstereo.ui.circular_properties_ui import Ui_Dialog as\
     circular_Ui_Dialog
 
 from openstereo.os_math import small_circle, great_circle
-from openstereo.auttitude import load, DirectionalData
-from openstereo import auttitude as autti
+from openstereo.os_auttitude import load, DirectionalData
+from openstereo import os_auttitude as autti
 from openstereo.data_import import get_data
 from openstereo.plot_data import (
     PointPlotData, CirclePlotData, ContourPlotData, PetalsPlotData,
@@ -141,7 +141,7 @@ class CircularData(DataItem):
         self.data_path = data_path
         self.kwargs = kwargs
         self.auttitude_data = data if isinstance(data, DirectionalData)\
-            else load(data, **kwargs)
+            else load(data, **kwargs)  # TODO: change this to new autti
         super(CircularData, self).__init__(name, parent)
 
     def build_configuration(self):

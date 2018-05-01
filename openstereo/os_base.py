@@ -16,7 +16,7 @@ import numpy as np
 import shapefile
 from PyQt5 import QtCore, QtWidgets
 
-import openstereo.auttitude as autti
+import openstereo.os_auttitude as autti
 from openstereo.data_import import get_data, ImportDialog
 from openstereo.data_models import (AttitudeData, CircularData, LineData,
                                     PlaneData, SmallCircleData)
@@ -150,7 +150,6 @@ class OSSettings(object):
 
 
 class Main(QtWidgets.QMainWindow, Ui_MainWindow):
-    # data_items = {}
     data_types = {
         data_type.data_type: data_type
         for data_type in (AttitudeData, PlaneData, LineData, SmallCircleData,
@@ -709,7 +708,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def open_project(self, fname, ask_for_missing=False):
         ozf = zipfile.ZipFile(fname, mode='r')
-        project_data = json.load(ozf.open("project_data.json"), encoding="utf-8")
+        project_data = json.load(
+            ozf.open("project_data.json"), encoding="utf-8")
         project_dir = path.dirname(fname)
         self.OS_settings.item_settings = project_data['global_settings']
         packed = True if self.OS_settings.general_settings[
@@ -747,7 +747,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 item_settings_name = data['name'] + ".os_lyr"
                 item_file = None
-            item_settings = json.load(ozf.open(item_settings_name), encoding="utf-8")
+            item_settings = json.load(
+                ozf.open(item_settings_name), encoding="utf-8")
             data_type = list(item_settings.keys())[0]
             item_data = get_data(item_file, data['kwargs'])\
                 if item_file is not None else None
@@ -989,8 +990,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def set_source_dataitem(self):
         item = self.get_selected()
         fname, extension = QtWidgets.QFileDialog.getOpenFileName(
-            self,
-            'Set data source for %s' % item.text(0))
+            self, 'Set data source for %s' % item.text(0))
         if not fname:
             return
         item.data_path = fname
@@ -1073,7 +1073,7 @@ def os_main():
     app = QtWidgets.QApplication(sys.argv)
     main = Main()
     main.add_plots()
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 1:  # make this smarter, allow opening other than projs
         main.open_project(sys.argv[1])
         main.current_project = path.abspath(sys.argv[1])
         main.set_title()

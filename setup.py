@@ -11,7 +11,6 @@ setup(
             'openstereo = openstereo.os_base:os_main',
         ]
     },
-
     install_requires=[
         'numpy',
         'matplotlib',
@@ -20,6 +19,9 @@ setup(
         'PyShp',
         'networkx',
         'ply2atti'
+    ],
+    dependency_links=[
+        'http://github.com/endarthur/autti/tarball/master#egg=auttitude-0.1.0'
     ],
 
     # metadata for upload to PyPI
@@ -34,5 +36,4 @@ setup(
         "Development Status :: 3 - Alpha",
         "Topic :: Scientific/Engineering",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    ]
-)
+    ])
