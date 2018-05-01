@@ -18,10 +18,11 @@ setup(
         'xlrd',
         'PyShp',
         'networkx',
-        'ply2atti'
+        'ply2atti',
+        'auttitude'
     ],
     dependency_links=[
-        'http://github.com/endarthur/autti/tarball/master#egg=auttitude-0.1.0'
+        'https://github.com/endarthur/autti#egg=auttitude'
     ],
 
     # metadata for upload to PyPI
