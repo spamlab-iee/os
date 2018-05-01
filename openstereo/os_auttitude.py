@@ -8,8 +8,11 @@ import multiprocessing
 from multiprocessing import cpu_count, Pipe
 
 import numpy as np
-from openstereo.conversion import Attitude
-translator = Attitude()
+#from openstereo.conversion import Attitude
+
+import auttitude as au
+
+#translator = Attitude()
 
 import_scipy = True
 if import_scipy:
@@ -163,18 +166,24 @@ the proper specific loader."""
     return input_data
 
 def universal_translator(data, longitude_column=0, colatitude_column=1,\
-                               colatitude=True, dip_direction=False,\
-                               circular=False):
-    """Translates data from many different notations into dipdirection/dip, semi-automatically"""
-    if circular:
-        attitude_data = ((str(line[longitude_column]), "45") for line in data if line)
+                         colatitude=True, dip_direction=False,\
+                         circular=False):
+    """Translates data from many different notations into dipdirection/dip,
+    semi-automatically"""
+    if not circular:
+        translated_data = np.array([
+            au.translate_attitude(
+                line[longitude_column],
+                line[colatitude_column],
+                strike=not dip_direction) for line in data if line
+        ])
     else:
-        attitude_data = ((str(line[longitude_column]), str(line[colatitude_column])) for line in data if line)
-    converted_data = np.array(
-        translator.process_data(attitude_data, dd=dip_direction))
-    if circular:
-        converted_data = converted_data[:, 0]
-    return converted_data
+        translated_data = np.array([
+            au.translate_attitude(
+                line[longitude_column], "45", strike=not dip_direction)
+            for line in data if line
+        ])[:, 0]
+    return translated_data
 
 
 def load(fin, *args, **kwargs):
@@ -204,12 +213,13 @@ interpret data as lines, instead of planes."""
     colatitude_column = kwargs.get('dip_column', 1)
     translate = kwargs.get('translate_data', True)
     circular = kwargs.get('circular', False)
-    converted_data = universal_translator(input_data,
-                        longitude_column=longitude_column,
-                        colatitude_column=colatitude_column,
-                        colatitude=line,
-                        dip_direction=dip_direction,
-                        circular=circular) if translate else input_data
+    converted_data = universal_translator(
+        input_data,
+        longitude_column=longitude_column,
+        colatitude_column=colatitude_column,
+        colatitude=line,
+        dip_direction=dip_direction,
+        circular=circular) if translate else input_data
     if not circular:
         if not line:
             converted_data = invert(converted_data)
