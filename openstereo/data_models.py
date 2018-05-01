@@ -19,6 +19,8 @@ from openstereo.plot_data import (
     PointPlotData, CirclePlotData, ContourPlotData, PetalsPlotData,
     KitePlotData, LinesPlotData, RoseMeanPlotData, ClassificationPlotData)
 
+import auttitude as au
+
 
 class DataItem(QtWidgets.QTreeWidgetItem):
     plot_item_name = {}

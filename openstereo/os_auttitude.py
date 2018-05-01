@@ -166,9 +166,10 @@ def universal_translator(data, longitude_column=0, colatitude_column=1,\
                                colatitude=True, dip_direction=False,\
                                circular=False):
     """Translates data from many different notations into dipdirection/dip, semi-automatically"""
-    attitude_data = ((str(line[longitude_column]), str(line[colatitude_column])) for line in data)\
-                        if not circular else\
-                        ((str(line[longitude_column]), "45") for line in data)
+    if circular:
+        attitude_data = ((str(line[longitude_column]), "45") for line in data if line)
+    else:
+        attitude_data = ((str(line[longitude_column]), str(line[colatitude_column])) for line in data if line)
     converted_data = np.array(
         translator.process_data(attitude_data, dd=dip_direction))
     if circular:
@@ -207,7 +208,7 @@ interpret data as lines, instead of planes."""
                         longitude_column=longitude_column,
                         colatitude_column=colatitude_column,
                         colatitude=line,
-                        dip_direction=dip_direction,\
+                        dip_direction=dip_direction,
                         circular=circular) if translate else input_data
     if not circular:
         if not line:
