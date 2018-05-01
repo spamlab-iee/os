@@ -7,9 +7,9 @@ import re
 
 from collections import defaultdict
 
-attitude_parser = re.compile(b"([NSEW]{0,2})(\d*)([NSEW]{0,2})[^NSEW0-9](\d+)([NSEW]{0,2})", re.IGNORECASE)
-azimuth_parser = re.compile(b"([NSEW]{0,2})(\d*)([NSEW]{0,2})", re.IGNORECASE)
-dip_parser = re.compile(b"(\d+)([NSEW]{0,2})", re.IGNORECASE)
+attitude_parser = re.compile("([NSEW]{0,2})(\d*)([NSEW]{0,2})[^NSEW0-9](\d+)([NSEW]{0,2})", re.IGNORECASE)
+azimuth_parser = re.compile("([NSEW]{0,2})(\d*)([NSEW]{0,2})", re.IGNORECASE)
+dip_parser = re.compile("(\d+)([NSEW]{0,2})", re.IGNORECASE)
 
 
 def parse_quadrant(leading, number, trailing):
@@ -19,7 +19,7 @@ def parse_quadrant(leading, number, trailing):
 def parse_strike_quadrant(strike, dip_quadrant):
     return strike + dip_quadrants[((strike%180)//90, trends[dip_quadrant//90])]
 
-p = re.compile(b'(N?)(\d*)([EW ]?).*', re.IGNORECASE)
+p = re.compile('(N?)(\d*)([EW ]?).*', re.IGNORECASE)
 class Attitude(object):
     """Class to transcode attitude data"""
     #Dispatcher truth table. There oughta be an eleganter way to do this, though.
@@ -48,8 +48,8 @@ class Attitude(object):
                       "NW":-90})
 
     #are regex matches fast? They seem to be...                             
-    strike_pattern = re.compile(b'([NS]?)([+-0-9.e]*)([EW ]?).*', re.IGNORECASE) #Regex parser for strike, separating the constituent letters and numbers
-    dip_pattern = re.compile(b'([+-0-9.e]*)([NESW]*).*', re.IGNORECASE) #Regex parser for dip, separating the dip from the dip direction quadrant, if present
+    strike_pattern = re.compile('([NS]?)([+-0-9.e]*)([EW ]?).*', re.IGNORECASE) #Regex parser for strike, separating the constituent letters and numbers
+    dip_pattern = re.compile('([+-0-9.e]*)([NESW]*).*', re.IGNORECASE) #Regex parser for dip, separating the dip from the dip direction quadrant, if present
     
     def process_data(self, attitude, dd=True):
         self.data = []

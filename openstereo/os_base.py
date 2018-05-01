@@ -33,7 +33,7 @@ from openstereo.ui.rotate_data_ui import Ui_Dialog as rotate_data_Ui_Dialog
 from openstereo.ui.ui_interface import (parse_properties_dialog,
                                         populate_properties_dialog)
 from openstereo.ui import waiting_effects
-from openstereo.tools.ply2atti import extract_colored_faces
+from ply2atti import extract_colored_faces
 
 extract_colored_faces = waiting_effects(extract_colored_faces)
 
@@ -400,7 +400,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 for color in list(output.keys()):
                     color_filename = "{0}_{1}.txt".format(name, color[:-1])
                     color_filenames.append((color, color_filename))
-                    with open(color_filename, "wb") as f:
+                    with open(color_filename, "w") as f:
                         writer = csv.writer(f)
                         writer.writerow(
                             ["dip_direction", "dip", "X", "Y", "Z", "trace"])

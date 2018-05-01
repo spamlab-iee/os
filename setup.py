@@ -18,7 +18,8 @@ setup(
         # 'PyQt5',
         'xlrd',
         'PyShp',
-        'networkx'
+        'networkx',
+        'ply2atti'
     ],
 
     # metadata for upload to PyPI
