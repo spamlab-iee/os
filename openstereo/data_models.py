@@ -437,15 +437,15 @@ class AttitudeData(CircularData):
 
     def plot_Points(self):
         if self.legend_settings['point']:
-            try:
+            try:  # TODO: add count to others?
                 legend_text = \
                     self.legend_settings['point'].format(
                         data=self.auttitude_data)
             except:
                 legend_text = self.legend_settings['point']
         else:
-            legend_text = "{} ({})".format(
-                self.text(0), self.plot_item_name.get('Points', 'Points'))
+            legend_text = "{} ({} {})".format(
+                self.text(0), self.auttitude_data.n, self.plot_item_name.get('Points', 'Points').lower())
         return (PointPlotData(self.auttitude_data.data, self.point_settings,
                               self.checklegend_settings['point'],
                               legend_text), )
