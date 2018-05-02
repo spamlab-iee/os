@@ -1070,6 +1070,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
 def os_main():
+    def my_excepthook(type, value, tback):
+        # log the exception here
+
+        # then call the default handler
+        sys.__excepthook__(type, value, tback)
+
+    # from https://stackoverflow.com/a/38020962/1457481
+    sys.excepthook = my_excepthook
+
     app = QtWidgets.QApplication(sys.argv)
     main = Main()
     main.add_plots()
