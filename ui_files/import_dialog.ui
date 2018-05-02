@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>292</width>
-    <height>452</height>
+    <width>287</width>
+    <height>499</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Import Data</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -96,6 +96,26 @@
       <string>File Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="do_skip">
+        <property name="text">
+         <string>Skip Rows</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="has_header">
+        <property name="text">
+         <string>Header Row</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSpinBox" name="skip_rows"/>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -106,38 +126,28 @@
       <item row="0" column="1">
        <widget class="QLineEdit" name="delimiter"/>
       </item>
-      <item row="1" column="0">
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="header_row"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="worksheet"/>
+      </item>
+      <item row="2" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>Worksheet</string>
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Comment</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="worksheet"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="has_header">
-        <property name="text">
-         <string>Header Row</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="header_row"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="do_skip">
-        <property name="text">
-         <string>Skip Rows</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QSpinBox" name="skip_rows"/>
+       <widget class="QLineEdit" name="comment_marker"/>
       </item>
      </layout>
     </widget>

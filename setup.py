@@ -21,9 +21,6 @@ setup(
         'ply2atti',
         'auttitude'
     ],
-    dependency_links=[
-        'https://github.com/endarthur/autti#egg=auttitude'
-    ],
 
     # metadata for upload to PyPI
     author="Arthur Endlein",

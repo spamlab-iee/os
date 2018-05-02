@@ -20,6 +20,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
     plunge_names = ["plunge", "dip"]
     alpha_names = ["alpha", "angle", "semiapicalangle", "opening"]
     sample_size = 1024
+    sample_size_lines = 20
 
     def __init__(self,
                  parent=None,
@@ -177,7 +178,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             self.delimiter.setEnabled(True)
 
             # try:
-            with open(fname, "r") as f:
+            with open(fname, "r", encoding="utf-8-sig") as f:
                 geoeas = self.sniff_geoEAS(f)
                 if geoeas:
                     self.has_header.setEnabled(False)
@@ -217,7 +218,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 skip_rows = self.skip_rows.value()
             else:
                 skip_rows = 0
-            with open(fname, "r") as f:
+            with open(fname, "r", encoding="utf-8-sig") as f:
                 f.seek(self.offset)
                 for i in range(skip_rows):
                     f.readline()
@@ -344,7 +345,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 sheet.row_values(i) for i in range(header_row, sheet.nrows)
             ]
         else:
-            f = open(fname, "r")
+            f = open(fname, "r", encoding="utf-8-sig")
             f.seek(self.offset)
             if self.do_skip.isChecked():
                 skip_rows = self.skip_rows.value()
@@ -369,7 +370,7 @@ def get_data(fname, kwargs):
             if kwargs['skip_rows'] is None else kwargs['skip_rows']
         return [sheet.row_values(i) for i in range(header_row, sheet.nrows)]
     else:
-        f = open(fname, "r")
+        f = open(fname, "r", encoding="utf-8-sig")
         if kwargs['is_geoeas']:
             f.seek(kwargs['geoeas_offset'])
         skip_rows = 0\
