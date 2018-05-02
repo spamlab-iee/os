@@ -186,6 +186,7 @@
      <string>Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="actionSubmit_Issue"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSettings"/>
@@ -352,6 +353,11 @@
   <action name="actionConvert_Mesh_to_Plane_Data">
    <property name="text">
     <string>Convert Mesh to Plane Data</string>
+   </property>
+  </action>
+  <action name="actionSubmit_Issue">
+   <property name="text">
+    <string>Submit Issue</string>
    </property>
   </action>
  </widget>

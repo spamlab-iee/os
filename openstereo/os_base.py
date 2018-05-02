@@ -9,6 +9,7 @@ from datetime import datetime
 from itertools import tee
 from os import path
 from tempfile import mkdtemp
+import webbrowser
 
 import matplotlib
 matplotlib.use('Qt5Agg')  # noqa: E402
@@ -221,6 +222,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.import_shapefile)
         self.actionConvert_Mesh_to_Plane_Data.triggered.connect(
             self.import_mesh)
+
+        self.actionSubmit_Issue.triggered.connect(self.show_submit_issue)
 
         self.plotButton.clicked.connect(self.plot_data)
         self.settingsButton.clicked.connect(self.show_settings_dialog)
@@ -437,6 +440,25 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     data_type="plane_data",
                     direction=False,
                     dialog_title='Import plane data')
+
+    def show_submit_issue(self):
+        msg = QtWidgets.QMessageBox()
+        # msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setWindowTitle("Submit report to issue tracker")
+        msg.setText("""
+        If something doesn't work in OpenStereo, or if you have any suggestion
+        for further development, please submit an issue to our github
+        repository.
+        
+        If possible, add extra information such as OpenStereo and python
+        version, operating system and sample data.""")
+        msg.addButton(
+            "Submit Issue", QtWidgets.QMessageBox.AcceptRole)
+        msg.setStandardButtons(QtWidgets.QMessageBox.Cancel)
+        button_reply = msg.exec_()
+        if button_reply == 0:  # 0 means Accept
+            webbrowser.open("https://github.com/endarthur/os/issues")
+
 
     def merge_data_dialog(self, current_item=None):
         merge_dialog = QtWidgets.QDialog(self)

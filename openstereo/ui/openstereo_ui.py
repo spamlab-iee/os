@@ -148,6 +148,8 @@ class Ui_MainWindow(object):
         self.actionConvert_Shapefile_to_Azimuth_data.setObjectName("actionConvert_Shapefile_to_Azimuth_data")
         self.actionConvert_Mesh_to_Plane_Data = QtWidgets.QAction(MainWindow)
         self.actionConvert_Mesh_to_Plane_Data.setObjectName("actionConvert_Mesh_to_Plane_Data")
+        self.actionSubmit_Issue = QtWidgets.QAction(MainWindow)
+        self.actionSubmit_Issue.setObjectName("actionSubmit_Issue")
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
@@ -175,6 +177,7 @@ class Ui_MainWindow(object):
         self.menuTools.addAction(self.actionConvert_Shapefile_to_Azimuth_data)
         self.menuTools.addAction(self.actionConvert_Mesh_to_Plane_Data)
         self.menuHelp.addAction(self.actionAbout)
+        self.menuHelp.addAction(self.actionSubmit_Issue)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
         self.menubar.addAction(self.menuTools.menuAction())
@@ -227,4 +230,5 @@ class Ui_MainWindow(object):
         self.actionImport_Small_Circle_Data.setText(_translate("MainWindow", "Import Small Circle Data"))
         self.actionConvert_Shapefile_to_Azimuth_data.setText(_translate("MainWindow", "Convert Shapefile to Azimuth Data"))
         self.actionConvert_Mesh_to_Plane_Data.setText(_translate("MainWindow", "Convert Mesh to Plane Data"))
+        self.actionSubmit_Issue.setText(_translate("MainWindow", "Submit Issue"))
 
