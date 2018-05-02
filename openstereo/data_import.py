@@ -20,7 +20,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
     plunge_names = ["plunge", "dip"]
     alpha_names = ["alpha", "angle", "semiapicalangle", "opening"]
     sample_size = 1024
-    sample_size_lines = 20
+    default_comment = "#"
 
     def __init__(self,
                  parent=None,
@@ -31,6 +31,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.setupUi(self)
 
         self.csv_sniffer = csv.Sniffer()
+        self.comment_marker.setText(self.default_comment)
         self.sample = None
         self.ext = None
         self.fname.editingFinished.connect(self.on_file_changed)
@@ -61,7 +62,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             if self.geoeas:
                 return self.header
             else:
-                reader = csv.reader(StringIO(self.sample), self.dialect)
+                reader = csv.reader(skip_comments(StringIO(self.sample), self.comment_marker.text()), self.dialect)
                 header_row = self.header_row.value()
                 if self.do_skip.isChecked():
                     header_row += self.skip_rows.value()
@@ -137,6 +138,17 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             except ValueError:
                 pass
         return True
+    
+    def read_sample(self, f):
+        read_length = 0
+        sample = []
+        for line in skip_comments(f, self.comment_marker.text()):
+            sample.append(line)
+            read_length += len(sample)
+            if read_length > self.sample_size:
+                break
+        return "\n".join(sample)
+
 
     def on_file_changed(self):
         fname = self.fname.text()
@@ -187,7 +199,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                     self.has_header.setEnabled(True)
                     self.header_row.setEnabled(True)
                 current_pos = f.tell()
-                self.sample = f.read(self.sample_size)
+                self.sample = self.read_sample(f)
                 f.seek(current_pos)
                 self.dialect = self.sniff_dialect()
                 self.delimiter.setText(repr(self.dialect.delimiter))
@@ -222,7 +234,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 f.seek(self.offset)
                 for i in range(skip_rows):
                     f.readline()
-                self.sample = f.read(self.sample_size)
+                self.sample = self.read_sample(f)
         self.on_header_changed()
 
     def on_header_changed(self):
@@ -290,7 +302,8 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             "is_geoeas":
             self.geoeas,
             "geoeas_offset":
-            self.offset if self.geoeas else None
+            self.offset if self.geoeas else None,
+            "comment_marker": self.comment_marker.text()
         }
         if self.dialect is not None:
             kwargs["dialect_data"] = {
@@ -353,7 +366,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 skip_rows = 0
             if self.has_header.isChecked():
                 skip_rows += self.header_row.value() + 1
-            reader = csv.reader(f, self.dialect)
+            reader = csv.reader(skip_comments(f, self.comment_marker.text()), self.dialect)
             for i in range(skip_rows):
                 next(reader)
             return reader
@@ -380,7 +393,14 @@ def get_data(fname, kwargs):
         dialect_data = {}
         for key, item in list(kwargs["dialect_data"].items()):
             dialect_data[key] = str(item) if isinstance(item, str) else item
-        reader = csv.reader(f, **dialect_data)
+        reader = csv.reader(skip_comments(f, kwargs["comment_marker"]), **dialect_data)
         for i in range(skip_rows):
             next(reader)
         return reader
+
+
+def skip_comments(iterable, comment="#"):
+    for line in iterable:
+        if line.startswith(comment):
+            continue
+        yield line
