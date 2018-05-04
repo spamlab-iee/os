@@ -170,20 +170,39 @@ def universal_translator(data, longitude_column=0, colatitude_column=1,\
                          circular=False):
     """Translates data from many different notations into dipdirection/dip,
     semi-automatically"""
+    translated_data = []
     if not circular:
-        translated_data = np.array([
-            au.translate_attitude(
+        for line in data:
+            try:
+                translated_data.append(
+                    au.translate_attitude(
                 line[longitude_column],
                 line[colatitude_column],
-                strike=not dip_direction) for line in data if line
-        ])
+                strike=not dip_direction))
+            except ValueError:
+                continue
+        # translated_data = np.array([
+        #     au.translate_attitude(
+        #         line[longitude_column],
+        #         line[colatitude_column],
+        #         strike=not dip_direction) for line in data if line
+        # ])
     else:
         translated_data = np.array([
             au.translate_attitude(
                 line[longitude_column], "45", strike=not dip_direction)
             for line in data if line
         ])[:, 0]
-    return translated_data
+        for line in data:
+            try:
+                translated_data.append(
+                    au.translate_attitude(
+                line[longitude_column],
+                "45",
+                strike=not dip_direction))
+            except ValueError:
+                continue
+    return np.array(translated_data)
 
 
 def load(fin, *args, **kwargs):
