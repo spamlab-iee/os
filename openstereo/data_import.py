@@ -63,7 +63,9 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             if self.geoeas:
                 return self.header
             else:
-                reader = csv.reader(skip_comments(StringIO(self.sample), self.comment_marker.text()), self.dialect)
+                reader = csv.reader(
+                    skip_comments(StringIO(self.sample),
+                    self.comment_marker.text()), self.dialect)
                 header_row = self.header_row.value()
                 if self.do_skip.isChecked():
                     header_row += self.skip_rows.value()
@@ -402,7 +404,7 @@ def get_data(fname, kwargs):
         return reader
 
 
-def skip_comments(iterable, comment="#"):
+def skip_comments(iterable, comment="#"):  # TODO: skip comments in xlsx
     for line in iterable:
         if line.startswith(comment):
             continue

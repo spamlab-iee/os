@@ -19,6 +19,14 @@ class Ui_Dialog(object):
         self.data_table.setColumnCount(0)
         self.data_table.setRowCount(0)
         self.verticalLayout.addWidget(self.data_table)
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.update_data_button = QtWidgets.QPushButton(Dialog)
+        self.update_data_button.setObjectName("update_data_button")
+        self.horizontalLayout.addWidget(self.update_data_button)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
+        self.verticalLayout.addLayout(self.horizontalLayout)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -26,4 +34,5 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Item Table"))
+        self.update_data_button.setText(_translate("Dialog", "Update Data"))
 

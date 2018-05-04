@@ -166,6 +166,7 @@
     </property>
     <addaction name="actionPlot_on_Apply"/>
     <addaction name="actionPlot_on_Accept"/>
+    <addaction name="actionPlot_on_Update_Table"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
    </widget>
@@ -358,6 +359,17 @@
   <action name="actionSubmit_Issue">
    <property name="text">
     <string>Submit Issue</string>
+   </property>
+  </action>
+  <action name="actionPlot_on_Update_Table">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Plot on Update Table</string>
    </property>
   </action>
  </widget>

@@ -4,7 +4,6 @@ from PyQt5 import QtWidgets, QtGui
 
 props_re = re.compile("([^_]+)_(color_)?(.+)_([^_]+)")
 
-
 def color_button_factory(button, button_name):
     def color_button_dialog():
         col = QtWidgets.QColorDialog.getColor()
@@ -102,3 +101,56 @@ def parse_properties_dialog(properties_ui, item, post_hook=None):
     if post_hook is not None:
         for f in post_hook:
             f()  # could pass self to post_hook?
+
+
+def update_data_button_factory(item, post_hook=None):
+    def update_data():
+        data_table = item.item_table_ui.data_table
+        data = []
+        m = data_table.rowCount()
+        n = data_table.columnCount()
+        for i in range(m):
+            row = []
+            row_empty = True
+            for j in range(n):
+                cell = data_table.item(i, j)
+                if cell is not None:
+                    row_empty = False
+                    if cell.text():
+                        row.append(cell.text())
+                    else:
+                        row.append('0')
+                else:
+                    row.append('0')
+            if not row_empty:
+                data.append(row)
+        item.auttitude_data.input_data = data
+        item.reload_data_from_internal()
+        if post_hook is not None:
+            for f in post_hook:
+                f()
+    return update_data
+
+
+# TODO: abstract these to a class, should be better by now
+def clear_table(table):
+    for i in reversed(range(table.rowCount())):
+        table.removeRow(i)
+    table.setRowCount(0)
+    table.setColumnCount(0)
+
+
+def populate_item_table(item):  # TODO: keep selection
+    data = item.auttitude_data.input_data
+    table = item.item_table_ui.data_table
+    clear_table(table)
+    m = len(data)
+    n = len(data[0])
+    table.setRowCount(m + 10)
+    table.setColumnCount(n)
+    if item.kwargs["data_headers"] is not None:
+        table.setHorizontalHeaderLabels(item.kwargs["data_headers"])
+    for i in range(m):
+        for j in range(n):
+            table.setItem(
+                i, j, QtWidgets.QTableWidgetItem(str(data[i][j])))

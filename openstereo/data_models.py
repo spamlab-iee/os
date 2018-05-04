@@ -435,6 +435,11 @@ class AttitudeData(CircularData):
         data = get_data(self.data_path, self.auttitude_data.kwargs)
         self.auttitude_data = load(data, **self.auttitude_data.kwargs)
 
+    def reload_data_from_internal(self):
+        # data = get_data(self.data_path, self.auttitude_data.kwargs)
+        self.auttitude_data = load(
+            self.auttitude_data.input_data, **self.auttitude_data.kwargs)
+
     def plot_Points(self):
         if self.legend_settings['point']:
             try:  # TODO: add count to others?
@@ -666,6 +671,7 @@ class SmallCircleData(DataItem):
 
     def __init__(self, name, data_path, data, parent, **kwargs):
         self.data_path = data_path
+        self.kwargs = kwargs  # FIXME: pop update statistics from kwargs somehow
         self.auttitude_data = data if isinstance(data, DirectionalData)\
             else load(data, **kwargs)
         self.alpha_column = kwargs["alpha_column"]
@@ -701,6 +707,13 @@ class SmallCircleData(DataItem):
         data = get_data(self.data_path, self.auttitude_data.kwargs)
         self.auttitude_data = load(data, calculate_statistics=False,
                                    **self.auttitude_data.kwargs)
+
+    def reload_data_from_internal(self):
+        # data = get_data(self.data_path, self.auttitude_data.kwargs)
+        self.auttitude_data = load(
+            self.auttitude_data.input_data,
+            calculate_statistics=False,
+            **self.auttitude_data.kwargs)
 
     def plot_Axes(self):
         if self.legend_settings['scaxis']:

@@ -33,7 +33,9 @@ from openstereo.ui.os_settings_ui import Ui_Dialog as os_settings_Ui_Dialog
 from openstereo.ui.rotate_data_ui import Ui_Dialog as rotate_data_Ui_Dialog
 from openstereo.ui.item_table_ui import Ui_Dialog as item_table_Ui_Dialog
 from openstereo.ui.ui_interface import (parse_properties_dialog,
-                                        populate_properties_dialog)
+                                        populate_properties_dialog,
+                                        update_data_button_factory,
+                                        populate_item_table)
 from openstereo.ui import waiting_effects
 from ply2atti import extract_colored_faces
 
@@ -625,6 +627,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.classification_plot.draw_plot()
         self.statusBar().showMessage('Ready')
 
+    def plot_on_update_if_checked(self):  # TODO: check this name
+        if self.actionPlot_on_Update_Table.isChecked():
+            self.plot_data()
+
     def plot_grid(self):
         gc, sc = net_grid(
             gcspacing=self.OS_settings.projection_settings['gcspacing'],
@@ -955,16 +961,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             item.item_table_ui.setupUi(item.item_table_dialog)
             item.item_table_dialog.setWindowTitle(
                 "Item table for {}".format(item.text(0)))
-            data_sphere = item.auttitude_data.data_sphere
-            data_table = item.item_table_ui.data_table
-            m, n = data_sphere.shape
-            data_table.setRowCount(m)
-            data_table.setColumnCount(n)
-            data_table.setHorizontalHeaderLabels(["Dip Direction", "Dip"])
-            for i in range(m):
-                for j in range(n):
-                    data_table.setItem(
-                        i, j, QtWidgets.QTableWidgetItem(str(data_sphere[i, j])))
+            item.item_table_ui.update_data_button.clicked.connect(
+                update_data_button_factory(item, [
+                    lambda: populate_item_table(item),
+                    lambda: self.plot_on_update_if_checked(),
+                ])
+            )
+            populate_item_table(item)
         item.item_table_dialog.show()
 
     def copy_props_dataitem(self):
@@ -1048,6 +1051,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def tree_context_menu(self, position):
         item = self.get_selected()
+        if item is None:
+            return
         menu = QtWidgets.QMenu()
 
         rename_action = menu.addAction("Rename...")
