@@ -7,4 +7,5 @@ pyuic5 ui_files/smallcircle_properties.ui  > openstereo/ui/smallcircle_propertie
 pyuic5 ui_files/circular_properties.ui     > openstereo/ui/circular_properties_ui.py && ^
 pyuic5 ui_files/rotate_data.ui      > openstereo/ui/rotate_data_ui.py && ^
 pyuic5 ui_files/merge_data.ui       > openstereo/ui/merge_data_ui.py && ^
-pyuic5 ui_files/import_ply.ui       > openstereo/ui/import_ply_ui.py
+pyuic5 ui_files/import_ply.ui       > openstereo/ui/import_ply_ui.py && ^
+pyuic5 ui_files/item_table.ui       > openstereo/ui/item_table_ui.py

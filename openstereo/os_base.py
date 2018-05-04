@@ -31,6 +31,7 @@ from openstereo.ui.merge_data_ui import Ui_Dialog as merge_data_Ui_Dialog
 from openstereo.ui.openstereo_ui import Ui_MainWindow
 from openstereo.ui.os_settings_ui import Ui_Dialog as os_settings_Ui_Dialog
 from openstereo.ui.rotate_data_ui import Ui_Dialog as rotate_data_Ui_Dialog
+from openstereo.ui.item_table_ui import Ui_Dialog as item_table_Ui_Dialog
 from openstereo.ui.ui_interface import (parse_properties_dialog,
                                         populate_properties_dialog)
 from openstereo.ui import waiting_effects
@@ -946,6 +947,26 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 item.dialog_ui, item, update_data_only=True)
         item.dialog.show()
 
+    def item_table(self):
+        item = self.get_selected()
+        if not hasattr(item, "item_table_dialog"):
+            item.item_table_dialog = QtWidgets.QDialog(self)
+            item.item_table_ui = item_table_Ui_Dialog()
+            item.item_table_ui.setupUi(item.item_table_dialog)
+            item.item_table_dialog.setWindowTitle(
+                "Item table for {}".format(item.text(0)))
+            data_sphere = item.auttitude_data.data_sphere
+            data_table = item.item_table_ui.data_table
+            m, n = data_sphere.shape
+            data_table.setRowCount(m)
+            data_table.setColumnCount(n)
+            data_table.setHorizontalHeaderLabels(["Dip Direction", "Dip"])
+            for i in range(m):
+                for j in range(n):
+                    data_table.setItem(
+                        i, j, QtWidgets.QTableWidgetItem(str(data_sphere[i, j])))
+        item.item_table_dialog.show()
+
     def copy_props_dataitem(self):
         item = self.get_selected()
         self.cb.setText(json.dumps(item.item_settings, indent=2))
@@ -1031,7 +1052,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         rename_action = menu.addAction("Rename...")
         properties_action = menu.addAction("Properties")
-        # menu.addAction("View item table")
+        item_table_action = menu.addAction("View item table")
         menu.addSeparator()
         copy_props_action = menu.addAction("Copy layer properties")
         paste_props_action = menu.addAction("Paste layer properties")
@@ -1060,6 +1081,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         rename_action.triggered.connect(self.rename_dataitem)
         properties_action.triggered.connect(self.properties_dataitem)
+        item_table_action.triggered.connect(self.item_table)
 
         copy_props_action.triggered.connect(self.copy_props_dataitem)
         paste_props_action.triggered.connect(self.paste_props_dataitem)

@@ -11,6 +11,7 @@ from openstereo.ui.import_dialog_ui import Ui_Dialog as import_dialog_Ui_Dialog
 keep_chars = re.compile("\W+")
 
 
+# TODO: Abstract away the specifics to allow easier integration of new types
 class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
     direction_names = ["direction", "dipdirection", "dd", "clar"]
     dip_names = [
@@ -393,7 +394,9 @@ def get_data(fname, kwargs):
         dialect_data = {}
         for key, item in list(kwargs["dialect_data"].items()):
             dialect_data[key] = str(item) if isinstance(item, str) else item
-        reader = csv.reader(skip_comments(f, kwargs["comment_marker"]), **dialect_data)
+        reader = csv.reader(
+            skip_comments(f, kwargs.get("comment_marker", "#")),
+            **dialect_data)
         for i in range(skip_rows):
             next(reader)
         return reader
