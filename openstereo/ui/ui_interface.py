@@ -126,9 +126,15 @@ def update_data_button_factory(item, post_hook=None):
                 data.append(row)
         item.auttitude_data.input_data = data
         item.reload_data_from_internal()
+        selected = data_table.selectedIndexes()
+        si = sj = 0
+        if len(selected) == 1:
+            si = selected[0].row()
+            sj = selected[0].column()
         if post_hook is not None:
             for f in post_hook:
                 f()
+        set_selected_item(data_table, si, sj)
     return update_data
 
 
@@ -138,6 +144,15 @@ def clear_table(table):
         table.removeRow(i)
     table.setRowCount(0)
     table.setColumnCount(0)
+
+def set_selected_item(table, i, j):
+    m = table.rowCount()
+    n = table.columnCount()
+    i = min(i, m)
+    j = min(j, n)
+    cell = table.item(i, j)
+    #table.scrollToItem(cell)
+    table.setCurrentItem(cell)
 
 
 def populate_item_table(item):  # TODO: keep selection
