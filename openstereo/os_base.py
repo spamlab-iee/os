@@ -405,7 +405,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 for color in list(output.keys()):
                     color_filename = "{0}_{1}.txt".format(name, color[:-1])
                     color_filenames.append((color, color_filename))
-                    with open(color_filename, "w") as f:
+                    # https://stackoverflow.com/a/3191811/1457481
+                    with open(color_filename, "w", newline='') as f:
                         writer = csv.writer(f)
                         writer.writerow(
                             ["dip_direction", "dip", "X", "Y", "Z", "trace"])
@@ -428,7 +429,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         filter="Text Files (*.txt);;All Files (*.*)")
                 if not fname_out:
                     return
-                with open(fname_out, "wb") as f:
+                with open(fname_out, "w", newline='') as f:
                     writer = csv.writer(f)
                     writer.writerow([
                         "dip_direction", "dip", "X", "Y", "Z", "trace", "R",
