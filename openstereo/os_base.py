@@ -5,11 +5,17 @@ import json
 import shutil
 import sys
 import zipfile
+import os
 from datetime import datetime
 from itertools import tee
 from os import path
 from tempfile import mkdtemp
 import webbrowser
+
+from appdirs import user_data_dir
+data_dir = user_data_dir("OpenStereo")
+if not path.exists(data_dir):
+    os.makedirs(data_dir)
 
 import matplotlib
 matplotlib.use('Qt5Agg')  # noqa: E402
@@ -42,6 +48,7 @@ from ply2atti import extract_colored_faces
 extract_colored_faces = waiting_effects(extract_colored_faces)
 
 print(sys.version)
+print("current data_dir:", data_dir)
 
 __version__ = "0.9q"
 
@@ -268,6 +275,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.temp_dir = None
         self.statusBar().showMessage('Ready')
         self.set_title()
+        self.check_save_guard()
 
     def projection(self):
         return self.projections[self.OS_settings.general_settings[
@@ -461,7 +469,6 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         button_reply = msg.exec_()
         if button_reply == 0:  # 0 means Accept
             webbrowser.open("https://github.com/endarthur/os/issues")
-
 
     def merge_data_dialog(self, current_item=None):
         merge_dialog = QtWidgets.QDialog(self)
@@ -1116,6 +1123,29 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         while item.parent():
             item = item.parent()
         return item
+
+    def check_save_guard(self):
+        save_guard_file = path.join(data_dir, "save_guard.txt")
+        if not path.exists(save_guard_file):
+            with open(save_guard_file, "w") as f:
+                f.write(str(datetime.now()))
+
+    def clear_save_guard(self):
+        save_guard_file = path.join(data_dir, "save_guard.txt")
+        if path.exists(save_guard_file):
+            os.remove(save_guard_file)
+
+    def closeEvent(self, event):
+        quit_msg = "Are you sure you want to exit OpenStereo?"
+        reply = QtWidgets.QMessageBox.question(
+            self, 'Message', 
+            quit_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
+
+        if reply == QtWidgets.QMessageBox.Yes:
+            self.clear_save_guard()
+            event.accept()
+        else:
+            event.ignore()
 
 
 def os_main():
