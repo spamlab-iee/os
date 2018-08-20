@@ -1,0 +1,7 @@
+numpy
+matplotlib
+xlrd
+PyShp
+networkx
+ply2atti
+auttitude

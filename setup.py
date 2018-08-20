@@ -44,6 +44,7 @@ setup(
     install_requires=[
         'numpy',
         'matplotlib',
+        'appdirs',
         # 'PyQt5',
         'xlrd',
         'PyShp',

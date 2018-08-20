@@ -93,3 +93,4 @@ ENV/
 
 # wheels
 *.whl
+extra_wheels/

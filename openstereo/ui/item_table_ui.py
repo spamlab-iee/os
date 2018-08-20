@@ -26,6 +26,15 @@ class Ui_Dialog(object):
         self.horizontalLayout.addWidget(self.update_data_button)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
+        self.toolButton_2 = QtWidgets.QToolButton(Dialog)
+        self.toolButton_2.setObjectName("toolButton_2")
+        self.horizontalLayout.addWidget(self.toolButton_2)
+        self.toolButton = QtWidgets.QToolButton(Dialog)
+        self.toolButton.setObjectName("toolButton")
+        self.horizontalLayout.addWidget(self.toolButton)
+        self.toolButton_3 = QtWidgets.QToolButton(Dialog)
+        self.toolButton_3.setObjectName("toolButton_3")
+        self.horizontalLayout.addWidget(self.toolButton_3)
         self.verticalLayout.addLayout(self.horizontalLayout)
 
         self.retranslateUi(Dialog)
@@ -35,4 +44,7 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Item Table"))
         self.update_data_button.setText(_translate("Dialog", "Update Data"))
+        self.toolButton_2.setText(_translate("Dialog", "w"))
+        self.toolButton.setText(_translate("Dialog", "sc"))
+        self.toolButton_3.setText(_translate("Dialog", "ff"))
 
