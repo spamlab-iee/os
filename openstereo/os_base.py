@@ -9,6 +9,7 @@ from datetime import datetime
 from itertools import tee
 from os import path
 from tempfile import mkdtemp
+import traceback
 import webbrowser
 
 import matplotlib
@@ -713,7 +714,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         item_fname = "{}({}){}".format(name, i, ext)
                         i += 1
                     packed_paths[item_fname] = item_path
-                    item_path = item_fname
+                    # item_path = item_fname
                     ozf.write(item_path, item_fname)
             item_settings_name = name + ".os_lyr" if item_path is not None \
                 else item.text(0) + ".os_lyr"
@@ -1122,7 +1123,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 def os_main():
     def my_excepthook(type, value, tback):
         # log the exception here
-
+        error_dialog = QtWidgets.QErrorMessage()
+        error_dialog.showMessage(
+            "".join(traceback.format_exception(type, value, tback)))
+        error_dialog.exec_()
         # then call the default handler
         sys.__excepthook__(type, value, tback)
 

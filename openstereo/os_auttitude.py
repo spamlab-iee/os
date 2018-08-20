@@ -67,7 +67,7 @@ def circle(data, axial=False):
 
 def invert(data):
     """Inverts poles into planes and vice versa."""
-    theta, phi = data.T
+    theta, phi = np.transpose(data)
     return np.array(((theta - 180) % 360, 90 - phi)).T
 
 
@@ -319,7 +319,7 @@ class DirectionalData(object):
             self.data_circle = self.data_circle if self.data_circle is not None else\
                  circle(data, kwargs.get('axial', False))
 
-        if kwargs.get('calculate_statistics', True):
+        if kwargs.get('calculate_statistics', True) and self.n > 1:
             self.initialize_statistics()
         self._grid = None
         self._cgrid = None

@@ -87,6 +87,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="check_export_ply">
+     <property name="text">
+      <string>Export 3d model of resulting planes</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <spacer name="horizontalSpacer">
