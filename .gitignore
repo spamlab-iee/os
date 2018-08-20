@@ -90,7 +90,3 @@ ENV/
 
 # vscode
 .vscode/
-
-# wheels
-*.whl
-extra_wheels/
