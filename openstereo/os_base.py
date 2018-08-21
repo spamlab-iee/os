@@ -28,6 +28,8 @@ import openstereo.os_auttitude as autti
 from openstereo.data_import import get_data, ImportDialog
 from openstereo.data_models import (AttitudeData, CircularData, LineData,
                                     PlaneData, SmallCircleData)
+from openstereo.data_models import (
+    SinglePlane, SingleLine, SingleSmallCircle, Slope)
 from openstereo.os_math import net_grid, bearing, haversine, dcos_lines
 from openstereo.os_plot import ClassificationPlot, RosePlot, StereoPlot
 from openstereo.plot_data import (CirclePlotData, ClassificationPlotData,
@@ -165,7 +167,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     data_types = {
         data_type.data_type: data_type
         for data_type in (AttitudeData, PlaneData, LineData, SmallCircleData,
-                          CircularData)
+                          CircularData, SinglePlane, SingleLine,
+                          SingleSmallCircle, Slope)
     }
 
     def __init__(self):
@@ -213,6 +216,21 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         data_type="circular_data", direction=False,
                         dialog_title='Import Azimuth data'))
 
+        self.actionAdd_Plane.triggered.connect(
+            lambda: self.add_single_data(
+                "singleplane_data", "Plane", dialog_title="Add Plane"))
+        self.actionAdd_Line.triggered.connect(
+            lambda: self.add_single_data(
+                "singleline_data", "Line", dialog_title="Add Line"))
+        self.actionAdd_Small_Circle.triggered.connect(
+            lambda: self.add_single_data(
+                "singlesc_data", "Small Circle",
+                dialog_title="Add Small Circle"))
+        self.actionAdd_Slope.triggered.connect(
+            lambda: self.add_single_data(
+                "slope_data", "Slope",
+                dialog_title="Add Slope"))
+
         self.actionNew.triggered.connect(self.new_project)
         self.actionSave.triggered.connect(self.save_project_dialog)
         self.actionSave_as.triggered.connect(self.save_project_as_dialog)
@@ -226,8 +244,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.actionUnpack_Project_to.triggered.connect(self.unpack_data_dialog)
 
-        self.actionMerge_Data.triggered.connect(self.merge_data_dialog)
-        self.actionRotate_Data.triggered.connect(self.rotate_data_dialog)
+        self.actionMerge_Data.triggered.connect(
+            lambda: self.merge_data_dialog())
+        self.actionRotate_Data.triggered.connect(
+            lambda: self.rotate_data_dialog())
 
         self.actionConvert_Shapefile_to_Azimuth_data.triggered.connect(
             self.import_shapefile)
@@ -272,6 +292,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.cb = QtWidgets.QApplication.clipboard()
 
         self.current_project = None
+        self.old_project = None
         self.packed_project = False
         self.temp_dir = None
         self.statusBar().showMessage('Ready')
@@ -453,6 +474,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     data_type="plane_data",
                     direction=False,
                     dialog_title='Import plane data')
+
+    def add_single_data(self, data_type, data_name, dialog_title, **kwargs):
+        data, ok = QtWidgets.QInputDialog.getText(
+            self, dialog_title,
+            'Attitude:')
+        if ok:
+            name = "{} ({})".format(data_name, data)
+            return self.import_data(
+                data_type=data_type, name=name, data=data, **kwargs)
 
     def show_submit_issue(self):
         msg = QtWidgets.QMessageBox()
@@ -687,6 +717,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 filter="Openstereo Project Files (*.openstereo);;All Files (*.*)")  # noqa: E501
         if not fname:
             return
+        self.old_project = self.current_project
         self.current_project = fname
         if pack:
             self.OS_settings.general_settings['packeddata'] = 'yes'
@@ -703,6 +734,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             "items": []
         }
         project_dir = path.dirname(fname)
+        if self.old_project is not None:
+            old_project_dir = path.dirname(self.old_project)
+        else:
+            old_project_dir = None
         pack = True if self.OS_settings.general_settings[
             'packeddata'] == 'yes' else False
         packed_paths = {}
@@ -722,13 +757,22 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         i += 1
                     packed_paths[item_fname] = item_path
                     # item_path = item_fname
-                    ozf.write(item_path, item_fname)
+                    ozf.write(
+                        path.normpath(path.join(
+                            project_dir if self.old_project is None
+                            else old_project_dir,
+                            item_path)),
+                        item_fname)
             item_settings_name = name + ".os_lyr" if item_path is not None \
                 else item.text(0) + ".os_lyr"
             ozf.writestr(item_settings_name,
                          json.dumps(item.item_settings, indent=2))
-            if item_path is not None:
+            if item_path is not None and not pack:
                 item_path = path.relpath(item_path, project_dir)
+            if hasattr(item, "auttitude_data"):
+                auttitude_kwargs = item.auttitude_data.kwargs
+            else:
+                auttitude_kwargs = None
             project_data['items'].append({
                 'name':
                 item.text(0),
@@ -739,7 +783,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 'checked_plots':
                 item.get_checked_status(),
                 'kwargs':
-                item.auttitude_data.kwargs
+                auttitude_kwargs
             })
         ozf.writestr("project_data.json", json.dumps(project_data, indent=3))
         ozf.close()
@@ -788,14 +832,20 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             item_settings = json.load(
                 ozf.open(item_settings_name), encoding="utf-8")
             data_type = list(item_settings.keys())[0]
-            item_data = get_data(item_file, data['kwargs'])\
-                if item_file is not None else None
+            if item_file is not None:
+                item_data = get_data(item_file, data['kwargs'])
+            else:
+                item_data = None
+            if data['kwargs'] is not None:
+                auttitude_kwargs = data['kwargs']
+            else:
+                auttitude_kwargs = {}
             item = self.import_data(
                 data_type,
                 data['name'],
                 data_path=item_path,
                 data=item_data,
-                **data['kwargs'])
+                **auttitude_kwargs)
             item.item_settings = item_settings
             item.setCheckState(0, QtCore.Qt.Checked
                                if data['checked'] else QtCore.Qt.Unchecked)
