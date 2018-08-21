@@ -1,0 +1,52 @@
+# modified from mu's config file https://github.com/mu-editor/mu/blob/master/.appveyor.yml
+environment:
+  matrix:
+    - PYTHON: "C:\\Python36"
+      PYTHON_VERSION: "3.6.4"
+      PYTHON_ARCH: "64"
+
+platform: x86
+
+configuration: Release
+
+init:
+  - cmd: ver
+  - cmd: ECHO Processor architecture - %PROCESSOR_ARCHITECTURE%
+  - cmd: wmic OS get OSArchitecture
+
+  # As AppVeyor has multiple python install, check which one uses by default
+  - cmd: ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%
+  - cmd: python --version
+  - cmd: python -c "import struct; print(struct.calcsize('P') * 8)"
+  - cmd: python -c "import sys; print(sys.executable)"
+
+  # Set the relevant Python and pip location to the path
+  - cmd: set PATH=%PYTHON%;%PYTHON%\scripts;%PATH%
+  - cmd: ECHO Path - %PATH%
+
+  # Verify the new default python
+  - cmd: python --version
+  - cmd: python -c "import struct; print(struct.calcsize('P') * 8)"
+  - cmd: python -c "import sys; print(sys.executable)"
+  - cmd: pip --version
+
+  # Check out installed python packages
+  - cmd: pip freeze
+
+install:
+  #install OpenStereo dependencies
+  - cmd: pip install -r requires.txt
+
+  # Check installed packages
+  - cmd: pip freeze
+  - cmd: python -c "import PyQt5"
+
+  # Build os using pynsist, rename dist folder and executable with timestamp
+  # 64bit
+  - cmd: pynsist os_installer.cfg
+  - ps: Rename-Item -path .\build upload64
+  - cmd: dir upload64\nsis
+  - ps: Rename-Item .\upload64\nsis\OpenStereo_0.9.exe OpenStereo_$(get-date -f yyyy-MM-dd_HH_mm)_$($env:APPVEYOR_REPO_BRANCH)_$($env:APPVEYOR_REPO_COMMIT.subString(0,7))_64bit.exe
+
+# Not a project with an msbuild file, build done at install.
+build: None
