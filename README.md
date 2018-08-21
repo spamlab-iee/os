@@ -1,4 +1,9 @@
-# OpenStereo
+OpenStereo
+==========
+
+[![Build status](https://ci.appveyor.com/api/projects/status/hur1k36y06c3x7nr?svg=true)](https://ci.appveyor.com/project/endarthur/os)
+
+------------------------------------------------------------------------
 
 OpenStereo is an open source, cross-platform software for structural geology analysis.
 
@@ -6,7 +11,13 @@ The software is written in Python, a high-level, cross-platform programming lang
 
 OpenStereo is released under the GNU General Public License v.3.
 
-## Installation
+## Windows Installation
+
+Download the installer .exe from the latest release:
+
+https://github.com/endarthur/os/releases/latest
+
+## Installation from Source
 
 You can install this version of openstereo using:
 
