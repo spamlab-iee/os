@@ -50,3 +50,7 @@ install:
 
 # Not a project with an msbuild file, build done at install.
 build: None
+
+before_deploy:
+  - ps: Get-ChildItem .\upload64\nsis\*.exe | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name -DeploymentName os-github-deployment }
+  - ps: foreach($artifactName in $artifacts.keys) { $artifacts[$artifactName] }
