@@ -1,4 +1,8 @@
 # modified from mu's config file https://github.com/mu-editor/mu/blob/master/.appveyor.yml
+
+only_commits:
+  message: /\[build\]/
+
 environment:
   matrix:
     - PYTHON: "C:\\Python36"
