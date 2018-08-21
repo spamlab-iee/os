@@ -189,7 +189,18 @@
     <addaction name="actionAbout"/>
     <addaction name="actionSubmit_Issue"/>
    </widget>
+   <widget class="QMenu" name="menuData">
+    <property name="title">
+     <string>Data</string>
+    </property>
+    <addaction name="actionAdd_Plane"/>
+    <addaction name="actionAdd_Line"/>
+    <addaction name="actionAdd_Small_Circle"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_Slope"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuData"/>
    <addaction name="menuSettings"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
@@ -370,6 +381,26 @@
    </property>
    <property name="text">
     <string>Plot on Update Table</string>
+   </property>
+  </action>
+  <action name="actionAdd_Plane">
+   <property name="text">
+    <string>Add Plane</string>
+   </property>
+  </action>
+  <action name="actionAdd_Line">
+   <property name="text">
+    <string>Add Line</string>
+   </property>
+  </action>
+  <action name="actionAdd_Small_Circle">
+   <property name="text">
+    <string>Add Small Circle</string>
+   </property>
+  </action>
+  <action name="actionAdd_Slope">
+   <property name="text">
+    <string>Add Slope</string>
    </property>
   </action>
  </widget>

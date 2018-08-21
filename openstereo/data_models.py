@@ -749,3 +749,359 @@ class SmallCircleData(DataItem):
             CirclePlotData(circles, self.sccirc_settings,
                            self.checklegend_settings['sccirc'], legend_text))
         return plot_items
+
+
+#Hairspray & Alexander Hamilton
+class SinglePlane(DataItem):
+    data_type = "singleplane_data"
+    plot_item_name = {'GC': 'Great Circle'}
+    item_order = {"Pole": 0, "GC": 1}
+    default_checked = ["Pole", "Great Circle"]
+    properties_ui = smallcircle_Ui_Dialog
+
+    def __init__(self, name, parent, data="", strike=False, **kwargs):
+        super().__init__(name, parent)
+        self.data_settings['attitude'] = data
+        self.data_settings['strike'] = strike
+
+    def build_configuration(self):
+        super().build_configuration()
+        self.scaxis_settings = {
+            'marker': 'o',
+            'c': '#000000',
+            'ms': 3.0,
+        }
+        self.sccirc_settings = {
+            "linewidths": 1.,
+            "colors": "#000000",
+            "linestyles": "-"
+        }
+
+        self.checklegend_settings = {
+            "scaxis": True,
+            "sccirc": True,
+        }
+        self.legend_settings = {
+            "scaxis": '',
+            "sccirc": '',
+        }
+
+        self.data_settings = {}
+
+    def reload_data(self):
+        pass
+
+    def change_attitude(self, data, strike=False):
+        self.data_settings['attitude'] = data
+        self.data_settings['strike'] = strike
+
+    def get_attitude_Plane(self):
+        attitude = self.data_settings['attitude'].split()
+        translated_attitude = au.translate_attitude(
+            attitude[0], attitude[1], strike=self.data_settings['strike'])
+        return au.Plane.from_attitude(
+            *translated_attitude, strike=self.data_settings['strike'])
+
+    def plot_Pole(self):
+        if self.legend_settings['scaxis']:
+            try:
+                legend_text = \
+                    self.legend_settings['scaxis'].format(
+                        data=self.auttitude_data)
+            except:
+                legend_text = self.legend_settings['scaxis']
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get('scaxis', 'scaxis'))
+        plane = self.get_attitude_Plane()
+        return (PointPlotData(plane, self.scaxis_settings,
+                              self.checklegend_settings['scaxis'],
+                              legend_text), )
+
+    def plot_GC(self):
+        plot_items = []
+        if self.legend_settings['sccirc']:
+            try:
+                legend_text = \
+                    self.legend_settings['sccirc'].format(
+                        data=self.auttitude_data)
+            except:
+                legend_text = self.legend_settings['sccirc']
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get('SC', 'Small Circle'))
+        circle = self.get_attitude_Plane().get_great_circle()
+        plot_items.append(
+            CirclePlotData(circle, self.sccirc_settings,
+                           self.checklegend_settings['sccirc'], legend_text))
+        return plot_items
+
+
+class SingleLine(DataItem):
+    data_type = "singleline_data"
+    properties_ui = smallcircle_Ui_Dialog
+
+    def __init__(self, name, parent, data="", strike=False, **kwargs):
+        super().__init__(name, parent)
+        self.data_settings['attitude'] = data
+        self.data_settings['strike'] = strike
+
+    def build_configuration(self):
+        super().build_configuration()
+        self.scaxis_settings = {
+            'marker': 'o',
+            'c': '#000000',
+            'ms': 3.0,
+        }
+        self.sccirc_settings = {
+            "linewidths": 1.,
+            "colors": "#000000",
+            "linestyles": "-"
+        }
+
+        self.checklegend_settings = {
+            "scaxis": True,
+            "sccirc": True,
+        }
+        self.legend_settings = {
+            "scaxis": '',
+            "sccirc": '',
+        }
+
+        self.data_settings = {}
+
+    def reload_data(self):
+        pass
+
+    def change_attitude(self, data, strike=False):
+        self.data_settings['attitude'] = data
+        self.data_settings['strike'] = strike
+
+    def get_attitude_Line(self):
+        attitude = self.data_settings['attitude'].split()
+        translated_attitude = au.translate_attitude(
+            attitude[0], attitude[1], strike=self.data_settings['strike'])
+        return au.Line.from_attitude(
+            *translated_attitude, strike=self.data_settings['strike'])
+
+    def _plot_Point(self):
+        if self.legend_settings['scaxis']:
+            try:
+                legend_text = \
+                    self.legend_settings['scaxis'].format(
+                        data=self.auttitude_data)
+            except:
+                legend_text = self.legend_settings['scaxis']
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get('scaxis', 'scaxis'))
+        line = self.get_attitude_Line()
+        return (PointPlotData(line, self.scaxis_settings,
+                              self.checklegend_settings['scaxis'],
+                              legend_text), )
+
+
+class SingleSmallCircle(DataItem):
+    data_type = "singlesc_data"
+    plot_item_name = {"SC": "Small Circles"}
+    default_checked = ["Axis", "Small Circles"]
+    properties_ui = smallcircle_Ui_Dialog
+
+    def __init__(self, name, parent, data="", strike=False, **kwargs):
+        super().__init__(name, parent)
+        self.data_settings['attitude'] = data
+        self.data_settings['strike'] = strike
+
+    def build_configuration(self):
+        super().build_configuration()
+        self.scaxis_settings = {
+            'marker': 'o',
+            'c': '#000000',
+            'ms': 3.0,
+        }
+        self.sccirc_settings = {
+            "linewidths": 1.,
+            "colors": "#000000",
+            "linestyles": "-"
+        }
+
+        self.checklegend_settings = {
+            "scaxis": True,
+            "sccirc": True,
+        }
+        self.legend_settings = {
+            "scaxis": '',
+            "sccirc": '',
+        }
+
+        self.data_settings = {}
+
+    def reload_data(self):
+        pass
+
+    def change_attitude(self, data, strike=False):
+        self.data_settings['attitude'] = data
+        self.data_settings['strike'] = strike
+
+    def get_attitude_LineAlpha(self):
+        attitude = self.data_settings['attitude'].split()
+        alpha = radians(float(attitude[2]))
+        translated_attitude = au.translate_attitude(
+            attitude[0], attitude[1], strike=self.data_settings['strike'])
+        return au.Line.from_attitude(
+            *translated_attitude, strike=self.data_settings['strike']), alpha
+
+    def plot_Axis(self):
+        if self.legend_settings['scaxis']:
+            try:
+                legend_text = \
+                    self.legend_settings['scaxis'].format(
+                        data=self.auttitude_data)
+            except:
+                legend_text = self.legend_settings['scaxis']
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get('scaxis', 'scaxis'))
+        axis, alpha = self.get_attitude_LineAlpha()
+        return (PointPlotData(axis, self.scaxis_settings,
+                              self.checklegend_settings['scaxis'],
+                              legend_text), )
+
+    def plot_SC(self):
+        plot_items = []
+        if self.legend_settings['sccirc']:
+            try:
+                legend_text = \
+                    self.legend_settings['sccirc'].format(
+                        data=self.auttitude_data)
+            except:
+                legend_text = self.legend_settings['sccirc']
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get('SC', 'Small Circle'))
+        axis, alpha = self.get_attitude_LineAlpha()
+        circles = axis.get_small_circle(alpha=alpha)
+        plot_items.append(
+            CirclePlotData(circles, self.sccirc_settings,
+                           self.checklegend_settings['sccirc'], legend_text))
+        return plot_items
+
+
+class Slope(DataItem):
+    data_type = "slope_data"
+    plot_item_name = {
+        'GC': 'Great Circle',
+        'Daylight': 'Daylight Envelope',
+        'Lateral': 'Lateral Limits'}
+    item_order = {"Pole": 0, "GC": 1}
+    default_checked = [
+        "Great Circle", "Daylight Envelope",
+        "Lateral Limits"]
+    properties_ui = smallcircle_Ui_Dialog
+
+    def __init__(self, name, parent, data="", strike=False, **kwargs):
+        super().__init__(name, parent)
+        self.data_settings['attitude'] = data
+        self.data_settings['strike'] = strike
+
+    def build_configuration(self):
+        super().build_configuration()
+        self.scaxis_settings = {
+            'marker': 'o',
+            'c': '#000000',
+            'ms': 3.0,
+        }
+        self.sccirc_settings = {
+            "linewidths": 1.,
+            "colors": "#000000",
+            "linestyles": "-"
+        }
+
+        self.checklegend_settings = {
+            "scaxis": True,
+            "sccirc": True,
+        }
+        self.legend_settings = {
+            "scaxis": '',
+            "sccirc": '',
+        }
+
+        self.data_settings = {}
+
+    def reload_data(self):
+        pass
+
+    def change_attitude(self, data, strike=False):
+        self.data_settings['attitude'] = data
+        self.data_settings['strike'] = strike
+
+    def get_attitude_Plane(self):
+        attitude = self.data_settings['attitude'].split()
+        translated_attitude = au.translate_attitude(
+            attitude[0], attitude[1], strike=self.data_settings['strike'])
+        return au.Plane.from_attitude(
+            *translated_attitude, strike=self.data_settings['strike'])
+
+    def plot_Pole(self):
+        if self.legend_settings['scaxis']:
+            try:
+                legend_text = \
+                    self.legend_settings['scaxis'].format(
+                        data=self.auttitude_data)
+            except:
+                legend_text = self.legend_settings['scaxis']
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get('scaxis', 'scaxis'))
+        plane = self.get_attitude_Plane()
+        return (PointPlotData(plane, self.scaxis_settings,
+                              self.checklegend_settings['scaxis'],
+                              legend_text), )
+
+    def plot_GC(self):
+        plot_items = []
+        if self.legend_settings['sccirc']:
+            try:
+                legend_text = \
+                    self.legend_settings['sccirc'].format(
+                        data=self.auttitude_data)
+            except:
+                legend_text = self.legend_settings['sccirc']
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get('SC', 'Small Circle'))
+        circle = self.get_attitude_Plane().get_great_circle()
+        plot_items.append(
+            CirclePlotData(circle, self.sccirc_settings,
+                           self.checklegend_settings['sccirc'], legend_text))
+        return plot_items
+
+    def plot_Daylight(self):
+        circle, = self.get_attitude_Plane().get_great_circle(step=radians(0.5))
+        daylight_envelope = np.array([p.dip_vector for p in circle])
+        # if self.legend_settings['GC']:
+        #     try:
+        #         legend_text = \
+        #             self.legend_settings['GC'].format(
+        #                 data=self.auttitude_data)
+        #     except:
+        #         legend_text = self.legend_settings['GC']
+        # else:
+        legend_text = "{} ({})".format(
+            self.text(0),
+            self.plot_item_name.get('Daylight', 'Daylight Envelope'))
+        return (CirclePlotData((daylight_envelope, ), self.sccirc_settings,
+                               self.checklegend_settings['sccirc'],
+                               legend_text), )
+
+    def plot_Lateral(self):
+        direction = self.get_attitude_Plane().direction_vector
+        lateral_limits = direction.get_small_circle(
+            alpha=radians(70.0)
+        )
+        legend_text = "{} ({})".format(
+            self.text(0),
+            self.plot_item_name.get('Lateral', 'Lateral Limits'))
+        return (CirclePlotData(lateral_limits, self.sccirc_settings,
+                               self.checklegend_settings['sccirc'],
+                               legend_text), )

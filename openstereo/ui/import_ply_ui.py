@@ -43,6 +43,9 @@ class Ui_Dialog(object):
         self.check_separate.setChecked(True)
         self.check_separate.setObjectName("check_separate")
         self.verticalLayout_2.addWidget(self.check_separate)
+        self.check_export_ply = QtWidgets.QCheckBox(Dialog)
+        self.check_export_ply.setObjectName("check_export_ply")
+        self.verticalLayout_2.addWidget(self.check_export_ply)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -67,6 +70,7 @@ class Ui_Dialog(object):
         self.add_color_button.setText(_translate("Dialog", "Add Color"))
         self.remove_color_button.setText(_translate("Dialog", "Remove"))
         self.check_separate.setText(_translate("Dialog", "Export each color to a separate file"))
+        self.check_export_ply.setText(_translate("Dialog", "Export 3d model of resulting planes"))
         self.ok_button.setText(_translate("Dialog", "OK"))
         self.cancel_button.setText(_translate("Dialog", "Cancel"))
 
