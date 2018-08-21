@@ -65,7 +65,6 @@ deploy:
   provider: GitHub
   auth_token:
     secure: LBCuN9a41G36WT4b7Tab1UbTE8mji69Jup2hxpGDtdH/JarKQxpCrGadlPclRtqi
-  # artifact: /.\upload64\nsis\*.exe/            # upload all NuGet packages to release assets
   draft: true
   prerelease: false
   on:
