@@ -23,7 +23,7 @@ https://github.com/endarthur/os/releases/latest
 You can install this version of openstereo using:
 
 ```bash
-$ pip install -e git+https://github.com/endarthur/os#egg=openstereo
+$ pip install git+https://github.com/endarthur/os#egg=openstereo
 ```
 
 Additionally, install PyQt5 from PyPI (for python 2.7, use package python-qt5 instead).
