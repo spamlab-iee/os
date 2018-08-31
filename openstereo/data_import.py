@@ -279,7 +279,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
     def import_kwargs(self):
         kwargs = {
             "worksheet":
-            self.worksheet.currentIndex(),
+            self.worksheet.currentText(),
             "keep_input":
             True,
             "line":
@@ -379,7 +379,7 @@ def get_data(fname, kwargs):
     name, ext = path.splitext(fname)
     if ext in [".xls", ".xlsx"]:
         book = xlrd.open_workbook(fname)
-        sheet = book.sheet_by_name(kwargs['booksheet'])
+        sheet = book.sheet_by_name(kwargs['worksheet'])
         header_row = 0 if\
             kwargs['header_row'] is None else kwargs['header_row'] + 1
         header_row += 0\
