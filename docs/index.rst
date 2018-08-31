@@ -7,13 +7,24 @@ OpenStereo -- An open source, cross-platform structural geology analysis softwar
 =================================================================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Getting Started
 
-   install
-   support
-   tutorial
-   reference
+    install
+    support
+    tutorial
+
+.. toctree::
+    :maxdepth: 2
+    :caption: User Guide
+
+    reference
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Developer Guide
+
+    building
 
 
 

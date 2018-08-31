@@ -131,7 +131,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'OpenStereo.tex', 'OpenStereo Documentation',
-     'Carlos Henrique Grohmann de Carvalho, Ginaldo Ademar da Cruz Campanha, Arthur Endlein Correia', 'manual'),
+     '', 'manual'),
 ]
 
 
