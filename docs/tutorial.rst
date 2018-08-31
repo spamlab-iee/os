@@ -49,7 +49,7 @@ busy view of the data:
 
 .. image:: images/os_tocher_full.png
 
-Disable the Great Circles option for now and right click on the Tocher item(or
+Disable the Great Circles option for now and right click on the Tocher item (or
 over any of its options) to get its context menu:
 
 .. image:: images/os_tocher_context.png
@@ -60,7 +60,7 @@ the item using this menu. Click on ``Properties`` to do so:
 .. image:: images/os_tocher_props_projection.png
     :align:   center
 
-Most plot options for the Project plot tab on the main window are located on
+Most plot options for the Projection plot tab on the main window are located on
 this first tab, with the exception of contour plots. Try to change some
 options, as the color and size of the poles on the top left group, disable
 the pole and great circle of the first and second eigenvectors and change the
@@ -94,9 +94,10 @@ contribute only to a small area around it.
 
 In general you'll have to try a few different options for your dataset to find
 the best smoothing coefficient. To help with that, OpenStereo includes two
-published methods to estimate good parameters. Robin & Jowett (1986) is very
-quick, as it calculates the recommended K based only on the number of poles,
-while Diggle & Fisher (1985) perform an optimization using cross validation
+published methods to estimate good parameters. Robin & Jowett (1986)
+[RJ86]_ is very quick, as it calculates the recommended K based
+only on the number of poles,
+while Diggle & Fisher (1985) [DF85]_ perform an optimization using cross validation
 to find which parameter best represents your data. Change the K parameter to
 50 and plot the results:
 
