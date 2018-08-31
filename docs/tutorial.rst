@@ -150,6 +150,7 @@ found by either clicking on the ``Settings`` button under the plot or the
 ``Project Settings`` action on the settings menu. This dialog will appear:
 
 .. image:: images/os_settings.png
+        :align:   center
 
 Click on the ``Plot Grid`` checkbox to add an equal-area net on your plot. You
 may also rotate the whole projection by using the rotate grid option. For
@@ -162,6 +163,7 @@ You can also see and add some metadata to your project on ``Project`` tab on
 the settings dialog:
 
 .. image:: images/os_settings_project.png
+        :align:   center
 
 There are two types of OpenStereo :ref:`project files <project-files>`: regular
 and packed. They both use the .openstereo extension, and the main difference is
