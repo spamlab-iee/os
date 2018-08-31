@@ -1,7 +1,8 @@
 An OpenStereo Tutorial
 ======================
 
-Open the program either from your start menu or from command line as either::
+After :doc:`installing <install>`, open the program either from your start menu or from command
+line as either::
 
     python -m openstereo
 
