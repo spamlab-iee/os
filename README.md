@@ -3,6 +3,8 @@ OpenStereo
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hur1k36y06c3x7nr?svg=true)](https://ci.appveyor.com/project/endarthur/os)
 
+[![Documentation Status](https://readthedocs.org/projects/openstereo/badge/?version=latest)](https://openstereo.readthedocs.io/en/latest/?badge=latest)
+
 ------------------------------------------------------------------------
 
 OpenStereo is an open source, cross-platform software for structural geology analysis.
