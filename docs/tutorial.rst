@@ -23,7 +23,8 @@ example, ``Import Plane Data (DD)``:
 
 .. image:: images/os_file_import_plane.png
 
-Download ``tocher_header.csv`` from the `example data`_ directory inside the 
+OpenStereo supports both CSV files and excel spreadsheets. Download
+``tocher_header.csv`` from the `example data`_ directory inside the 
 repository and select it after clicking this option. After loading, either
 click ``Plot`` or press ``Ctrl+P`` on your keyboard to view the poles of this
 example:
@@ -31,6 +32,14 @@ example:
 .. _example data: https://github.com/endarthur/os/tree/master/example_data
 
 .. image:: images/os_tocher_poles.png
+
+The Projection plot is interactive. If you mouse over the plot the
+attitude of the point under the mouse will appear on the lower right corner.
+Also, if you click and drag over the plot you'll be able to both measure angles
+and see the attitude of the plane formed by the point you first clicked and the
+current point:
+
+.. image:: images/os_tocher_drag.png
 
 It is also possible to plot the great circles, eigenvectors and contours of
 a planar dataset. Click on the check boxes of these options under the
@@ -104,8 +113,77 @@ great circle legend as::
 
     fitted girdle ({data.eigenvectors_sphere[0]})
 
-In most cases you don't need to use the import dialog directly. Download and
-open the ``qplot.txt`` dataset using the ``Import Line Data (Trend)``.
+You can also open multiple data files of the same type. Download both
+``normal_faults.xlsx`` and ``qplot.txt`` from the example data and open them
+using the import planes action. Disable the Tocher item and plot the new data:
+
+.. image:: images/os_tocher_faults_qplot.png
+
+The normal_faults file contains both the orientation of a plane and a line on
+each row. As the data set contains no headers, it has no way of detecting which
+columns contain the attitude for the lines and the planes, so you must provide
+this information.
+
+The most generic way of opening a data set in OpenStereo is using the
+``Import...`` action on the file menu. After clicking this and selecting the
+normal_faults file the following dialog will appear:
+
+.. image:: images/os_import.png
+
+Change the data type to Lines, and the trend and plunge to columns 2 and 3,
+respectively. Click ``OK`` to load the lines, disable the other items and press
+plot to view the results:
+
+.. image:: images/os_faults_lines.png
+
+Our project now contains four items, and it's probably time for some better
+organization. Right click on any item and select ``Colapse All`` to hide the
+plot options. Rename the items by either using ``Rename...`` on the context
+menu or pressing F2 on your keyboard after selecting an item. After that, you
+may reorder the items by either clicking and dragging or using the move item
+actions on the menu. As an example of the results:
+
+.. image:: images/os_tocher_faults_qplot_reorder.png
+
+There are also some general configurations for the whole project, which can be
+found by either clicking on the ``Settings`` button under the plot or the 
+``Project Settings`` action on the settings menu. This dialog will appear:
+
+.. image:: images/os_settings.png
+
+Click on the ``Plot Grid`` checkbox to add an equal-area net on your plot. You
+may also rotate the whole projection by using the rotate grid option. For
+example, -30.0, 50.0 and 45.0 as azimuth, plunge and rake, respectively. Click
+``Apply`` to see the results:
+
+.. image:: images/os_faults_grid_rotate.png
+
+You can also see and add some metadata to your project on ``Project`` tab on
+the settings dialog:
+
+.. image:: images/os_settings_project.png
+
+There are two types of OpenStereo :ref:`project files <project-files>`: regular
+and packed. They both use the .openstereo extension, and the main difference is
+that packed projects include the data files inside them, to facilitate sharing
+projects. Packed projects may be unpacked to a directory using the
+``Unpack to...`` button on the project tab of the settings dialog.
+
+To finish this tutorial, save the resulting project as a regular one (using
+either ``Save``  or ``Save as...`` on the file menu). Regular projects store
+the relative paths between the .openstereo file and the data files, so you
+can transport the whole project to different computers by just keeping the
+same directory structure, as when sharing a folder through Dropbox or a similar
+service.
+
+If OpenStereo can't find the data when opening the project, it will ask you for
+its location. To make this process easier, for each location of these you
+provide the software will try to find the remaining files relative to both the
+project file and these given locations.
+
+..
+    In most cases you don't need to use the import dialog directly. Download and
+    open the ``qplot.txt`` dataset using the ``Import Line Data (Trend)``.
 
 ..
     .. image:: images/os_import.png
