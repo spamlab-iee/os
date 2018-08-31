@@ -53,7 +53,7 @@ extract_colored_faces = waiting_effects(extract_colored_faces)
 print(sys.version)
 print("current data_dir:", data_dir)
 
-__version__ = "0.9q"
+__version__ = "0.9u"
 
 
 def memory_usage_psutil():
@@ -741,6 +741,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         pack = True if self.OS_settings.general_settings[
             'packeddata'] == 'yes' else False
         packed_paths = {}
+        item_settings_fnames = set()
         for index in range(self.treeWidget.topLevelItemCount() - 1, -1, -1):
             item = self.treeWidget.topLevelItem(index)
             item_path = getattr(item, 'data_path', None)
@@ -763,9 +764,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                             else old_project_dir,
                             item_path)),
                         item_fname)
-            item_settings_name = name + ".os_lyr" if item_path is not None \
-                else item.text(0) + ".os_lyr"
-            ozf.writestr(item_settings_name,
+            item_settings_name = name if item_path is not None \
+                else item.text(0)
+            item_settings_fname = item_settings_name + ".os_lyr"
+            i = 1
+            while item_settings_fname in item_settings_fnames:
+                item_settings_fname = "{}({}){}".format(
+                    item_settings_name, i, ".os_lyr")
+                i += 1
+            item_settings_fnames.add(item_settings_fname)
+
+            ozf.writestr(item_settings_fname,
                          json.dumps(item.item_settings, indent=2))
             if item_path is not None and not pack:
                 item_path = path.relpath(item_path, project_dir)
@@ -778,6 +787,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 item.text(0),
                 'path':
                 item_path,
+                'layer_settings_file':
+                item_settings_fname,
                 'checked':
                 bool(item.checkState(0)),
                 'checked_plots':
@@ -804,7 +815,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             if item_path is not None:
                 item_basename = path.basename(item_path)
                 item_fname, ext = path.splitext(item_basename)
-                item_settings_name = item_fname + '.os_lyr'
+                item_settings_name = data.get(
+                    'layer_settings_file', data['name'] + ".os_lyr")
                 item_file = ozf.extract(item_path, self.temp_dir) \
                     if packed else \
                     path.normpath(path.join(project_dir, data['path']))
@@ -827,7 +839,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         item_file = fname
 
             else:
-                item_settings_name = data['name'] + ".os_lyr"
+                item_settings_name = data.get(
+                    'layer_settings_file', data['name'] + ".os_lyr")
                 item_file = None
             item_settings = json.load(
                 ozf.open(item_settings_name), encoding="utf-8")
