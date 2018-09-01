@@ -3,6 +3,7 @@ OpenStereo
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hur1k36y06c3x7nr?svg=true)](https://ci.appveyor.com/project/endarthur/os)
 [![Documentation Status](https://readthedocs.org/projects/openstereo/badge/?version=latest)](https://openstereo.readthedocs.io/en/latest/?badge=latest)
+[![Gitter chat](https://badges.gitter.im/endarthur/os.png)](https://gitter.im/endarthur/os)
 
 ------------------------------------------------------------------------
 
@@ -17,6 +18,8 @@ OpenStereo is released under the GNU General Public License v.3.
 Download the installer .exe from the latest release:
 
 https://github.com/endarthur/os/releases/latest
+
+When updating, please uninstall the previous version before installing the new.
 
 ## Installation from Source
 
