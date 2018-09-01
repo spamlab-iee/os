@@ -1,7 +1,11 @@
 An OpenStereo Tutorial
 ======================
 
-After :doc:`installing <install>`, open the program either from your start menu or from command
+First, install OpenStereo by following the instructions on the
+:doc:`installation page <install>` for your operating system. Make sure to
+update whenever a new release is available.
+
+After installing, open the program either from your start menu or from command
 line as either::
 
     python -m openstereo

@@ -30,6 +30,29 @@ class BuildUICommand(distutils.cmd.Command):
                 level=distutils.log.INFO)
             with open(py_file, "w") as fout:
                 compileUi(ui_file, fout)
+        # also run:
+        # pyrcc5 .\ui_files\openstereo.qrc -o .\openstereo\ui\openstereo_rc.py
+        # if resources changed
+        # Thanks https://ralsina.me/stories/BBS49.html
+
+
+# class AddGitHashCommand(distutils.cmd.Command):
+#     """Writes the hash of the current git master head to the file
+#     openstereo/tools/git_hash.py."""
+#     description = "adds the hash of the master head to the module"
+#     user_options = []
+
+#     def initialize_options(self):
+#         pass
+
+#     def finalize_options(self):
+#         pass
+
+#     def run(self):
+#         """Run command."""
+#         with open(".git/refs/heads/master", "r") as fin,\
+#                 open("./openstereo/tools/git_hash.py", "w") as fout:
+#             fout.write(f"master_head = '{fin.read()}''")
 
 
 setup(
@@ -53,7 +76,8 @@ setup(
         'auttitude'
     ],
     cmdclass={
-        'buildui': BuildUICommand
+        'buildui': BuildUICommand,
+        # 'addhash': AddGitHashCommand
     },
     # metadata for upload to PyPI
     author="Arthur Endlein",

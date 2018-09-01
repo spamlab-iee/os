@@ -93,3 +93,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# current commit hash
+# openstereo/tools/git_hash.py

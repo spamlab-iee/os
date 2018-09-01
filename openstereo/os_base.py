@@ -4,6 +4,7 @@ import csv
 import json
 import shutil
 import sys
+from sys import argv
 import zipfile
 import os
 from datetime import datetime
@@ -18,16 +19,20 @@ data_dir = user_data_dir("OpenStereo")
 if not path.exists(data_dir):
     os.makedirs(data_dir)
 
+#import importlib_resources
+
+
 import matplotlib
 matplotlib.use('Qt5Agg')  # noqa: E402
 import numpy as np
 import shapefile
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 import openstereo.os_auttitude as autti
 from openstereo.data_import import get_data, ImportDialog
 from openstereo.data_models import (AttitudeData, CircularData, LineData,
                                     PlaneData, SmallCircleData)
+from openstereo.data_models import (FaultData)
 from openstereo.data_models import (
     SinglePlane, SingleLine, SingleSmallCircle, Slope)
 from openstereo.os_math import net_grid, bearing, haversine, dcos_lines
@@ -46,6 +51,7 @@ from openstereo.ui.ui_interface import (parse_properties_dialog,
                                         update_data_button_factory,
                                         populate_item_table)
 from openstereo.ui import waiting_effects
+from openstereo.ui import openstereo_rc
 from ply2atti import extract_colored_faces
 
 extract_colored_faces = waiting_effects(extract_colored_faces)
@@ -167,7 +173,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     data_types = {
         data_type.data_type: data_type
         for data_type in (AttitudeData, PlaneData, LineData, SmallCircleData,
-                          CircularData, SinglePlane, SingleLine,
+                          CircularData,
+                          FaultData,
+                          SinglePlane, SingleLine,
                           SingleSmallCircle, Slope)
     }
 
@@ -1228,10 +1236,23 @@ def os_main():
 
     app = QtWidgets.QApplication(sys.argv)
     main = Main()
+    icon = QtGui.QIcon()
+    icon.addPixmap(
+        QtGui.QPixmap(":/icons/openstereo.ico"),
+        QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    main.setWindowIcon(icon)
     main.add_plots()
-    if len(sys.argv) > 1:  # make this smarter, allow opening other than projs
-        main.open_project(sys.argv[1])
-        main.current_project = path.abspath(sys.argv[1])
+    # argv = ["", "fault.openstereo"]
+    if len(argv) > 1:  # make this smarter, allow opening other than projs
+        main.open_project(argv[1])
+        main.current_project = path.abspath(argv[1])
         main.set_title()
+
+    # main.import_data(
+    #     "fault_data",
+    #     "Fault",
+    #     data_path="",
+    #     data=main.get_data_items())
+
     main.show()
     sys.exit(app.exec_())

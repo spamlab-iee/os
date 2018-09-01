@@ -32,8 +32,11 @@ from openstereo.os_math import (
     clip_lines,
     in_interval)
 
+import auttitude as au
+
 sqrt3_2 = sqrt(3.0) / 2.
 sqrt3 = sqrt(3.0)
+
 
 
 class NavigationToolbar(NavigationToolbar2QT):
@@ -222,20 +225,20 @@ class StereoPlot(PlotPanel):
             self.plot_projection_net()
             self.drawn = False
         if isinstance(plot_item, PointPlotData):
-            element = self.plot_points(\
-                plot_item.data,\
+            element = self.plot_points(
+                plot_item.data,
                 plot_item.point_settings)
         elif isinstance(plot_item, CirclePlotData):
-            element = self.plot_circles(\
-                plot_item.data,\
+            element = self.plot_circles(
+                plot_item.data,
                 plot_item.circle_settings)
         elif isinstance(plot_item, ContourPlotData):
-            element = self.plot_contours(\
-                plot_item.nodes,\
-                plot_item.count,\
-                plot_item.contour_settings,\
-                plot_item.contour_line_settings,\
-                plot_item.contour_check_settings,\
+            element = self.plot_contours(
+                plot_item.nodes,
+                plot_item.count,
+                plot_item.contour_settings,
+                plot_item.contour_line_settings,
+                plot_item.contour_check_settings,
                 plot_item.n)
         else:
             element = plot_item.plot_data(self)

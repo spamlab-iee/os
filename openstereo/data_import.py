@@ -22,6 +22,8 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
     alpha_names = ["alpha", "angle", "semiapicalangle", "opening"]
     sample_size = 1024
     default_comment = "#"
+    header = None
+    geoeas = None
 
     def __init__(self,
                  parent=None,
@@ -46,6 +48,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.header_row.valueChanged.connect(self.on_header_changed)
         self.do_skip.stateChanged.connect(self.on_skip_rows)
         self.skip_rows.valueChanged.connect(self.on_skip_rows)
+        # self.worksheet.valueChanged.connect(self.on_worksheet_changed)
         self.header = []
         self.dialect = None
         self.geoeas = False

@@ -35,6 +35,15 @@ class ContourPlotData(ProjectionPlotData):
         self.n = n
 
 
+# import auttitude as au
+# class AuPlot(au.ProjectionPlot):
+#     def clear_diagram(self):
+#         pass
+
+# class ArrowPlotData(ProjectionPlotData):
+#     pass
+
+
 class PetalsPlotData(RosePlotData):
     def __init__(self, nodes, radii, rose_settings):
         self.nodes = nodes
