@@ -32,7 +32,7 @@ import openstereo.os_auttitude as autti
 from openstereo.data_import import get_data, ImportDialog
 from openstereo.data_models import (AttitudeData, CircularData, LineData,
                                     PlaneData, SmallCircleData)
-from openstereo.data_models import (FaultData)
+# from openstereo.data_models import (FaultData)
 from openstereo.data_models import (
     SinglePlane, SingleLine, SingleSmallCircle, Slope)
 from openstereo.os_math import net_grid, bearing, haversine, dcos_lines
@@ -174,7 +174,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         data_type.data_type: data_type
         for data_type in (AttitudeData, PlaneData, LineData, SmallCircleData,
                           CircularData,
-                          FaultData,
+                        #   FaultData,
                           SinglePlane, SingleLine,
                           SingleSmallCircle, Slope)
     }
