@@ -91,4 +91,10 @@ setup(
         "Development Status :: 3 - Alpha",
         "Topic :: Scientific/Engineering",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    ])
+    ],
+    options={
+        "app": {
+            "formal_name": "openstereo",
+            "bundle": "io.github.endarthur"
+        }
+    })
