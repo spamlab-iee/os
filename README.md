@@ -13,6 +13,10 @@ The software is written in Python, a high-level, cross-platform programming lang
 
 OpenStereo is released under the GNU General Public License v.3.
 
+Check the documentation here:
+
+https://openstereo.readthedocs.io/
+
 ## Windows Installation
 
 Download the installer .exe from the latest release:
