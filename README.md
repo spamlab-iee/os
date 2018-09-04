@@ -3,7 +3,7 @@ OpenStereo
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hur1k36y06c3x7nr?svg=true)](https://ci.appveyor.com/project/endarthur/os)
 [![Documentation Status](https://readthedocs.org/projects/openstereo/badge/?version=latest)](https://openstereo.readthedocs.io/en/latest/?badge=latest)
-[![Gitter chat](https://badges.gitter.im/endarthur/os.png)](https://gitter.im/endarthur/os)
+[![Gitter chat](https://badges.gitter.im/endarthur/os.png)](https://gitter.im/openstereo)
 
 ------------------------------------------------------------------------
 
@@ -20,6 +20,21 @@ Download the installer .exe from the latest release:
 https://github.com/endarthur/os/releases/latest
 
 When updating, please uninstall the previous version before installing the new.
+
+## macOS Installation
+
+First install pyqt5 (python3 will be installed as well for this) using
+[homebrew](https://brew.sh/):
+
+```bash
+$ brew install pytqt
+```
+
+Once that is done, install OpenStereo from this repository using pip3:
+
+```bash
+$ pip3 install git+https://github.com/endarthur/os#egg=openstereo
+```
 
 ## Installation from Source
 
