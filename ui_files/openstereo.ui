@@ -198,6 +198,7 @@
     <addaction name="actionAdd_Small_Circle"/>
     <addaction name="separator"/>
     <addaction name="actionAdd_Slope"/>
+    <addaction name="actionAssemble_Fault"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuData"/>
@@ -401,6 +402,11 @@
   <action name="actionAdd_Slope">
    <property name="text">
     <string>Add Slope</string>
+   </property>
+  </action>
+  <action name="actionAssemble_Fault">
+   <property name="text">
+    <string>Assemble Fault</string>
    </property>
   </action>
  </widget>

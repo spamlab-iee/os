@@ -164,6 +164,8 @@ class Ui_MainWindow(object):
         self.actionAdd_Small_Circle.setObjectName("actionAdd_Small_Circle")
         self.actionAdd_Slope = QtWidgets.QAction(MainWindow)
         self.actionAdd_Slope.setObjectName("actionAdd_Slope")
+        self.actionAssemble_Fault = QtWidgets.QAction(MainWindow)
+        self.actionAssemble_Fault.setObjectName("actionAssemble_Fault")
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
@@ -198,6 +200,7 @@ class Ui_MainWindow(object):
         self.menuData.addAction(self.actionAdd_Small_Circle)
         self.menuData.addSeparator()
         self.menuData.addAction(self.actionAdd_Slope)
+        self.menuData.addAction(self.actionAssemble_Fault)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuData.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
@@ -258,4 +261,5 @@ class Ui_MainWindow(object):
         self.actionAdd_Line.setText(_translate("MainWindow", "Add Line"))
         self.actionAdd_Small_Circle.setText(_translate("MainWindow", "Add Small Circle"))
         self.actionAdd_Slope.setText(_translate("MainWindow", "Add Slope"))
+        self.actionAssemble_Fault.setText(_translate("MainWindow", "Assemble Fault"))
 

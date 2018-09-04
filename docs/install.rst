@@ -8,6 +8,8 @@ Download the latest .exe installer from:
 
 https://github.com/endarthur/os/releases/latest
 
+When updating, please uninstall the previous version before installing the new.
+
 From PyPI
 ---------
 

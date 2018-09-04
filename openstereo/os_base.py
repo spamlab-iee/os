@@ -19,7 +19,7 @@ data_dir = user_data_dir("OpenStereo")
 if not path.exists(data_dir):
     os.makedirs(data_dir)
 
-#import importlib_resources
+# import importlib_resources
 
 
 import matplotlib
@@ -45,6 +45,7 @@ from openstereo.ui.merge_data_ui import Ui_Dialog as merge_data_Ui_Dialog
 from openstereo.ui.openstereo_ui import Ui_MainWindow
 from openstereo.ui.os_settings_ui import Ui_Dialog as os_settings_Ui_Dialog
 from openstereo.ui.rotate_data_ui import Ui_Dialog as rotate_data_Ui_Dialog
+from openstereo.ui.fault_data_ui import Ui_Dialog as fault_data_Ui_Dialog
 from openstereo.ui.item_table_ui import Ui_Dialog as item_table_Ui_Dialog
 from openstereo.ui.ui_interface import (parse_properties_dialog,
                                         populate_properties_dialog,
@@ -194,6 +195,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             'last_saved': ''
         }
 
+        self.id_counter = 0
+
         self.projections = {
             'Equal-Area': EqualAreaProj(self.OS_settings),
             'Equal-Angle': EqualAngleProj(self.OS_settings)
@@ -238,6 +241,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             lambda: self.add_single_data(
                 "slope_data", "Slope",
                 dialog_title="Add Slope"))
+        self.actionAssemble_Fault.triggered.connect(
+            lambda: self.fault_data_dialog())
 
         self.actionNew.triggered.connect(self.new_project)
         self.actionSave.triggered.connect(self.save_project_dialog)
@@ -336,9 +341,14 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             title += "Open-source, Multiplatform Stereonet Analysis"
         self.setWindowTitle(title)
 
-    def import_data(self, data_type, name, **kwargs):
-        return self.data_types[data_type](
-            name=name, parent=self.treeWidget, **kwargs)
+    def import_data(self, data_type, name, item_id=None, **kwargs):
+        if item_id is None:
+            item_id = self.id_counter
+            self.id_counter += 1
+        item = self.data_types[data_type](
+            name=name, parent=self.treeWidget, item_id=item_id, **kwargs)
+        item.set_root(self)
+        return item
 
     def import_files(self, data_type, direction, dialog_title):
         fnames, extension =\
@@ -578,6 +588,48 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.statusBar().showMessage('Merged items %s and %s as %s' %
                                          (A.text(0), B.text(0), merged_name))
 
+    def fault_data_dialog(self, current_item=None):
+        fault_dialog = QtWidgets.QDialog(self)
+        fault_dialog_ui = fault_data_Ui_Dialog()
+        fault_dialog_ui.setupUi(fault_dialog)
+        plane_items = {
+            item.text(0): item
+            for item in self.get_data_items()
+            if isinstance(item, PlaneData)
+        }
+        line_items = {
+            item.text(0): item
+            for item in self.get_data_items()
+            if isinstance(item, LineData)
+        }
+        if not plane_items or not line_items:
+            self.statusBar().showMessage('No items to build faults')
+            return
+        for item_name in plane_items:
+            fault_dialog_ui.A.addItem(item_name)
+        for item_name in line_items:
+            fault_dialog_ui.B.addItem(item_name)
+
+        # http://stackoverflow.com/a/22798753/1457481
+        if current_item is not None:
+            index = fault_dialog_ui.A.findText(current_item)
+            if index >= 0:
+                fault_dialog_ui.A.setCurrentIndex(index)
+            index = fault_dialog_ui.B.findText(current_item)
+            if index >= 0:
+                fault_dialog_ui.B.setCurrentIndex(index)
+
+        if fault_dialog.exec_():
+            A = plane_items[fault_dialog_ui.A.currentText()]
+            B = line_items[fault_dialog_ui.B.currentText()]
+            merged_name = "Faults ({}, {})".format(A.text(0),B.text(0))
+            self.import_data(
+                "fault_data",
+                merged_name,
+                data=[A, B])
+            self.statusBar().showMessage('Built Fault set using %s and %s as %s' %
+                                         (A.text(0), B.text(0), merged_name))
+
     def rotate_data_dialog(self, current_item=None):
         rotate_dialog = QtWidgets.QDialog(self)
         rotate_dialog_ui = rotate_data_Ui_Dialog()
@@ -739,6 +791,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         project_data = {
             "global_settings": self.OS_settings.item_settings,
             "version": __version__,
+            "id_counter": self.id_counter,
             "items": []
         }
         project_dir = path.dirname(fname)
@@ -795,6 +848,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 item.text(0),
                 'path':
                 item_path,
+                'id':
+                getattr(item, 'id', None),
                 'layer_settings_file':
                 item_settings_fname,
                 'checked':
@@ -813,6 +868,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             ozf.open("project_data.json"), encoding="utf-8")
         project_dir = path.dirname(fname)
         self.OS_settings.item_settings = project_data['global_settings']
+        self.id_counter = project_data.get(
+            'id_counter', 0)
         packed = True if self.OS_settings.general_settings[
             'packeddata'] == 'yes' else False
         self.temp_dir = mkdtemp() if packed else None
@@ -820,6 +877,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for data in reversed(project_data['items']):
             item_path = data['path']
+            item_id = data.get('id', None)
             if item_path is not None:
                 item_basename = path.basename(item_path)
                 item_fname, ext = path.splitext(item_basename)
@@ -866,6 +924,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 data['name'],
                 data_path=item_path,
                 data=item_data,
+                item_id=item_id,
                 **auttitude_kwargs)
             item.item_settings = item_settings
             item.setCheckState(0, QtCore.Qt.Checked
@@ -917,6 +976,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.treeWidget.topLevelItem(index)
             for index in range(self.treeWidget.topLevelItemCount())
         ]
+
+    def get_data_item_by_id(self, id):
+        for index in range(self.treeWidget.topLevelItemCount()):
+            item = self.treeWidget.topLevelItem(index)
+            if item.id == id:
+                return item
 
     def show_settings_dialog(self):
         if not hasattr(self, "settings_dialog"):
@@ -1247,12 +1312,6 @@ def os_main():
         main.open_project(argv[1])
         main.current_project = path.abspath(argv[1])
         main.set_title()
-
-    # main.import_data(
-    #     "fault_data",
-    #     "Fault",
-    #     data_path="",
-    #     data=main.get_data_items())
 
     main.show()
     sys.exit(app.exec_())

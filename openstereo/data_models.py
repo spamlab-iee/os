@@ -20,6 +20,7 @@ from openstereo.plot_data import (
     KitePlotData, LinesPlotData, RoseMeanPlotData, ClassificationPlotData)
 
 import auttitude as au
+from auttitude.applications import stress
 
 
 class DataItem(QtWidgets.QTreeWidgetItem):
@@ -27,8 +28,9 @@ class DataItem(QtWidgets.QTreeWidgetItem):
     default_checked = []
     item_order = {}
 
-    def __init__(self, name, parent):
+    def __init__(self, name, parent, item_id=None):
         super(DataItem, self).__init__(parent)
+        self.id = item_id
         self.check_items = {}
         self.plot_item_name.update(
             dict((v, k) for k, v in self.plot_item_name.items()))
@@ -131,6 +133,9 @@ class DataItem(QtWidgets.QTreeWidgetItem):
                     0, QtCore.Qt.Checked
                     if item_list[item_name] else QtCore.Qt.Unchecked)
 
+    def set_root(self, root):
+        pass
+
 
 class CircularData(DataItem):
     data_type = "circular_data"
@@ -138,13 +143,15 @@ class CircularData(DataItem):
         "Rose",
     ]
     properties_ui = circular_Ui_Dialog
+    auttitude_class = np.array
 
-    def __init__(self, name, data_path, data, parent, **kwargs):
+    def __init__(self, name, data_path, data, parent, item_id, **kwargs):
         self.data_path = data_path
         self.kwargs = kwargs
         self.auttitude_data = data if isinstance(data, DirectionalData)\
             else load(data, **kwargs)  # TODO: change this to new autti
-        super(CircularData, self).__init__(name, parent)
+        self.au_object = self.auttitude_class(self.auttitude_data.data)
+        super(CircularData, self).__init__(name, parent, item_id)
 
     def build_configuration(self):
         self.rose_check_settings = {
@@ -298,8 +305,9 @@ class CircularData(DataItem):
         return plot_data
 
 
-class AttitudeData(CircularData):
+class AttitudeData(CircularData):  # TODO: change name to VectorData
     data_type = "attitude_data"
+    auttitude_class = au.VectorSet
 
     def build_configuration(self):
         super(AttitudeData, self).build_configuration()
@@ -629,6 +637,7 @@ class PlaneData(AttitudeData):
     item_order = {"Points": 0, "GC": 1, "Eigenvectors": 2, "Contours": 3}
     default_checked = ["Poles", "Rose"]
     properties_ui = plane_Ui_Dialog
+    auttitude_class = au.PlaneSet
 
     def build_configuration(self):
         super(PlaneData, self).build_configuration()
@@ -661,6 +670,7 @@ class LineData(AttitudeData):
     item_order = {"Points": 0, "Contours": 3}
     default_checked = ["Lines", "Rose"]
     properties_ui = line_Ui_Dialog
+    auttitude_class = au.LineSet
 
 
 class SmallCircleData(DataItem):
@@ -668,18 +678,20 @@ class SmallCircleData(DataItem):
     plot_item_name = {"SC": "Small Circles"}
     default_checked = ["Axes", "Small Circles"]
     properties_ui = smallcircle_Ui_Dialog
+    auttitude_class = au.VectorSet
 
-    def __init__(self, name, data_path, data, parent, **kwargs):
+    def __init__(self, name, data_path, data, parent, item_id, **kwargs):
         self.data_path = data_path
-        self.kwargs = kwargs  # FIXME: pop update statistics from kwargs somehow
+        self.kwargs = kwargs  # FIXME: get update statistics from kwargs
         self.auttitude_data = data if isinstance(data, DirectionalData)\
             else load(data, **kwargs)
+        self.au_object = self.auttitude_class(self.auttitude_data.data)
         self.alpha_column = kwargs["alpha_column"]
         self.alpha = [
             float(line[self.alpha_column])
             for line in self.auttitude_data.input_data
         ]
-        super(SmallCircleData, self).__init__(name, parent)
+        super(SmallCircleData, self).__init__(name, parent, item_id)
 
     def build_configuration(self):
         super(SmallCircleData, self).build_configuration()
@@ -703,52 +715,152 @@ class SmallCircleData(DataItem):
             "sccirc": '',
         }
 
-    def reload_data(self):
-        data = get_data(self.data_path, self.auttitude_data.kwargs)
-        self.auttitude_data = load(data, calculate_statistics=False,
-                                   **self.auttitude_data.kwargs)
 
-    def reload_data_from_internal(self):
-        # data = get_data(self.data_path, self.auttitude_data.kwargs)
-        self.auttitude_data = load(
-            self.auttitude_data.input_data,
-            calculate_statistics=False,
-            **self.auttitude_data.kwargs)
+# Kim Wilde
+class FaultData(DataItem):
+    data_type = "fault_data"
+    plot_item_name = {"SC": "Small Circles"}
+    default_checked = ["Dihedra", "Michael"]
+    properties_ui = smallcircle_Ui_Dialog
 
-    def plot_Axes(self):
-        if self.legend_settings['scaxis']:
-            try:
-                legend_text = \
-                    self.legend_settings['scaxis'].format(
-                        data=self.auttitude_data)
-            except:
-                legend_text = self.legend_settings['scaxis']
+    def __init__(self, name, data, parent, item_id, **kwargs):
+        self.kwargs = kwargs
+        if data is not None:
+            self.plane_item, self.line_item = data
         else:
-            legend_text = "{} ({})".format(
-                self.text(0), self.plot_item_name.get('scaxis', 'scaxis'))
-        return (PointPlotData(self.auttitude_data.data, self.scaxis_settings,
-                              self.checklegend_settings['scaxis'],
-                              legend_text), )
+            self.plane_item, self.line_item = None, None
+        super().__init__(name, parent, item_id)
 
-    def plot_SC(self):
-        plot_items = []
-        if self.legend_settings['sccirc']:
-            try:
-                legend_text = \
-                    self.legend_settings['sccirc'].format(
-                        data=self.auttitude_data)
-            except:
-                legend_text = self.legend_settings['sccirc']
+    def build_configuration(self):
+        super().build_configuration()
+        self.scaxis_settings = {
+            'marker': 'o',
+            'c': '#000000',
+            'ms': 3.0,
+        }
+        self.sccirc_settings = {
+            "linewidths": 1.,
+            "colors": "#000000",
+            "linestyles": "-"
+        }
+
+        self.contour_check_settings = {
+            "solidline": False,
+            "gradientline": True,
+            "fillcontours": True,
+            "drawover": True,
+            "minmax": True,
+            "zeromax": False,
+            "customintervals": False,
+            "fisher": True,
+            "scangle": False,
+            "scperc": False,
+            "autocount": False,
+            "robinjowett": True,
+            "digglefisher": False
+        }
+
+        self.contour_settings = {
+            "cmap": "jet",
+            "linestyles": "-",
+            "antialiased": True,
+            "intervals": "",
+            "ncontours": 20,
+            "cresolution": 250
+        }
+
+        self.contour_line_settings = {
+            "cmap": "jet",
+            "colors": "#4D4D4D",
+            "linewidths": 0.50
+        }
+        self.contour_calc_settings = {
+            "spacing": 2.5,
+            "K": 100,
+            "scperc": 1.0,
+            "scangle": 10.0,
+        }
+
+        self.m1point_settings = {
+            'marker': '*',
+            'c': '#FF0000',
+            'ms': 12.0,
+        }
+        self.m2point_settings = {
+            'marker': '*',
+            'c': '#00FF00',
+            'ms': 12.0,
+        }
+        self.m3point_settings = {
+            'marker': '*',
+            'c': '#00FFFF',
+            'ms': 12.0,
+        }
+
+        self.checklegend_settings = {
+            "scaxis": True,
+            "sccirc": True,
+        }
+        self.legend_settings = {
+            "scaxis": '',
+            "sccirc": '',
+        }
+
+        self.data_settings = {}
+
+    def set_root(self, root):
+        self.root = root
+
+    def ensure_data(self):  # TODO: Should this be a mixin?
+        if self.plane_item is None:
+            self.plane_item = self.root.get_data_item_by_id(
+                self.data_settings['plane_id']
+            )
         else:
+            self.data_settings['plane_id'] = self.plane_item.id
+        if self.line_item is None:
+            self.line_item = self.root.get_data_item_by_id(
+                self.data_settings['line_id']
+            )
+        else:
+            self.data_settings['line_id'] = self.line_item.id
+
+    def plot_Dihedra(self):
+        self.ensure_data()
+
+        dihedra = stress.angelier_graphical(
+            self.plane_item.au_object,
+            self.line_item.au_object
+        )
+
+        return (ContourPlotData(
+            au.DEFAULT_GRID.grid,
+            dihedra,
+            self.contour_settings,
+            self.contour_line_settings,
+            self.contour_check_settings,
+            n=len(self.plane_item.au_object)), )
+
+    def plot_Michael(self):
+        self.ensure_data()
+        plot_data = []
+        stress_matrix, residuals = stress.michael(
+            self.plane_item.au_object,
+            self.line_item.au_object
+        )
+        stress_directions, (s1, s2, s3) = stress.principal_stresses(
+            stress_matrix)
+
+        for i, miv in enumerate(("m1point", "m2point", "m3point")):
             legend_text = "{} ({})".format(
-                self.text(0), self.plot_item_name.get('SC', 'Small Circle'))
-        circles = chain.from_iterable(
-            small_circle(axis, radians(alpha))
-            for axis, alpha in zip(self.auttitude_data.data, self.alpha))
-        plot_items.append(
-            CirclePlotData(circles, self.sccirc_settings,
-                           self.checklegend_settings['sccirc'], legend_text))
-        return plot_items
+                self.text(0),
+                ["compressive", "intermediate", "distensive"][i])
+            plot_data.append(
+                PointPlotData(
+                    stress_directions[i],
+                    self.get_item_props(miv),
+                    True, legend_text))
+        return plot_data
 
 
 #Hairspray & Alexander Hamilton
@@ -759,8 +871,8 @@ class SinglePlane(DataItem):
     default_checked = ["Pole", "Great Circle"]
     properties_ui = smallcircle_Ui_Dialog
 
-    def __init__(self, name, parent, data="", strike=False, **kwargs):
-        super().__init__(name, parent)
+    def __init__(self, name, parent, item_id, data="", strike=False, **kwargs):
+        super().__init__(name, parent, item_id)
         self.data_settings['attitude'] = data
         self.data_settings['strike'] = strike
 
@@ -841,8 +953,8 @@ class SingleLine(DataItem):
     data_type = "singleline_data"
     properties_ui = smallcircle_Ui_Dialog
 
-    def __init__(self, name, parent, data="", strike=False, **kwargs):
-        super().__init__(name, parent)
+    def __init__(self, name, parent, item_id, data="", strike=False, **kwargs):
+        super().__init__(name, parent, item_id)
         self.data_settings['attitude'] = data
         self.data_settings['strike'] = strike
 
@@ -907,8 +1019,8 @@ class SingleSmallCircle(DataItem):
     default_checked = ["Axis", "Small Circles"]
     properties_ui = smallcircle_Ui_Dialog
 
-    def __init__(self, name, parent, data="", strike=False, **kwargs):
-        super().__init__(name, parent)
+    def __init__(self, name, parent, item_id, data="", strike=False, **kwargs):
+        super().__init__(name, parent, item_id)
         self.data_settings['attitude'] = data
         self.data_settings['strike'] = strike
 
@@ -992,15 +1104,17 @@ class Slope(DataItem):
     plot_item_name = {
         'GC': 'Great Circle',
         'Daylight': 'Daylight Envelope',
-        'Lateral': 'Lateral Limits'}
+        'Lateral': 'Lateral Limits',
+        'PlaneFriction': 'Plane Friction Cone',
+        'PoleFriction': 'Pole Friction Cone'}
     item_order = {"Pole": 0, "GC": 1}
     default_checked = [
         "Great Circle", "Daylight Envelope",
         "Lateral Limits"]
     properties_ui = smallcircle_Ui_Dialog
 
-    def __init__(self, name, parent, data="", strike=False, **kwargs):
-        super().__init__(name, parent)
+    def __init__(self, name, parent, item_id, data="", strike=False, **kwargs):
+        super().__init__(name, parent, item_id)
         self.data_settings['attitude'] = data
         self.data_settings['strike'] = strike
 
@@ -1026,7 +1140,9 @@ class Slope(DataItem):
             "sccirc": '',
         }
 
-        self.data_settings = {}
+        self.data_settings = {
+            "friction_angle": 30.,
+        }
 
     def reload_data(self):
         pass
@@ -1103,5 +1219,27 @@ class Slope(DataItem):
             self.text(0),
             self.plot_item_name.get('Lateral', 'Lateral Limits'))
         return (CirclePlotData(lateral_limits, self.sccirc_settings,
+                               self.checklegend_settings['sccirc'],
+                               legend_text), )
+
+    def plot_PoleFriction(self):
+        vertical = au.Line([0., 0., 1.])
+        alpha = radians(self.data_settings["friction_angle"])
+        sc = vertical.get_small_circle(alpha)
+        legend_text = "{} ({})".format(
+            self.text(0),
+            self.plot_item_name.get('PoleFriction', 'Pole Friction Cone'))
+        return (CirclePlotData(sc, self.sccirc_settings,
+                               self.checklegend_settings['sccirc'],
+                               legend_text), )
+
+    def plot_PlaneFriction(self):
+        vertical = au.Line([0., 0., 1.])
+        alpha = radians(90.0 - self.data_settings["friction_angle"])
+        sc = vertical.get_small_circle(alpha)
+        legend_text = "{} ({})".format(
+            self.text(0),
+            self.plot_item_name.get('PlaneFriction', 'Plane Friction Cone'))
+        return (CirclePlotData(sc, self.sccirc_settings,
                                self.checklegend_settings['sccirc'],
                                legend_text), )
