@@ -8,7 +8,8 @@ Download the latest .exe installer from:
 
 https://github.com/endarthur/os/releases/latest
 
-## macOS Installation
+macOS Installation
+------------------
 
 First install pyqt5 and python3 (python3 is automatically installed as a
 dependency of pyqt5) using `homebrew`_::
