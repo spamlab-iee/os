@@ -40,6 +40,43 @@ Once that is done, install OpenStereo from this repository using pip3:
 $ pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
 ```
 
+## Linux Installation
+
+### Ubuntu
+
+First install pyqt5 and pip:
+
+```bash
+$ sudo apt install python3-pyqt5 python3-pip
+```
+
+Once that is done, install OpenStereo from this repository using pip3:
+
+```bash
+$ pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
+```
+
+### Mint Cinnamon
+
+First install pyqt5, pip and setuptools from the distribution repository:
+
+```bash
+$ sudo apt install python3-pyqt5 python3-pip python3-setuptools
+```
+
+Then install wheel using pip:
+
+```bash
+$ pip3 install wheel
+```
+
+Once that is done, install OpenStereo from this repository using pip3:
+
+```bash
+$ pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
+```
+
+
 ## Installation from Source
 
 You can install this version of openstereo using:
