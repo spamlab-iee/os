@@ -59,12 +59,22 @@ install:
   - cmd: dir upload32\nsis
   - ps: Rename-Item .\upload32\nsis\OpenStereo_0.9.exe OpenStereo_$(get-date -f yyyy-MM-dd_HH_mm)_$($env:APPVEYOR_REPO_BRANCH)_$($env:APPVEYOR_REPO_COMMIT.subString(0,7))_32bit.exe
 
+  # Build portable os using pyinstaller, rename dist folder and executable with timestamp
+  # 64bit
+  - cmd: pip install pyinstaller
+  - cmd: pyinstaller -F os_gui.py
+  - ps: Rename-Item -path .\dist upload64p
+  - cmd: dir upload64p
+  - ps: Rename-Item .\upload64p\os_gui.exe OpenStereo_Portable_$(get-date -f yyyy-MM-dd_HH_mm)_$($env:APPVEYOR_REPO_BRANCH)_$($env:APPVEYOR_REPO_COMMIT.subString(0,7))_64bit.exe
+
+
 # Not a project with an msbuild file, build done at install.
 build: None
 
 before_deploy:
   - ps: Get-ChildItem .\upload64\nsis\*.exe | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name -DeploymentName os-github-deployment }
   - ps: Get-ChildItem .\upload32\nsis\*.exe | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name -DeploymentName os-github-deployment }
+  - ps: Get-ChildItem .\upload64p\*.exe | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name -DeploymentName os-github-deployment }
   - ps: foreach($artifactName in $artifacts.keys) { $artifacts[$artifactName] }
 
 deploy:
