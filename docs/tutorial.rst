@@ -29,18 +29,19 @@ example, ``Import Plane Data (DD)``:
 .. image:: images/os_file_import_plane.png
 
 OpenStereo supports both CSV files and excel spreadsheets. Download
-``tocher_header.csv`` from the `example data`_ directory inside the 
+``tocher_header.txt`` from the `example data`_ directory inside the 
 repository and select it after clicking this option. After loading, either
 click ``Plot`` or press ``Ctrl+P`` on your keyboard to view the poles of this
 example:
 
-.. _example data: https://github.com/endarthur/os/tree/master/example_data
+.. _example data: https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/endarthur/os/tree/master/example_data
+
 
 .. image:: images/os_tocher_poles.png
 
-The Projection plot is interactive. If you mouse over the plot the
-attitude of the point under the mouse will appear on the lower right corner.
-Also, if you click and drag over the plot you'll be able to both measure angles
+The Projection plot is interactive. The attitude of the point under the mouse
+will appear on the lower right corner when you mouse over the plot. Also, if
+you click and drag over the plot you'll be able to both measure angles
 and see the attitude of the plane formed by the point you first clicked and the
 current point:
 
