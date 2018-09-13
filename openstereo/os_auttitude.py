@@ -565,7 +565,7 @@ Expected Distribution:
 Eigenvectors: 
 1: {self.eigenvectors_sphere[0]}
 2: {self.eigenvectors_sphere[1]}
-3: {self.eigenvectors_sphere[1]}
+3: {self.eigenvectors_sphere[2]}
 Shape parameter
 K = {self.woodcock_K}
 Strength parameter
