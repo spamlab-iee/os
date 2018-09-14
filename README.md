@@ -76,6 +76,18 @@ Once that is done, install OpenStereo from this repository using pip3:
 $ pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
 ```
 
+## Fedora
+
+First install pyqt5:
+
+```bash
+$ sudo yum install python3-qt5
+
+Once that is done, install OpenStereo from this repository using pip3:
+
+```bash
+$ sudo pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
+```
 
 ## Installation from Source
 
