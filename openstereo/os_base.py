@@ -13,6 +13,8 @@ from os import path
 from tempfile import mkdtemp
 import traceback
 import webbrowser
+import codecs
+utf8_reader = codecs.getreader("utf-8")
 
 from appdirs import user_data_dir
 data_dir = user_data_dir("OpenStereo")
@@ -870,7 +872,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def open_project(self, fname, ask_for_missing=False):
         ozf = zipfile.ZipFile(fname, mode='r')
         project_data = json.load(
-            ozf.open("project_data.json"), encoding="utf-8")
+            utf8_reader(ozf.open("project_data.json")))
         project_dir = path.dirname(fname)
         self.OS_settings.item_settings = project_data['global_settings']
         self.id_counter = project_data.get(
@@ -914,7 +916,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     'layer_settings_file', data['name'] + ".os_lyr")
                 item_file = None
             item_settings = json.load(
-                ozf.open(item_settings_name), encoding="utf-8")
+                utf8_reader(ozf.open(item_settings_name)))
             data_type = list(item_settings.keys())[0]
             if item_file is not None:
                 item_data = get_data(item_file, data['kwargs'])
@@ -1135,7 +1137,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 filter="Openstereo Layer Files (*.os_lyr);;All Files (*.*)")
         if not fname:
             return
-        with open(fname, "wb") as f:
+        with open(fname, "w") as f:
             json.dump(item.item_settings, f, indent=2)
         self.statusBar().showMessage('Exported properties of %s to %s' %
                                      (item.text(0), fname))
@@ -1169,7 +1171,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             return
         try:
             with open(fname, "rb") as f:
-                item.item_settings = json.load(f, encoding="utf-8")
+                item.item_settings = json.load(utf8_reader(f))
                 self.statusBar().showMessage(
                     'Imported properties to %s from %s' % (item.text(0),
                                                            fname))
