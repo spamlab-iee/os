@@ -343,12 +343,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def import_data(self, data_type, name, item_id=None, **kwargs):
         if item_id is None:
-            item_id = self.id_counter
-            self.id_counter += 1
+            item_id = self.assign_id()
         item = self.data_types[data_type](
             name=name, parent=self.treeWidget, item_id=item_id, **kwargs)
         item.set_root(self)
         return item
+
+    def assign_id(self):
+        item_id = self.id_counter
+        self.id_counter += 1
+        return item_id
 
     def import_files(self, data_type, direction, dialog_title):
         fnames, extension =\
@@ -692,6 +696,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     data_path=rotated_fname,
                     data=rotated_data,
                     parent=self.treeWidget,
+                    item_id=self.assign_id(),
                     **A.kwargs)
                 rotated_item.item_settings = A.item_settings
             self.statusBar().showMessage('Rotated item %s to %s' %
