@@ -66,12 +66,13 @@ the item using this menu. Click on ``Properties`` to do so:
     :align:   center
 
 Most plot options for the Projection plot tab on the main window are located on
-this first tab, with the exception of contour plots. Try to change some
-options, as the color and size of the poles on the top left group, disable
-the pole and great circle of the first and second eigenvectors and change the
-color of the pole and great circle of the third eigenvector. If you
-click ``OK`` the changes will be accepted and the dialog will close, but if
-instead you click ``Apply`` the dialog  will be kept open.
+this first tab, with the exception of contour plots. Try changing some options,
+such as color and size of poles (on the top left), while disabling poles and
+great circles of the first and second eigenvectors, and change the color of the
+pole and great circle of the third eigenvector. If you click ``OK`` the changes
+will be accepted and the dialog will close, but if you click ``Apply`` instead,
+the dialog will remain open.
+
 
 You can keep the dialog open and still interact with OpenStereo, even opening
 the properties dialog  of multiple items. Press apply and see the changes on
