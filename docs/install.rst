@@ -17,7 +17,7 @@ Please report any issues when using the portable version.
 Windows XP
 ~~~~~~~~~~
 
-Download and execute `WinPython-32bit-3.4.4.6Qt5.exe`_ from sourceforge. Python
+Download and execute `WinPython-32bit-3.4.4.1Qt5.exe`_ from sourceforge. Python
 3.4 is the last python available for Windows XP, and `winpython`_ is a portable
 distribution pre-packaged with most of the prerequisites for OpenStereo. Inside
 the folder you just extracted, execute the ``WinPython Command Prompt``, and
@@ -25,7 +25,7 @@ install OpenStereo using::
 
     pip install git+https://github.com/endarthur/os#egg=openstereo
 
-.. _WinPython-32bit-3.4.4.6Qt5.exe: https://sourceforge.net/projects/winpython/files/WinPython_3.4/3.4.4.6/WinPython-32bit-3.4.4.6Qt5.exe/download
+.. _WinPython-32bit-3.4.4.1Qt5.exe: https://sourceforge.net/projects/winpython/files/WinPython_3.4/3.4.4.1/WinPython-32bit-3.4.4.1Qt5.exe/download
 .. _winpython: http://winpython.github.io/
 
 After that, you may either open the ``WinPython Command Prompt`` and run::
