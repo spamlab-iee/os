@@ -217,7 +217,7 @@ class CircularData(DataItem):
             from_, to_ = 0., 2 * pi
             full_circle = True
         elif self.rose_check_settings["180d"]:
-            from_, to_ = 0., pi
+            from_, to_ = -pi/2, pi/2
         else:
             from_ = radians(self.rose_settings["intervalfrom"])
             to_ = radians(self.rose_settings["intervalto"])
