@@ -23,7 +23,7 @@ distribution pre-packaged with most of the prerequisites for OpenStereo. Inside
 the folder you just extracted, execute the ``WinPython Command Prompt``, and
 install OpenStereo using::
 
-    pip install git+https://github.com/endarthur/os#egg=openstereo
+    pip install https://github.com/endarthur/os/tarball/master#egg=openstereo
 
 .. _WinPython-32bit-3.4.4.1Qt5.exe: https://sourceforge.net/projects/winpython/files/WinPython_3.4/3.4.4.1/WinPython-32bit-3.4.4.1Qt5.exe/download
 .. _winpython: http://winpython.github.io/
@@ -133,7 +133,7 @@ be installed automatically without any issues.
 After installing pyqt5, install openstereo using pip3 (to force it to use
 python3)::
 
-    $ pip3 install git+https://github.com/endarthur/os#egg=openstereo
+    $ pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
 
 You may either have to run this command with sudo or by adding the ``--user``
 flag to pip3. In case you use the flag, you'll have to run OpenStereo using::
@@ -148,7 +148,7 @@ From PyPI
 
 At the command line::
 
-    pip install git+https://github.com/endarthur/os#egg=openstereo
+    pip install https://github.com/endarthur/os/tarball/master#egg=openstereo
 
 Additionally, install PyQt5 from PyPI if needed (for python 2.7, use package
 python-qt5 instead).
