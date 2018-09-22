@@ -169,6 +169,7 @@
     <addaction name="actionPlot_on_Update_Table"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
+    <addaction name="actionChange_Language"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -407,6 +408,11 @@
   <action name="actionAssemble_Fault">
    <property name="text">
     <string>Assemble Fault</string>
+   </property>
+  </action>
+  <action name="actionChange_Language">
+   <property name="text">
+    <string>Change Language</string>
    </property>
   </action>
  </widget>

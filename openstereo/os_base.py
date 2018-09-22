@@ -23,20 +23,20 @@ if not path.exists(data_dir):
 
 # import importlib_resources
 
-
 import matplotlib
 matplotlib.use('Qt5Agg')  # noqa: E402
 import numpy as np
 import shapefile
 from PyQt5 import QtCore, QtGui, QtWidgets
+_translate = QtCore.QCoreApplication.translate
 
 import openstereo.os_auttitude as autti
 from openstereo.data_import import get_data, ImportDialog
 from openstereo.data_models import (AttitudeData, CircularData, LineData,
                                     PlaneData, SmallCircleData)
 from openstereo.data_models import (FaultData)
-from openstereo.data_models import (
-    SinglePlane, SingleLine, SingleSmallCircle, Slope)
+from openstereo.data_models import (SinglePlane, SingleLine, SingleSmallCircle,
+                                    Slope)
 from openstereo.os_math import net_grid, bearing, haversine, dcos_lines
 from openstereo.os_plot import ClassificationPlot, RosePlot, StereoPlot
 from openstereo.plot_data import (CirclePlotData, ClassificationPlotData,
@@ -49,12 +49,12 @@ from openstereo.ui.os_settings_ui import Ui_Dialog as os_settings_Ui_Dialog
 from openstereo.ui.rotate_data_ui import Ui_Dialog as rotate_data_Ui_Dialog
 from openstereo.ui.fault_data_ui import Ui_Dialog as fault_data_Ui_Dialog
 from openstereo.ui.item_table_ui import Ui_Dialog as item_table_Ui_Dialog
-from openstereo.ui.ui_interface import (parse_properties_dialog,
-                                        populate_properties_dialog,
-                                        update_data_button_factory,
-                                        populate_item_table)
+from openstereo.ui.ui_interface import (
+    parse_properties_dialog, populate_properties_dialog,
+    update_data_button_factory, populate_item_table)
 from openstereo.ui import waiting_effects
 from openstereo.ui import openstereo_rc
+from openstereo.ui.languages import os_languages
 from ply2atti import extract_colored_faces
 
 extract_colored_faces = waiting_effects(extract_colored_faces)
@@ -63,6 +63,8 @@ print(sys.version)
 print("current data_dir:", data_dir)
 
 __version__ = "0.9u"
+
+os_qsettings = QtCore.QSettings("OpenStereo", "OpenStereo")
 
 
 def memory_usage_psutil():
@@ -176,9 +178,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     data_types = {
         data_type.data_type: data_type
         for data_type in (AttitudeData, PlaneData, LineData, SmallCircleData,
-                          CircularData,
-                          FaultData,
-                          SinglePlane, SingleLine,
+                          CircularData, FaultData, SinglePlane, SingleLine,
                           SingleSmallCircle, Slope)
     }
 
@@ -211,38 +211,38 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionImport_Plane_Data_DD.triggered.connect(
             lambda: self.import_files(
                         data_type="plane_data", direction=False,
-                        dialog_title='Import plane data'))
+                        dialog_title=_translate("main", 'Import plane data')))
         self.actionImport_Plane_Data_Dir.triggered.connect(
             lambda: self.import_files(
                         data_type="plane_data", direction=True,
-                        dialog_title='Import plane data'))
+                        dialog_title=_translate("main", 'Import plane data')))
         self.actionImport_Line_Data_Trend.triggered.connect(
             lambda: self.import_files(
                         data_type="line_data", direction=False,
-                        dialog_title='Import line data'))
+                        dialog_title=_translate("main", 'Import line data')))
         self.actionImport_Small_Circle_Data.triggered.connect(
             lambda: self.import_files(
                         data_type="smallcircle_data", direction=False,
-                        dialog_title='Import Small Circle data'))
+                        dialog_title=_translate("main", 'Import Small Circle data')))
         self.actionImport_Circular_Data_Trend.triggered.connect(
             lambda: self.import_files(
                         data_type="circular_data", direction=False,
-                        dialog_title='Import Azimuth data'))
+                        dialog_title=_translate("main", 'Import Azimuth data')))
 
         self.actionAdd_Plane.triggered.connect(
             lambda: self.add_single_data(
-                "singleplane_data", "Plane", dialog_title="Add Plane"))
+                "singleplane_data", _translate("main", "Plane"), dialog_title=_translate("main", "Add Plane")))
         self.actionAdd_Line.triggered.connect(
             lambda: self.add_single_data(
-                "singleline_data", "Line", dialog_title="Add Line"))
+                "singleline_data", _translate("main", "Line"), dialog_title=_translate("main", "Add Line")))
         self.actionAdd_Small_Circle.triggered.connect(
             lambda: self.add_single_data(
-                "singlesc_data", "Small Circle",
-                dialog_title="Add Small Circle"))
+                "singlesc_data", _translate("main", "Small Circle"),
+                dialog_title=_translate("main", "Add Small Circle")))
         self.actionAdd_Slope.triggered.connect(
             lambda: self.add_single_data(
-                "slope_data", "Slope",
-                dialog_title="Add Slope"))
+                "slope_data", _translate("main", "Slope"),
+                dialog_title=_translate("main", "Add Slope")))
         self.actionAssemble_Fault.triggered.connect(
             lambda: self.fault_data_dialog())
 
@@ -256,6 +256,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.actionSettings.triggered.connect(self.show_settings_dialog)
         self.actionPreferences.triggered.connect(self.show_preferences_dialog)
+
+        self.actionChange_Language.triggered.connect(self.show_language_dialog)
 
         self.actionUnpack_Project_to.triggered.connect(self.unpack_data_dialog)
 
@@ -323,7 +325,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.projection_plot.draw_plot()
         self.rose_plot.draw_plot()
         self.classification_plot.draw_plot()
-        self.statusBar().showMessage('Ready')
+        self.statusBar().showMessage(_translate("main", 'Ready'))
 
     def add_plots(self):
         self.projection_plot = StereoPlot(self.OS_settings, self.projection,
@@ -334,14 +336,30 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.clear_plot()
 
     def set_title(self):
-        title = "OpenStereo - "
+        title = _translate("main", "OpenStereo - ")
         if self.OS_settings.general_settings['title']:
             title += self.OS_settings.general_settings['title']
         elif self.current_project is not None:
             title += self.current_project
         else:
-            title += "Open-source, Multiplatform Stereonet Analysis"
+            title += _translate(
+                "main", "Open-source, Multiplatform Stereonet Analysis")
         self.setWindowTitle(title)
+
+    def show_language_dialog(self):
+        languages = os_languages.keys()
+        data, ok = QtWidgets.QInputDialog.getItem(
+            self, _translate("main", "Choose OpenStereo language"),
+            _translate("main", 'Language:'),
+            languages, 0, False)
+        if ok:
+            os_qsettings.setValue("locale", os_languages[data])
+            QtWidgets.QMessageBox.information(
+                self,
+                _translate("main", "Restart OpenStereo"),
+                _translate(
+                    "main",
+                    "Please restart OpenStereo to use the changed language."))
 
     def import_data(self, data_type, name, item_id=None, **kwargs):
         if item_id is None:
@@ -381,7 +399,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                       data_type=None,
                       direction=False,
                       fname=None,
-                      dialog_title='Import data'):
+                      dialog_title=_translate("main", 'Import data')):
         if fname is None:
             fname, extension =\
                 QtWidgets.QFileDialog.getOpenFileName(self, dialog_title)
@@ -404,7 +422,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def import_shapefile(self):
         fname, extension =\
             QtWidgets.QFileDialog.getOpenFileName(
-                self, 'Select Shapefile to convert',
+                self, _translate("main", 'Select Shapefile to convert'),
                 filter="ESRI Shapefile (*.shp);;All Files (*.*)")
         if not fname:
             return
@@ -412,7 +430,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         fname_out, extension =\
             QtWidgets.QFileDialog.getSaveFileName(
-                self, 'Save azimuth data as',
+                self, _translate("main", 'Save azimuth data as'),
                 name + ".txt",
                 filter="Text Files (*.txt);;All Files (*.*)")
         if not fname_out:
@@ -430,29 +448,30 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             fname=fname_out,
             data_type="circular_data",
             direction=False,
-            dialog_title='Import Azimuth data')
+            dialog_title=_translate("main", 'Import Azimuth data'))
 
     def import_mesh(self):
         fname, extension =\
             QtWidgets.QFileDialog.getOpenFileName(
-                self, 'Select Mesh to convert',
+                self, _translate("main", 'Select Mesh to convert'),
                 filter="Stanford Polygon (*.ply);;All Files (*.*)")
         if not fname:
             return
         name, ext = path.splitext(fname)
         dialog = MeshDialog(self)
         if dialog.exec_():
-            self.statusBar().showMessage('Processing Mesh %s...' % fname)
+            self.statusBar().showMessage(
+                _translate("main", 'Processing Mesh {}...').format(fname))
             colors = dialog.colors
             if not colors:
                 return
             with open(fname, "rb") as f:
                 output = extract_colored_faces(f, colors)
-            self.statusBar().showMessage('Ready')
+            self.statusBar().showMessage(_translate("main", 'Ready'))
             if dialog.check_separate.isChecked():
                 dirname =\
                     QtWidgets.QFileDialog.getExistingDirectory(
-                        self, 'Save data files to')
+                        self, _translate("main", 'Save data files to'))
                 if not dirname:
                     return
                 color_filenames = []
@@ -472,13 +491,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         fname=color_filename,
                         data_type="plane_data",
                         direction=False,
-                        dialog_title='Import plane data')
+                        dialog_title=_translate("main", 'Import plane data'))
                     item.point_settings["c"] = '#%02x%02x%02x' % color[:-1]
                 return
             else:
                 fname_out, extension =\
                     QtWidgets.QFileDialog.getSaveFileName(
-                        self, 'Save plane data as',
+                        self, _translate("main", 'Save plane data as'),
                         name + ".txt",
                         filter="Text Files (*.txt);;All Files (*.*)")
                 if not fname_out:
@@ -497,12 +516,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     fname=fname_out,
                     data_type="plane_data",
                     direction=False,
-                    dialog_title='Import plane data')
+                    dialog_title=_translate("main", 'Import plane data'))
 
     def add_single_data(self, data_type, data_name, dialog_title, **kwargs):
-        data, ok = QtWidgets.QInputDialog.getText(
-            self, dialog_title,
-            'Attitude:')
+        data, ok = QtWidgets.QInputDialog.getText(self, dialog_title,
+                                                  _translate(
+                                                      "main", 'Attitude:'))
         if ok:
             name = "{} ({})".format(data_name, data)
             return self.import_data(
@@ -511,16 +530,19 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def show_submit_issue(self):
         msg = QtWidgets.QMessageBox()
         # msg.setIcon(QtWidgets.QMessageBox.Information)
-        msg.setWindowTitle("Submit report to issue tracker")
-        msg.setText("""
+        msg.setWindowTitle(
+            _translate("main", "Submit report to issue tracker"))
+        msg.setText(
+            _translate("main", """
         If something doesn't work in OpenStereo, or if you have any suggestion
         for further development, please submit an issue to our github
         repository.
         
         If possible, add extra information such as OpenStereo and python
-        version, operating system and sample data.""")
+        version, operating system and sample data."""))
         msg.addButton(
-            "Submit Issue", QtWidgets.QMessageBox.AcceptRole)
+            _translate("main", "Submit Issue"),
+            QtWidgets.QMessageBox.AcceptRole)
         msg.setStandardButtons(QtWidgets.QMessageBox.Cancel)
         button_reply = msg.exec_()
         if button_reply == 0:  # 0 means Accept
@@ -536,7 +558,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             if isinstance(item, CircularData)
         }
         if not data_items:
-            self.statusBar().showMessage('No items to merge')
+            self.statusBar().showMessage(
+                _translate("main", 'No items to merge'))
             return
         for item_name in list(data_items.keys()):
             merge_dialog_ui.A.addItem(item_name)
@@ -565,7 +588,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         def on_browse():
             fname, extension =\
-                QtWidgets.QFileDialog.getSaveFileName(self, 'Save merged data')
+                QtWidgets.QFileDialog.getSaveFileName(self, _translate("main", 'Save merged data'))
             if not fname:
                 return
             merge_dialog_ui.savename.setText(fname)
@@ -591,8 +614,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     parent=self.treeWidget,
                     **A.kwargs)
                 merged_item.item_settings = A.item_settings
-            self.statusBar().showMessage('Merged items %s and %s as %s' %
-                                         (A.text(0), B.text(0), merged_name))
+            self.statusBar().showMessage(
+                _translate("main", 'Merged items {} and {} as {}').format(
+                    A.text(0), B.text(0), merged_name))
 
     def fault_data_dialog(self, current_item=None):
         fault_dialog = QtWidgets.QDialog(self)
@@ -600,16 +624,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         fault_dialog_ui.setupUi(fault_dialog)
         plane_items = {
             item.text(0): item
-            for item in self.get_data_items()
-            if isinstance(item, PlaneData)
+            for item in self.get_data_items() if isinstance(item, PlaneData)
         }
         line_items = {
             item.text(0): item
-            for item in self.get_data_items()
-            if isinstance(item, LineData)
+            for item in self.get_data_items() if isinstance(item, LineData)
         }
         if not plane_items or not line_items:
-            self.statusBar().showMessage('No items to build faults')
+            self.statusBar().showMessage(
+                _translate("main", 'No items to build faults'))
             return
         for item_name in plane_items:
             fault_dialog_ui.A.addItem(item_name)
@@ -628,13 +651,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if fault_dialog.exec_():
             A = plane_items[fault_dialog_ui.A.currentText()]
             B = line_items[fault_dialog_ui.B.currentText()]
-            merged_name = "Faults ({}, {})".format(A.text(0),B.text(0))
-            self.import_data(
-                "fault_data",
-                merged_name,
-                data=[A, B])
-            self.statusBar().showMessage('Built Fault set using %s and %s as %s' %
-                                         (A.text(0), B.text(0), merged_name))
+            merged_name = _translate("main", "Faults ({}, {})").format(
+                A.text(0), B.text(0))
+            self.import_data("fault_data", merged_name, data=[A, B])
+            self.statusBar().showMessage(
+                _translate("main", 'Built Fault set using {} and {} as {}')
+                .format(A.text(0), B.text(0), merged_name))
 
     def rotate_data_dialog(self, current_item=None):
         rotate_dialog = QtWidgets.QDialog(self)
@@ -646,7 +668,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             if isinstance(item, AttitudeData)
         }
         if not data_items:
-            self.statusBar().showMessage('No items to rotate')
+            self.statusBar().showMessage(
+                _translate("main", 'No items to rotate'))
             return
         for item_name in list(data_items.keys()):
             rotate_dialog_ui.A.addItem(item_name)
@@ -664,7 +687,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         def on_browse():
             fname, extension =\
                 QtWidgets.QFileDialog.getSaveFileName(
-                    self, 'Save rotated data')
+                    self, _translate("main", 'Save rotated data'))
             if not fname:
                 return
             rotate_dialog_ui.savename.setText(fname)
@@ -701,12 +724,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     item_id=self.assign_id(),
                     **A.kwargs)
                 rotated_item.item_settings = A.item_settings
-            self.statusBar().showMessage('Rotated item %s to %s' %
-                                         (A.text(0), rotated_name))
+            self.statusBar().showMessage(
+                _translate("main", 'Rotated item {} to {}').format(
+                    A.text(0), rotated_name))
 
     # @waiting_effects
     def plot_data(self):
-        self.statusBar().showMessage('Plotting data...')
+        self.statusBar().showMessage(_translate("main", 'Plotting data...'))
         for index in range(self.treeWidget.topLevelItemCount() - 1, -1, -1):
             item = self.treeWidget.topLevelItem(index)
             if item.checkState(0):
@@ -753,34 +777,36 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def open_project_dialog(self):
         fname, extension =\
             QtWidgets.QFileDialog.getOpenFileName(
-                self, 'Open project',
+                self, _translate("main", 'Open project'),
                 filter="Openstereo Project Files (*.openstereo);;All Files (*.*)")  # noqa: E501
         if not fname:
             return
         self.new_project()
         self.open_project(fname)
         self.current_project = fname
-        self.statusBar().showMessage('Loaded project from %s' % fname)
+        self.statusBar().showMessage(
+            _translate("main", 'Loaded project from {}').format(fname))
         self.set_title()
 
     def save_project_dialog(self):
         if self.current_project is None:
             fname, extension =\
                 QtWidgets.QFileDialog.getSaveFileName(
-                    self, 'Save project',
+                    self, _translate("main", 'Save project'),
                     filter="Openstereo Project Files (*.openstereo);;All Files (*.*)")  # noqa: E501
             if not fname:
                 return
             self.current_project = fname
         self.save_project(self.current_project)
         self.statusBar().showMessage(
-            'Saved project to %s' % self.current_project)
+            _translate("main", 'Saved project to {}').format(
+                self.current_project))
         self.set_title()
 
     def save_project_as_dialog(self, pack=False):
         fname, extension =\
             QtWidgets.QFileDialog.getSaveFileName(
-                self, 'Save project',
+                self, _translate("main", 'Save project'),
                 filter="Openstereo Project Files (*.openstereo);;All Files (*.*)")  # noqa: E501
         if not fname:
             return
@@ -789,7 +815,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if pack:
             self.OS_settings.general_settings['packeddata'] = 'yes'
         self.save_project(fname)
-        self.statusBar().showMessage('Saved project to %s' % fname)
+        self.statusBar().showMessage(
+            _translate("main", 'Saved project to {}').format(fname))
         self.set_title()
 
     def save_project(self, fname):
@@ -827,10 +854,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     packed_paths[item_fname] = item_path
                     # item_path = item_fname
                     ozf.write(
-                        path.normpath(path.join(
-                            project_dir if self.old_project is None
-                            else old_project_dir,
-                            item_path)),
+                        path.normpath(
+                            path.join(project_dir if self.old_project is None
+                                      else old_project_dir, item_path)),
                         item_fname)
             item_settings_name = name if item_path is not None \
                 else item.text(0)
@@ -871,12 +897,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def open_project(self, fname, ask_for_missing=False):
         ozf = zipfile.ZipFile(fname, mode='r')
-        project_data = json.load(
-            utf8_reader(ozf.open("project_data.json")))
+        project_data = json.load(utf8_reader(ozf.open("project_data.json")))
         project_dir = path.dirname(fname)
         self.OS_settings.item_settings = project_data['global_settings']
-        self.id_counter = project_data.get(
-            'id_counter', 0)
+        self.id_counter = project_data.get('id_counter', 0)
         packed = True if self.OS_settings.general_settings[
             'packeddata'] == 'yes' else False
         self.temp_dir = mkdtemp() if packed else None
@@ -888,8 +912,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             if item_path is not None:
                 item_basename = path.basename(item_path)
                 item_fname, ext = path.splitext(item_basename)
-                item_settings_name = data.get(
-                    'layer_settings_file', data['name'] + ".os_lyr")
+                item_settings_name = data.get('layer_settings_file',
+                                              data['name'] + ".os_lyr")
                 item_file = ozf.extract(item_path, self.temp_dir) \
                     if packed else \
                     path.normpath(path.join(project_dir, data['path']))
@@ -904,7 +928,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                     else:
                         fname, extension = QtWidgets.QFileDialog.getOpenFileName(  # noqa: E501
                             self,
-                            'Set data source for %s' % data['name'])
+                            _translate(
+                                "main", 'Set data source for {}').format(
+                                    data['name']))
                         if not fname:
                             continue
                         found_dirs[path.dirname(item_file)] =\
@@ -912,8 +938,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         item_file = fname
 
             else:
-                item_settings_name = data.get(
-                    'layer_settings_file', data['name'] + ".os_lyr")
+                item_settings_name = data.get('layer_settings_file',
+                                              data['name'] + ".os_lyr")
                 item_file = None
             item_settings = json.load(
                 utf8_reader(ozf.open(item_settings_name)))
@@ -941,11 +967,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def unpack_data_dialog(self):
         if self.OS_settings.general_settings['packeddata'] == 'no':
-            self.statusBar().showMessage('Project is not packed')
+            self.statusBar().showMessage(
+                _translate("main", 'Project is not packed'))
             return
         # http://stackoverflow.com/a/22363617/1457481
         dirname =\
-            QtWidgets.QFileDialog.getExistingDirectory(self, 'Unpack data to')
+            QtWidgets.QFileDialog.getExistingDirectory(
+                self, _translate("main", 'Unpack data to'))
         if not dirname:
             return
         packed_paths = {}
@@ -971,7 +999,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                                         path.basename(self.current_project))
         self.current_project = target_project_path
         self.save_project(target_project_path)
-        self.statusBar().showMessage('Project unpacked to %s' % dirname)
+        self.statusBar().showMessage(
+            _translate("main", 'Project unpacked to {}').format(dirname))
         populate_properties_dialog(
             self.settings_dialog_ui,
             self.OS_settings,
@@ -1047,7 +1076,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         index = self.treeWidget.indexOfTopLevelItem(item)
         return self.treeWidget.takeTopLevelItem(
             index), index, item.isExpanded()
-        self.statusBar().showMessage('Removed item %s' % item.text(0))
+        self.statusBar().showMessage(
+            _translate("main", 'Removed item {}').format(item.text(0)))
 
     def up_dataitem(self):
         item, index, expanded = self.remove_dataitem()
@@ -1071,12 +1101,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def rename_dataitem(self):
         item = self.get_selected()
-        name, ok = QtWidgets.QInputDialog.getText(self, "Rename Item", "Name:",
+        name, ok = QtWidgets.QInputDialog.getText(self,
+                                                  _translate(
+                                                      "main", "Rename Item"),
+                                                  _translate("main", "Name:"),
                                                   QtWidgets.QLineEdit.Normal,
                                                   item.text(0))
         if ok:
-            self.statusBar().showMessage('Renamed item %s to %s' %
-                                         (item.text(0), name))
+            self.statusBar().showMessage(
+                _translate("main", 'Renamed item {} to {}').format(
+                    item.text(0), name))
             item.setText(0, name)
 
     def properties_dataitem(self):
@@ -1112,13 +1146,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             item.item_table_ui = item_table_Ui_Dialog()
             item.item_table_ui.setupUi(item.item_table_dialog)
             item.item_table_dialog.setWindowTitle(
-                "Item table for {}".format(item.text(0)))
+                _translate("main", "Item table for {}").format(item.text(0)))
             item.item_table_ui.update_data_button.clicked.connect(
                 update_data_button_factory(item, [
                     lambda: populate_item_table(item),
                     lambda: self.plot_on_update_if_checked(),
-                ])
-            )
+                ]))
             populate_item_table(item)
         item.item_table_dialog.show()
 
@@ -1126,33 +1159,39 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         item = self.get_selected()
         self.cb.setText(json.dumps(item.item_settings, indent=2))
         self.statusBar().showMessage(
-            'Copied properties of %s to clipboard' % item.text(0))
+            _translate("main", 'Copied properties of {} to clipboard').format(
+                item.text(0)))
 
     def export_props_dataitem(self):
         item = self.get_selected()
         fname, extension =\
             QtWidgets.QFileDialog.getSaveFileName(
                 self,
-                'Export properties of %s' % item.text(0),
+                _translate(
+                    "main", 'Export properties of {}').format(item.text(0)),
                 filter="Openstereo Layer Files (*.os_lyr);;All Files (*.*)")
         if not fname:
             return
         with open(fname, "w") as f:
             json.dump(item.item_settings, f, indent=2)
-        self.statusBar().showMessage('Exported properties of %s to %s' %
-                                     (item.text(0), fname))
+        self.statusBar().showMessage(
+            _translate("main", 'Exported properties of {} to {}').format(
+                item.text(0), fname))
 
     def paste_props_dataitem(self):
         item = self.get_selected()
         try:
             item.item_settings = json.loads(self.cb.text())
             self.statusBar().showMessage(
-                'Pasted properties to %s from clipboard' % item.text(0))
+                _translate("main", 'Pasted properties to {} from clipboard')
+                .format(item.text(0)))
         # http://stackoverflow.com/a/24338247/1457481
         except (ValueError, KeyError):
             self.statusBar().showMessage(
-                'Failed paste, clipboard contains incompatible properties for %s '  # noqa: E501
-                % item.text(0))
+                _translate(
+                    "main",
+                    'Failed paste, clipboard contains incompatible properties for {} '
+                ).format(item.text(0)))
             return
         try:
             populate_properties_dialog(
@@ -1165,7 +1204,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         fname, extension =\
             QtWidgets.QFileDialog.getOpenFileName(
                 self,
-                'Import properties for %s' % item.text(0),
+                _translate(
+                    "main", 'Import properties for {}').format(item.text(0)),
                 filter="Openstereo Layer Files (*.os_lyr);;All Files (*.*)")
         if not fname:
             return
@@ -1173,8 +1213,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             with open(fname, "rb") as f:
                 item.item_settings = json.load(utf8_reader(f))
                 self.statusBar().showMessage(
-                    'Imported properties to %s from %s' % (item.text(0),
-                                                           fname))
+                    _translate("main", 'Imported properties to {} from {}')
+                    .format(item.text(0), fname))
         # http://stackoverflow.com/a/24338247/1457481
         except (ValueError, KeyError):
             # maybe show a incompatible data popup
@@ -1188,18 +1228,21 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def set_source_dataitem(self):
         item = self.get_selected()
         fname, extension = QtWidgets.QFileDialog.getOpenFileName(
-            self, 'Set data source for %s' % item.text(0))
+            self,
+            _translate("main", 'Set data source for {}').format(item.text(0)))
         if not fname:
             return
         item.data_path = fname
         item.reload_data()
         self.statusBar().showMessage(
-            'Changed data source for %s' % item.text(0))
+            _translate("main", 'Changed data source for {}').format(
+                item.text(0)))
 
     def reload_data(self):
         item = self.get_selected()
         item.reload_data()
-        self.statusBar().showMessage('Reloaded data for %s' % item.text(0))
+        self.statusBar().showMessage(
+            _translate("main", 'Reloaded data for {}').format(item.text(0)))
 
     def tree_context_menu(self, position):
         item = self.get_selected()
@@ -1207,34 +1250,41 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             return
         menu = QtWidgets.QMenu()
 
-        rename_action = menu.addAction("Rename...")
-        properties_action = menu.addAction("Properties")
-        item_table_action = menu.addAction("View item table")
+        rename_action = menu.addAction(_translate("main", "Rename..."))
+        properties_action = menu.addAction(_translate("main", "Properties"))
+        item_table_action = menu.addAction(
+            _translate("main", "View item table"))
         menu.addSeparator()
-        copy_props_action = menu.addAction("Copy layer properties")
-        paste_props_action = menu.addAction("Paste layer properties")
+        copy_props_action = menu.addAction(
+            _translate("main", "Copy layer properties"))
+        paste_props_action = menu.addAction(
+            _translate("main", "Paste layer properties"))
         export_props_action = menu.addAction(
-            "Export layer properties")  # Maybe save and load instead?
-        import_props_action = menu.addAction("Import layer properties")
+            _translate(
+                "main",
+                "Export layer properties"))  # Maybe save and load instead?
+        import_props_action = menu.addAction(
+            _translate("main", "Import layer properties"))
         menu.addSeparator()
         # merge_with_action = menu.addAction("Merge with...")
         # rotate_action = menu.addAction("Rotate...")
         # menu.addSeparator()
         datasource_action = menu.addAction(
-            "Set data source"
+            _translate("main", "Set data source")
         )  # should this trigger reimport? They aren't really safe anymore...
-        reload_action = menu.addAction("Reload data")
+        reload_action = menu.addAction(_translate("main", "Reload data"))
         # menu.addAction("Export data")
         menu.addSeparator()
-        up_action = menu.addAction("Move item up")
-        down_action = menu.addAction("Move item down")
-        top_action = menu.addAction("Move item to top")
-        bottom_action = menu.addAction("Move item to botton")
+        up_action = menu.addAction(_translate("main", "Move item up"))
+        down_action = menu.addAction(_translate("main", "Move item down"))
+        top_action = menu.addAction(_translate("main", "Move item to top"))
+        bottom_action = menu.addAction(
+            _translate("main", "Move item to botton"))
         menu.addSeparator()
-        expand_action = menu.addAction("Expand all")
-        collapse_action = menu.addAction("Collapse all")
+        expand_action = menu.addAction(_translate("main", "Expand all"))
+        collapse_action = menu.addAction(_translate("main", "Collapse all"))
         menu.addSeparator()
-        delete_action = menu.addAction("Delete item")
+        delete_action = menu.addAction(_translate("main", "Delete item"))
 
         rename_action.triggered.connect(self.rename_dataitem)
         properties_action.triggered.connect(self.properties_dataitem)
@@ -1281,10 +1331,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             os.remove(save_guard_file)
 
     def closeEvent(self, event):
-        quit_msg = "Are you sure you want to exit OpenStereo?"
+        quit_msg = _translate("main",
+                              "Are you sure you want to exit OpenStereo?")
         reply = QtWidgets.QMessageBox.question(
-            self, 'Message', 
-            quit_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
+            self,
+            _translate("main", 'Message'), quit_msg, QtWidgets.QMessageBox.Yes,
+            QtWidgets.QMessageBox.No)
 
         if reply == QtWidgets.QMessageBox.Yes:
             self.clear_save_guard()
@@ -1307,11 +1359,15 @@ def os_main():
     sys.excepthook = my_excepthook
 
     app = QtWidgets.QApplication(sys.argv)
+    locale = os_qsettings.value('locale', QtCore.QLocale.system().name())
+    qtTranslator = QtCore.QTranslator()
+    if qtTranslator.load("openstereo_" + locale, ":/i18n"):
+        app.installTranslator(qtTranslator)
     main = Main()
     icon = QtGui.QIcon()
     icon.addPixmap(
-        QtGui.QPixmap(":/icons/openstereo.ico"),
-        QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        QtGui.QPixmap(":/icons/openstereo.ico"), QtGui.QIcon.Normal,
+        QtGui.QIcon.Off)
     main.setWindowIcon(icon)
     main.add_plots()
     # argv = ["", "fault.openstereo"]

@@ -34,6 +34,11 @@ class BuildUICommand(distutils.cmd.Command):
         # pyrcc5 .\ui_files\openstereo.qrc -o .\openstereo\ui\openstereo_rc.py
         # if resources changed
         # Thanks https://ralsina.me/stories/BBS49.html
+        # for translation:
+        # pylupdate5 -verbose ui_files/openstereo.pro
+        # lrelease -verbose ui_files\i18n\openstereo_pt_BR.ts
+        # rm .\openstereo\ui\openstereo_rc.py
+        # pyrcc5 -verbose .\ui_files\openstereo.qrc -o .\openstereo\ui\openstereo_rc.py
 
 
 # class AddGitHashCommand(distutils.cmd.Command):

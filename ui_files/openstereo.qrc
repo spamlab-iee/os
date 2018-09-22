@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/">
     <file>icons/openstereo.ico</file>
+    <file>i18n/openstereo_pt_BR.qm</file>
   </qresource>
 </RCC>

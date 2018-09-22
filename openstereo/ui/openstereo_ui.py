@@ -166,6 +166,8 @@ class Ui_MainWindow(object):
         self.actionAdd_Slope.setObjectName("actionAdd_Slope")
         self.actionAssemble_Fault = QtWidgets.QAction(MainWindow)
         self.actionAssemble_Fault.setObjectName("actionAssemble_Fault")
+        self.actionChange_Language = QtWidgets.QAction(MainWindow)
+        self.actionChange_Language.setObjectName("actionChange_Language")
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
@@ -186,6 +188,7 @@ class Ui_MainWindow(object):
         self.menuSettings.addAction(self.actionPlot_on_Update_Table)
         self.menuSettings.addSeparator()
         self.menuSettings.addAction(self.actionSettings)
+        self.menuSettings.addAction(self.actionChange_Language)
         self.menuTools.addAction(self.actionUnpack_Project_to)
         self.menuTools.addSeparator()
         self.menuTools.addAction(self.actionMerge_Data)
@@ -262,4 +265,5 @@ class Ui_MainWindow(object):
         self.actionAdd_Small_Circle.setText(_translate("MainWindow", "Add Small Circle"))
         self.actionAdd_Slope.setText(_translate("MainWindow", "Add Slope"))
         self.actionAssemble_Fault.setText(_translate("MainWindow", "Assemble Fault"))
+        self.actionChange_Language.setText(_translate("MainWindow", "Change Language"))
 
