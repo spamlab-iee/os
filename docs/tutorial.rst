@@ -74,9 +74,9 @@ will be accepted and the dialog will close, but if you click ``Apply`` instead,
 the dialog will remain open.
 
 
-You can keep the dialog open and still interact with OpenStereo, even opening
-the properties dialog  of multiple items. Press apply and see the changes on
-the plot:
+You can keep the dialog open and still interact with OpenStereo,  even while
+opening the properties dialog of multiple items. Press apply and see the
+changes on the plot:
 
 .. image:: images/os_tocher_poles_changed.png
 
@@ -89,8 +89,8 @@ related options:
 Try a few different graphic options for the contours, as changing the fill
 contours gradient to something like ``Greens_r``. You may also change the
 number of contours and the way they are built. In the right side, it is
-possible to configure with witch method the contouring will be performed,
-either as a count of number of poles inside a small circle around each node
+possible to configure which method will be used for the contouring,
+either as a count of the number of poles inside a small circle around each node
 or by exponentially smoothing each point to every node using the Fisher 
 distribution.
 
@@ -103,7 +103,7 @@ the best smoothing coefficient. To help with that, OpenStereo includes two
 published methods to estimate good parameters. Robin & Jowett (1986)
 [RJ86]_ is very quick, as it calculates the recommended K based
 only on the number of poles,
-while Diggle & Fisher (1985) [DF85]_ perform an optimization using cross validation
+while Diggle & Fisher (1985) [DF85]_ performs an optimization using cross validation
 to find which parameter best represents your data. Change the K parameter to
 50 and plot the results:
 
@@ -123,7 +123,8 @@ great circle legend as::
 
 You can also open multiple data files of the same type. Download both
 ``normal_faults.xlsx`` and ``qplot.txt`` from the example data and open them
-using the import planes action. Disable the Tocher item and plot the new data:
+using the import plane data (DD) action. Disable the Tocher item and plot the new
+data:
 
 .. image:: images/os_tocher_faults_qplot.png
 
