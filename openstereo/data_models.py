@@ -1,5 +1,13 @@
-from itertools import chain
 from math import pi, radians, degrees, acos
+
+# http://treyhunner.com/2016/02/how-to-merge-dictionaries-in-python/
+try:
+    from collections import ChainMap
+except ImportError:
+    from itertools import chain
+
+    def ChainMap(*args):
+        return dict(chain(*map(lambda d: d.items(), reversed(args))))
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
@@ -80,6 +88,8 @@ class DataItem(QtWidgets.QTreeWidgetItem):
     @item_settings.setter
     def item_settings(self, data):
         for name, settings in list(data[self.data_type].items()):
+            if isinstance(settings, dict) and hasattr(self, name):
+                settings = ChainMap({}, settings, getattr(self, name))
             setattr(self, name, settings)
 
     # @property
@@ -187,6 +197,7 @@ class CircularData(DataItem):
             "confidence": 95.0,
             "intervalfrom": 0.,
             "intervalto": 180.,
+            "180half": "N"
         }
         self.rose_mean_settings = {
             "linestyle": "-",
@@ -217,7 +228,10 @@ class CircularData(DataItem):
             from_, to_ = 0., 2 * pi
             full_circle = True
         elif self.rose_check_settings["180d"]:
-            from_, to_ = -pi/2, pi/2
+            if self.rose_settings["180half"] == "N":
+                from_, to_ = -pi/2, pi/2
+            else:
+                from_, to_ = pi/2, -pi/2
         else:
             from_ = radians(self.rose_settings["intervalfrom"])
             to_ = radians(self.rose_settings["intervalto"])
