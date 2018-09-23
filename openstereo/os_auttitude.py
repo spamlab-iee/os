@@ -856,8 +856,13 @@ class CircularGrid(object):
     def build_grid(self, spacing, offset=0., from_=0., to_=2 * pi):
         s = radians(spacing)
         o = radians(offset)
-        from_ = (from_ % (2*pi)) - (2 * pi)
+        from_ = from_ % (2*pi)
         to_ = to_ % (2*pi)
+        if from_ > to_:
+            from_ = from_ - 2*pi
+        elif from_ == to_:
+            from_ = 0
+            to_ = 2*pi
         theta_range = np.arange(from_ + o, to_ + o, s)
         # theta_range = theta_range[np.logical_and(theta_range >= from_,\
         #                                          theta_range <= to_)]

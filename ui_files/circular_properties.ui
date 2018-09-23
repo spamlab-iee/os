@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>620</width>
+    <width>632</width>
     <height>502</height>
    </rect>
   </property>
@@ -32,7 +32,7 @@
       <attribute name="title">
        <string>Rose Diagram</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_8">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0">
@@ -477,11 +477,29 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="prop_rose_check_180d">
-              <property name="text">
-               <string>180 degrees</string>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <item>
+               <widget class="QRadioButton" name="prop_rose_check_180d">
+                <property name="text">
+                 <string>180 degrees</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="prop_rose_180half">
+                <item>
+                 <property name="text">
+                  <string>N</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>S</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -641,7 +659,6 @@
   <tabstop>prop_lines_linewidth</tabstop>
   <tabstop>prop_rose_check_meandeviation</tabstop>
   <tabstop>prop_rose_check_360d</tabstop>
-  <tabstop>prop_rose_check_180d</tabstop>
   <tabstop>prop_rose_check_interval</tabstop>
   <tabstop>prop_rose_intervalfrom</tabstop>
   <tabstop>prop_rose_intervalto</tabstop>

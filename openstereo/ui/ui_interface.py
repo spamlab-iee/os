@@ -36,7 +36,8 @@ def populate_properties_dialog(properties_ui,
                                      (widget_name, item_props[prop_name]))
             # http://stackoverflow.com/a/22798753/1457481
             elif type(widget) == QtWidgets.QComboBox:
-                index = widget.findText(item_props[prop_name])
+                index = widget.findText(item_props[prop_name]) if prop_name in\
+                    item_props else 0
                 if index >= 0:
                     widget.setCurrentIndex(index)
             elif type(widget) == QtWidgets.QCheckBox or type(
