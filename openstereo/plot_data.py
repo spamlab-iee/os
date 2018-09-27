@@ -1,4 +1,3 @@
-
 class ProjectionPlotData(object):
     pass
 
@@ -8,7 +7,7 @@ class RosePlotData(object):
 
 
 class PointPlotData(ProjectionPlotData):
-    def __init__(self, data, point_settings, legend=False, legend_text=''):
+    def __init__(self, data, point_settings, legend=False, legend_text=""):
         self.data = data
         self.point_settings = point_settings
         self.legend = legend
@@ -16,7 +15,7 @@ class PointPlotData(ProjectionPlotData):
 
 
 class CirclePlotData(ProjectionPlotData):
-    def __init__(self, data, circle_settings, legend=False, legend_text=''):
+    def __init__(self, data, circle_settings, legend=False, legend_text=""):
         self.data = data
         self.circle_settings = circle_settings
         self.legend = legend
@@ -24,8 +23,16 @@ class CirclePlotData(ProjectionPlotData):
 
 
 class ContourPlotData(ProjectionPlotData):
-    def __init__(self, nodes, count, contour_settings, contour_line_settings,
-                 contour_check_settings, legend=False, n=None):
+    def __init__(
+        self,
+        nodes,
+        count,
+        contour_settings,
+        contour_line_settings,
+        contour_check_settings,
+        legend=False,
+        n=None,
+    ):
         self.nodes = nodes
         self.count = count
         self.contour_settings = contour_settings

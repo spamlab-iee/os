@@ -4,21 +4,23 @@ from PyQt5 import QtWidgets, QtGui
 
 props_re = re.compile("([^_]+)_(color_)?(.+)_([^_]+)")
 
+
 def color_button_factory(button, button_name):
     def color_button_dialog():
         col = QtWidgets.QColorDialog.getColor()
         if col.isValid():
-            button.setStyleSheet("QWidget#%s { background-color: %s }" %
-                                 (button_name, col.name()))
+            button.setStyleSheet(
+                "QWidget#%s { background-color: %s }"
+                % (button_name, col.name())
+            )
             # button.palette().color(QtWidgets.QPalette.Background).name()
 
     return color_button_dialog
 
 
-def populate_properties_dialog(properties_ui,
-                               item,
-                               update_data_only=False,
-                               **kwargs):
+def populate_properties_dialog(
+    properties_ui, item, update_data_only=False, **kwargs
+):
     dialog_widgets = vars(properties_ui)
     for widget_name in dialog_widgets:
         parsed_widget = props_re.match(widget_name)
@@ -31,20 +33,30 @@ def populate_properties_dialog(properties_ui,
             if is_color:
                 if not update_data_only:
                     widget.clicked.connect(
-                        color_button_factory(widget, widget_name))
-                widget.setStyleSheet("QWidget#%s { background-color: %s }" %
-                                     (widget_name, item_props[prop_name]))
+                        color_button_factory(widget, widget_name)
+                    )
+                widget.setStyleSheet(
+                    "QWidget#%s { background-color: %s }"
+                    % (widget_name, item_props[prop_name])
+                )
             # http://stackoverflow.com/a/22798753/1457481
             elif type(widget) == QtWidgets.QComboBox:
-                index = widget.findText(item_props[prop_name]) if prop_name in\
-                    item_props else 0
+                index = (
+                    widget.findText(item_props[prop_name])
+                    if prop_name in item_props
+                    else 0
+                )
                 if index >= 0:
                     widget.setCurrentIndex(index)
-            elif type(widget) == QtWidgets.QCheckBox or type(
-                    widget) == QtWidgets.QRadioButton:
+            elif (
+                type(widget) == QtWidgets.QCheckBox
+                or type(widget) == QtWidgets.QRadioButton
+            ):
                 widget.setChecked(item_props[prop_name])
-            elif type(widget) == QtWidgets.QLineEdit or type(
-                    widget) == QtWidgets.QLabel:
+            elif (
+                type(widget) == QtWidgets.QLineEdit
+                or type(widget) == QtWidgets.QLabel
+            ):
                 widget.setText(item_props[prop_name])
             elif type(widget) == QtWidgets.QTextEdit:
                 widget.clear()
@@ -60,8 +72,10 @@ def populate_properties_dialog(properties_ui,
             if type(widget) == QtWidgets.QTextEdit:
                 widget.clear()
                 widget.insertPlainText(attribute)
-            elif type(widget) == QtWidgets.QLineEdit or type(
-                    widget) == QtWidgets.QLabel:
+            elif (
+                type(widget) == QtWidgets.QLineEdit
+                or type(widget) == QtWidgets.QLabel
+            ):
                 widget.setText(attribute)
         if category == "do" and not update_data_only:
             if widget_item in kwargs:
@@ -84,16 +98,21 @@ def parse_properties_dialog(properties_ui, item, post_hook=None):
         if category == "prop":
             item_props = item.get_item_props(widget_item)
             if is_color:
-                item_props[prop_name] = widget.palette().color(
-                    QtGui.QPalette.Background).name()
+                item_props[prop_name] = (
+                    widget.palette().color(QtGui.QPalette.Background).name()
+                )
             # http://stackoverflow.com/a/6062987/1457481
             elif type(widget) == QtWidgets.QComboBox:
                 item_props[prop_name] = str(widget.currentText())
-            elif type(widget) == QtWidgets.QCheckBox or type(
-                    widget) == QtWidgets.QRadioButton:
+            elif (
+                type(widget) == QtWidgets.QCheckBox
+                or type(widget) == QtWidgets.QRadioButton
+            ):
                 item_props[prop_name] = widget.isChecked()
-            elif type(widget) == QtWidgets.QLineEdit or type(
-                    widget) == QtWidgets.QLabel:
+            elif (
+                type(widget) == QtWidgets.QLineEdit
+                or type(widget) == QtWidgets.QLabel
+            ):
                 item_props[prop_name] = widget.text()
             elif type(widget) == QtWidgets.QTextEdit:
                 item_props[prop_name] = widget.toPlainText()
@@ -120,9 +139,9 @@ def update_data_button_factory(item, post_hook=None):
                     if cell.text():
                         row.append(cell.text())
                     else:
-                        row.append('0')
+                        row.append("0")
                 else:
-                    row.append('0')
+                    row.append("0")
             if not row_empty:
                 data.append(row)
         item.auttitude_data.input_data = data
@@ -136,6 +155,7 @@ def update_data_button_factory(item, post_hook=None):
             for f in post_hook:
                 f()
         set_selected_item(data_table, si, sj)
+
     return update_data
 
 
@@ -146,13 +166,14 @@ def clear_table(table):
     table.setRowCount(0)
     table.setColumnCount(0)
 
+
 def set_selected_item(table, i, j):
     m = table.rowCount()
     n = table.columnCount()
     i = min(i, m)
     j = min(j, n)
     cell = table.item(i, j)
-    #table.scrollToItem(cell)
+    # table.scrollToItem(cell)
     table.setCurrentItem(cell)
 
 
@@ -168,5 +189,4 @@ def populate_item_table(item):  # TODO: keep selection
         table.setHorizontalHeaderLabels(item.kwargs["data_headers"])
     for i in range(m):
         for j in range(n):
-            table.setItem(
-                i, j, QtWidgets.QTableWidgetItem(str(data[i][j])))
+            table.setItem(i, j, QtWidgets.QTableWidgetItem(str(data[i][j])))

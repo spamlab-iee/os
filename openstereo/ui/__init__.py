@@ -5,7 +5,8 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 def waiting_effects(function):
     def new_function(*args, **kwargs):
         QtWidgets.QApplication.setOverrideCursor(
-            QtGui.QCursor(QtCore.Qt.WaitCursor))
+            QtGui.QCursor(QtCore.Qt.WaitCursor)
+        )
         try:
             return function(*args, **kwargs)
         except Exception as e:

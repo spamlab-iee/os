@@ -14,9 +14,7 @@ keep_chars = re.compile("\W+")
 # TODO: Abstract away the specifics to allow easier integration of new types
 class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
     direction_names = ["direction", "dipdirection", "dd", "clar"]
-    dip_names = [
-        "dip",
-    ]
+    dip_names = ["dip"]
     trend_names = ["trend", "azimuth," "direction", "dipdirection"]
     plunge_names = ["plunge", "dip"]
     alpha_names = ["alpha", "angle", "semiapicalangle", "opening"]
@@ -25,11 +23,9 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
     header = None
     geoeas = None
 
-    def __init__(self,
-                 parent=None,
-                 data_type=None,
-                 direction=False,
-                 fname=None):
+    def __init__(
+        self, parent=None, data_type=None, direction=False, fname=None
+    ):
         super(ImportDialog, self).__init__(parent)
         self.setupUi(self)
 
@@ -39,8 +35,12 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.ext = None
         self.fname.editingFinished.connect(self.on_file_changed)
         self.browse.clicked.connect(self.on_browse)
-        for widget in (self.lines, self.planes, self.small_circle,
-                       self.circular):
+        for widget in (
+            self.lines,
+            self.planes,
+            self.small_circle,
+            self.circular,
+        ):
             widget.toggled.connect(self.on_type_changed)
         self.planetype.currentIndexChanged.connect(self.on_type_changed)
         self.delimiter.editingFinished.connect(self.on_delimiter_changed)
@@ -67,8 +67,11 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 return self.header
             else:
                 reader = csv.reader(
-                    skip_comments(StringIO(self.sample),
-                    self.comment_marker.text()), self.dialect)
+                    skip_comments(
+                        StringIO(self.sample), self.comment_marker.text()
+                    ),
+                    self.dialect,
+                )
                 header_row = self.header_row.value()
                 if self.do_skip.isChecked():
                     header_row += self.skip_rows.value()
@@ -94,28 +97,31 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.longitude.setCurrentIndex(min(n_headers, 0))
         self.colatitude.setCurrentIndex(min(n_headers, 1))
         self.alpha.setCurrentIndex(min(n_headers, 2))
-        if self.lines.isChecked() or self.small_circle.isChecked()\
-                or self.circular.isChecked():
+        if (
+            self.lines.isChecked()
+            or self.small_circle.isChecked()
+            or self.circular.isChecked()
+        ):
             for i, column in enumerate(self.header):
-                if keep_chars.sub('', column).lower() in self.trend_names:
+                if keep_chars.sub("", column).lower() in self.trend_names:
                     self.longitude.setCurrentIndex(i)
                     break
             for i, column in enumerate(self.header):
-                if keep_chars.sub('', column).lower() in self.plunge_names:
+                if keep_chars.sub("", column).lower() in self.plunge_names:
                     self.colatitude.setCurrentIndex(i)
                     break
             if self.small_circle.isChecked():
                 for i, column in enumerate(self.header):
-                    if keep_chars.sub('', column).lower() in self.alpha_names:
+                    if keep_chars.sub("", column).lower() in self.alpha_names:
                         self.alpha.setCurrentIndex(i)
                         break
         elif self.planes.isChecked():
             for i, column in enumerate(self.header):
-                if keep_chars.sub('', column).lower() in self.direction_names:
+                if keep_chars.sub("", column).lower() in self.direction_names:
                     self.longitude.setCurrentIndex(i)
                     break
             for i, column in enumerate(self.header):
-                if keep_chars.sub('', column).lower() in self.dip_names:
+                if keep_chars.sub("", column).lower() in self.dip_names:
                     self.colatitude.setCurrentIndex(i)
                     break
 
@@ -144,7 +150,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             except ValueError:
                 pass
         return True
-    
+
     def read_sample(self, f):
         read_length = 0
         sample = []
@@ -154,7 +160,6 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             if read_length > self.sample_size:
                 break
         return "\n".join(sample)
-
 
     def on_file_changed(self):
         fname = self.fname.text()
@@ -169,7 +174,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             self.skip_rows.setValue(0)
             self.header_row.setValue(0)
             self.delimiter.setEnabled(False)
-            self.delimiter.setText('')
+            self.delimiter.setText("")
 
             book = xlrd.open_workbook(self.fname.text())
             worksheets = book.sheet_names()
@@ -222,8 +227,9 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.on_header_changed()
 
     def on_delimiter_changed(self):
-        self.dialect.delimiter = str(
-            self.delimiter.text()).strip("'").strip('"')
+        self.dialect.delimiter = (
+            str(self.delimiter.text()).strip("'").strip('"')
+        )
         self.on_header_changed()
 
     def on_skip_rows(self):
@@ -252,8 +258,11 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.sniff_columns()
 
     def on_type_changed(self):
-        if self.lines.isChecked() or self.small_circle.isChecked()\
-                or self.circular.isChecked():
+        if (
+            self.lines.isChecked()
+            or self.small_circle.isChecked()
+            or self.circular.isChecked()
+        ):
             self.longitude_label.setText("Trend")
             self.longitude.setEnabled(True)
             self.colatitude_label.setText("Plunge")
@@ -271,8 +280,9 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.sniff_columns()
 
     def on_browse(self):
-        fname, extension =\
-            QtWidgets.QFileDialog.getOpenFileName(self, 'Import Data')
+        fname, extension = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Import Data"
+        )
         if not fname:
             return
         self.fname.setText(fname)
@@ -281,35 +291,27 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
     @property
     def import_kwargs(self):
         kwargs = {
-            "worksheet":
-            self.worksheet.currentText(),
-            "keep_input":
-            True,
-            "line":
-            self.lines.isChecked() or self.small_circle.isChecked(),
-            "dip_direction":
-            self.planetype.currentIndex() == 0,
-            "dipdir_column":
-            self.longitude.currentIndex(),
-            "dip_column":
-            self.colatitude.currentIndex(),
-            "alpha_column":
-            self.alpha.currentIndex(),
-            "circular":
-            self.circular.isChecked(),
-            "data_headers":
-            self.header if self.has_header.isChecked() else None,
-            "has_header":
-            self.has_header.isChecked(),
-            "header_row":
-            self.header_row.value() if self.has_header.isChecked() else None,
-            "skip_rows":
-            self.skip_rows.value() if self.do_skip.isChecked() else None,
-            "is_geoeas":
-            self.geoeas,
-            "geoeas_offset":
-            self.offset if self.geoeas else None,
-            "comment_marker": self.comment_marker.text()
+            "worksheet": self.worksheet.currentText(),
+            "keep_input": True,
+            "line": self.lines.isChecked() or self.small_circle.isChecked(),
+            "dip_direction": self.planetype.currentIndex() == 0,
+            "dipdir_column": self.longitude.currentIndex(),
+            "dip_column": self.colatitude.currentIndex(),
+            "alpha_column": self.alpha.currentIndex(),
+            "circular": self.circular.isChecked(),
+            "data_headers": self.header
+            if self.has_header.isChecked()
+            else None,
+            "has_header": self.has_header.isChecked(),
+            "header_row": self.header_row.value()
+            if self.has_header.isChecked()
+            else None,
+            "skip_rows": self.skip_rows.value()
+            if self.do_skip.isChecked()
+            else None,
+            "is_geoeas": self.geoeas,
+            "geoeas_offset": self.offset if self.geoeas else None,
+            "comment_marker": self.comment_marker.text(),
         }
         if self.dialect is not None:
             kwargs["dialect_data"] = {
@@ -319,7 +321,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 "lineterminator": self.dialect.lineterminator,
                 "quotechar": self.dialect.quotechar,
                 "quoting": self.dialect.quoting,
-                "skipinitialspace": self.dialect.skipinitialspace
+                "skipinitialspace": self.dialect.skipinitialspace,
             }
         return kwargs
 
@@ -372,7 +374,9 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 skip_rows = 0
             if self.has_header.isChecked():
                 skip_rows += self.header_row.value() + 1
-            reader = csv.reader(skip_comments(f, self.comment_marker.text()), self.dialect)
+            reader = csv.reader(
+                skip_comments(f, self.comment_marker.text()), self.dialect
+            )
             for i in range(skip_rows):
                 next(reader)
             return reader
@@ -382,26 +386,26 @@ def get_data(fname, kwargs):
     name, ext = path.splitext(fname)
     if ext in [".xls", ".xlsx"]:
         book = xlrd.open_workbook(fname)
-        sheet = book.sheet_by_name(kwargs['worksheet'])
-        header_row = 0 if\
-            kwargs['header_row'] is None else kwargs['header_row'] + 1
-        header_row += 0\
-            if kwargs['skip_rows'] is None else kwargs['skip_rows']
+        sheet = book.sheet_by_name(kwargs["worksheet"])
+        header_row = (
+            0 if kwargs["header_row"] is None else kwargs["header_row"] + 1
+        )
+        header_row += 0 if kwargs["skip_rows"] is None else kwargs["skip_rows"]
         return [sheet.row_values(i) for i in range(header_row, sheet.nrows)]
     else:
         f = open(fname, "r", encoding="utf-8-sig")
-        if kwargs['is_geoeas']:
-            f.seek(kwargs['geoeas_offset'])
-        skip_rows = 0\
-            if kwargs['header_row'] is None else kwargs['header_row'] + 1
-        skip_rows += 0\
-            if kwargs['skip_rows'] is None else kwargs['skip_rows']
+        if kwargs["is_geoeas"]:
+            f.seek(kwargs["geoeas_offset"])
+        skip_rows = (
+            0 if kwargs["header_row"] is None else kwargs["header_row"] + 1
+        )
+        skip_rows += 0 if kwargs["skip_rows"] is None else kwargs["skip_rows"]
         dialect_data = {}
         for key, item in list(kwargs["dialect_data"].items()):
             dialect_data[key] = str(item) if isinstance(item, str) else item
         reader = csv.reader(
-            skip_comments(f, kwargs.get("comment_marker", "#")),
-            **dialect_data)
+            skip_comments(f, kwargs.get("comment_marker", "#")), **dialect_data
+        )
         for i in range(skip_rows):
             next(reader)
         return reader

@@ -15,8 +15,9 @@ class MeshDialog(QtWidgets.QDialog, import_ply_Ui_Dialog):
         self.remove_color_button.clicked.connect(self.remove_color)
 
     def add_color_to_list(self, color):
-        item = QtWidgets.QListWidgetItem(",".join(str(c) for c in color),
-                                         self.color_list)
+        item = QtWidgets.QListWidgetItem(
+            ",".join(str(c) for c in color), self.color_list
+        )
         item.setForeground(QtGui.QColor(*color))
 
     def add_color(self):
@@ -33,6 +34,8 @@ class MeshDialog(QtWidgets.QDialog, import_ply_Ui_Dialog):
     def colors(self):
         return [
             tuple(
-                [int(c) for c in
-                 self.color_list.item(i).text().split(',')] + [255, ])
-            for i in range(self.color_list.count())]
+                [int(c) for c in self.color_list.item(i).text().split(",")]
+                + [255]
+            )
+            for i in range(self.color_list.count())
+        ]
