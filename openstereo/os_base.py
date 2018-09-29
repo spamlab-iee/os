@@ -358,6 +358,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.actionAbout.triggered.connect(self.show_about)
         self.actionDocumentation.triggered.connect(self.show_documentation)
+        self.actionTutorial.triggered.connect(self.show_tutorial)
         self.actionSubmit_Issue.triggered.connect(self.show_submit_issue)
 
         self.plotButton.clicked.connect(self.plot_data)
@@ -669,6 +670,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def show_documentation(self):
         webbrowser.open("http://openstereo.readthedocs.io")
+
+    def show_tutorial(self):
+        webbrowser.open("https://openstereo.readthedocs.io/en/latest/tutorial.html")
 
     def show_about(self):
         msg = QtWidgets.QMessageBox()
