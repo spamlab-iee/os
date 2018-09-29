@@ -188,6 +188,7 @@
      <string>Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="actionDocumentation"/>
     <addaction name="actionSubmit_Issue"/>
    </widget>
    <widget class="QMenu" name="menuData">
@@ -413,6 +414,11 @@
   <action name="actionChange_Language">
    <property name="text">
     <string>Change Language</string>
+   </property>
+  </action>
+  <action name="actionDocumentation">
+   <property name="text">
+    <string>Documentation</string>
    </property>
   </action>
  </widget>

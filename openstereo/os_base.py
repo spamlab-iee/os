@@ -336,6 +336,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.import_mesh
         )
 
+        self.actionDocumentation.triggered.connect(self.show_documentation)
         self.actionSubmit_Issue.triggered.connect(self.show_submit_issue)
 
         self.plotButton.clicked.connect(self.plot_data)
@@ -643,6 +644,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             return self.import_data(
                 data_type=data_type, name=name, data=data, **kwargs
             )
+
+    def show_documentation(self):
+        webbrowser.open("http://openstereo.readthedocs.io")
 
     def show_submit_issue(self):
         msg = QtWidgets.QMessageBox()

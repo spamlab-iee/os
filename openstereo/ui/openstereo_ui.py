@@ -168,6 +168,8 @@ class Ui_MainWindow(object):
         self.actionAssemble_Fault.setObjectName("actionAssemble_Fault")
         self.actionChange_Language = QtWidgets.QAction(MainWindow)
         self.actionChange_Language.setObjectName("actionChange_Language")
+        self.actionDocumentation = QtWidgets.QAction(MainWindow)
+        self.actionDocumentation.setObjectName("actionDocumentation")
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
@@ -197,6 +199,7 @@ class Ui_MainWindow(object):
         self.menuTools.addAction(self.actionConvert_Shapefile_to_Azimuth_data)
         self.menuTools.addAction(self.actionConvert_Mesh_to_Plane_Data)
         self.menuHelp.addAction(self.actionAbout)
+        self.menuHelp.addAction(self.actionDocumentation)
         self.menuHelp.addAction(self.actionSubmit_Issue)
         self.menuData.addAction(self.actionAdd_Plane)
         self.menuData.addAction(self.actionAdd_Line)
@@ -266,4 +269,5 @@ class Ui_MainWindow(object):
         self.actionAdd_Slope.setText(_translate("MainWindow", "Add Slope"))
         self.actionAssemble_Fault.setText(_translate("MainWindow", "Assemble Fault"))
         self.actionChange_Language.setText(_translate("MainWindow", "Change Language"))
+        self.actionDocumentation.setText(_translate("MainWindow", "Documentation"))
 
