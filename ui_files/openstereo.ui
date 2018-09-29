@@ -189,6 +189,7 @@
     </property>
     <addaction name="actionAbout"/>
     <addaction name="actionDocumentation"/>
+    <addaction name="actionTutorial"/>
     <addaction name="actionSubmit_Issue"/>
    </widget>
    <widget class="QMenu" name="menuData">
@@ -419,6 +420,16 @@
   <action name="actionDocumentation">
    <property name="text">
     <string>Documentation</string>
+   </property>
+  </action>
+  <action name="actionRecent_Projects">
+   <property name="text">
+    <string>Recent Projects</string>
+   </property>
+  </action>
+  <action name="actionTutorial">
+   <property name="text">
+    <string>Tutorial</string>
    </property>
   </action>
  </widget>

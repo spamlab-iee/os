@@ -212,6 +212,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         )
     }
 
+    max_recent_projects = 5
+
     def __init__(self):
         super(Main, self).__init__()
         self.setupUi(self)
@@ -336,6 +338,25 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.import_mesh
         )
 
+        self.recent_projects = []
+        for i in range(self.max_recent_projects):
+            self.recent_projects.append(
+                QtWidgets.QAction(
+                    self, visible=False, triggered=self.open_recent_project
+                )
+            )
+
+        for i in range(self.max_recent_projects):
+            self.menuFile.insertAction(
+                self.actionSave, self.recent_projects[i]
+            )
+
+        self.recent_projects_separator = self.menuFile.insertSeparator(
+            self.actionSave
+        )
+        self.recent_projects_separator.setVisible(False)
+
+        self.actionAbout.triggered.connect(self.show_about)
         self.actionDocumentation.triggered.connect(self.show_documentation)
         self.actionSubmit_Issue.triggered.connect(self.show_submit_issue)
 
@@ -389,6 +410,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.old_project = None
         self.packed_project = False
         self.temp_dir = None
+        self.update_recent_projects()
         self.statusBar().showMessage("Ready")
         self.set_title()
         self.check_save_guard()
@@ -648,6 +670,37 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def show_documentation(self):
         webbrowser.open("http://openstereo.readthedocs.io")
 
+    def show_about(self):
+        msg = QtWidgets.QMessageBox()
+        # msg.setIcon(QtWidgets.QMessageBox.Information)
+        msg.setWindowTitle(_translate("main", "About OpenStereo 1.0"))
+        msg.setText(
+            _translate(
+                "main",
+                """
+        (C) 2009-2011,2017 Carlos H. Grohmann, Ginaldo A.C. Campanha,
+            Arthur Endlein Correia
+
+        OpenStereo is a Open-source, multiplatform software for
+        structural geology analysis using stereonets.
+        
+        OpenStereo is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version. 
+
+        OpenStereo is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with OpenStereo.  If not, see http://www.gnu.org/licenses/.""",
+            )
+        )
+        msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        msg.exec_()
+
     def show_submit_issue(self):
         msg = QtWidgets.QMessageBox()
         # msg.setIcon(QtWidgets.QMessageBox.Information)
@@ -660,7 +713,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 """
         If something doesn't work in OpenStereo, or if you have any suggestion
         for further development, please submit an issue to our github
-        repository.
+        repository or send an email to <arthur.correia@usp.br>.
         
         If possible, add extra information such as OpenStereo and python
         version, operating system and sample data.""",
@@ -951,11 +1004,54 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             return
         self.new_project()
         self.open_project(fname)
-        self.current_project = fname
+        self.update_current_project(fname)
         self.statusBar().showMessage(
             _translate("main", "Loaded project from {}").format(fname)
         )
         self.set_title()
+
+    def update_current_project(self, fname):
+        self.current_project = fname
+
+        projects = os_qsettings.value("recentProjectList", [])
+
+        try:
+            projects.remove(fname)
+        except ValueError:
+            pass
+
+        projects.insert(0, fname)
+        del projects[self.max_recent_projects :]
+
+        os_qsettings.setValue("recentProjectList", projects)
+        self.update_recent_projects()
+
+    def update_recent_projects(self):
+        projects = os_qsettings.value("recentProjectList", [])
+
+        num_recent_projects = min(len(projects), self.max_recent_projects)
+        for i in range(num_recent_projects):
+            text = path.splitext(path.basename(projects[i]))[0]
+            self.recent_projects[i].setText(text)
+            self.recent_projects[i].setData(projects[i])
+            self.recent_projects[i].setVisible(True)
+
+        for j in range(num_recent_projects, self.max_recent_projects):
+            self.recent_projects[j].setVisible(False)
+
+        self.recent_projects_separator.setVisible(num_recent_projects > 0)
+
+    def open_recent_project(self):
+        action = self.sender()
+        if action:
+            fname = action.data()
+            self.new_project()
+            self.open_project(fname)
+            self.update_current_project(fname)
+            self.statusBar().showMessage(
+                _translate("main", "Loaded project from {}").format(fname)
+            )
+            self.set_title()
 
     def save_project_dialog(self):
         if self.current_project is None:
@@ -966,7 +1062,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             )  # noqa: E501
             if not fname:
                 return
-            self.current_project = fname
+            self.update_current_project(fname)
         self.save_project(self.current_project)
         self.statusBar().showMessage(
             _translate("main", "Saved project to {}").format(
@@ -984,7 +1080,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if not fname:
             return
         self.old_project = self.current_project
-        self.current_project = fname
+        self.update_current_project(fname)
         if pack:
             self.OS_settings.general_settings["packeddata"] = "yes"
         self.save_project(fname)
