@@ -416,3 +416,10 @@ def skip_comments(iterable, comment="#"):  # TODO: skip comments in xlsx
         if line.startswith(comment):
             continue
         yield line
+
+
+split_attitude_re = re.compile("[^NESW\.\+\-0-9]+", flags=re.IGNORECASE)
+
+
+def split_attitude(data):
+    return split_attitude_re.split(data)

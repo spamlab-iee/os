@@ -25,7 +25,7 @@ from openstereo.ui.circular_properties_ui import (
 from openstereo.os_math import small_circle, great_circle
 from openstereo.os_auttitude import load, DirectionalData
 from openstereo import os_auttitude as autti
-from openstereo.data_import import get_data
+from openstereo.data_import import get_data, split_attitude
 from openstereo.plot_data import (
     PointPlotData,
     CirclePlotData,
@@ -971,7 +971,7 @@ class SinglePlane(DataItem):
         self.data_settings["strike"] = strike
 
     def get_attitude_Plane(self):
-        attitude = self.data_settings["attitude"].split()
+        attitude = split_attitude(self.data_settings["attitude"])
         translated_attitude = au.translate_attitude(
             attitude[0], attitude[1], strike=self.data_settings["strike"]
         )
@@ -1057,7 +1057,7 @@ class SingleLine(DataItem):
         self.data_settings["strike"] = strike
 
     def get_attitude_Line(self):
-        attitude = self.data_settings["attitude"].split()
+        attitude = split_attitude(self.data_settings["attitude"])
         translated_attitude = au.translate_attitude(
             attitude[0], attitude[1], strike=self.data_settings["strike"]
         )
@@ -1121,7 +1121,7 @@ class SingleSmallCircle(DataItem):
         self.data_settings["strike"] = strike
 
     def get_attitude_LineAlpha(self):
-        attitude = self.data_settings["attitude"].split()
+        attitude = split_attitude(self.data_settings["attitude"])
         alpha = radians(float(attitude[2]))
         translated_attitude = au.translate_attitude(
             attitude[0], attitude[1], strike=self.data_settings["strike"]
@@ -1221,7 +1221,7 @@ class Slope(DataItem):
         self.data_settings["strike"] = strike
 
     def get_attitude_Plane(self):
-        attitude = self.data_settings["attitude"].split()
+        attitude = split_attitude(self.data_settings["attitude"])
         translated_attitude = au.translate_attitude(
             attitude[0], attitude[1], strike=self.data_settings["strike"]
         )
