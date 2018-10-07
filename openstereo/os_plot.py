@@ -30,6 +30,7 @@ from openstereo.plot_data import (
     RosePlotData,
     PointPlotData,
     CirclePlotData,
+    PolygonPlotData,
     ArrowPlotData,
     ContourPlotData,
     PetalsPlotData,
@@ -45,6 +46,9 @@ from openstereo.os_math import (
     sphere,
     clip_lines,
     in_interval,
+    au_clip_lines,
+    au_join_segments,
+    au_close_polygon
 )
 
 import auttitude as au
@@ -281,6 +285,10 @@ class StereoPlot(PlotPanel):
                 plot_item.arrow_settings,
                 sense=plot_item.sense,
             )
+        elif isinstance(plot_item, PolygonPlotData):
+            element = self.plot_polygons(
+                plot_item.data, plot_item.polygon_settings
+            )
         else:
             element = plot_item.plot_data(self)  # somewhat visitor pattern
         if plot_item.legend:
@@ -360,6 +368,25 @@ class StereoPlot(PlotPanel):
         circle_segments.set_clip_path(self.circle)
         self.plotaxes.add_collection(circle_segments, autolim=True)
         return circle_segments
+
+    def plot_polygons(self, polygons, polygon_settings):
+        projected_polygons = [
+            au_close_polygon(np.transpose(
+                self.project(
+                    *np.transpose(segment), invert_positive=False#, rotate=False
+                )
+            ))
+            for circle in polygons
+            for segment in au_join_segments(au_clip_lines(
+                np.dot(circle, self.projection.R.T)
+            ))
+        ]
+        polygon_segments = PolyCollection(
+            projected_polygons, **polygon_settings
+        )
+        polygon_segments.set_clip_path(self.circle)
+        self.plotaxes.add_collection(polygon_segments, autolim=True)
+        return polygon_segments
 
     def plot_arrow(self, planes, lines, arrow_settings, sense):
         for plane, line in zip(planes, lines):

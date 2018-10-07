@@ -1,5 +1,7 @@
 from math import pi, radians, degrees, acos
 
+from itertools import chain
+
 # http://treyhunner.com/2016/02/how-to-merge-dictionaries-in-python/
 try:
     from collections import ChainMap
@@ -30,9 +32,7 @@ from openstereo.ui.singleline_properties_ui import (
 from openstereo.ui.singlesmallcircle_properties_ui import (
     Ui_Dialog as singlesmallcircle_Ui_Dialog,
 )
-from openstereo.ui.fault_properties_ui import (
-    Ui_Dialog as fault_Ui_Dialog,
-)
+from openstereo.ui.fault_properties_ui import Ui_Dialog as fault_Ui_Dialog
 from openstereo.ui.slope_properties_ui import Ui_Dialog as slope_Ui_Dialog
 
 from openstereo.os_math import small_circle, great_circle
@@ -42,6 +42,7 @@ from openstereo.data_import import get_data, split_attitude
 from openstereo.plot_data import (
     PointPlotData,
     CirclePlotData,
+    PolygonPlotData,
     ArrowPlotData,
     ContourPlotData,
     PetalsPlotData,
@@ -815,9 +816,119 @@ class SmallCircleData(DataItem):
             "colors": "#000000",
             "linestyles": "-",
         }
+        self.polygon_settings = {
+            "linewidths": 0.0,
+            "edgecolors": None,
+            "facecolors": "#FF8000",
+            "alpha": 0.7,
+        }
+
+        self.check_settings = {"fillsc": True}
 
         self.checklegend_settings = {"scaxis": True, "sccirc": True}
         self.legend_settings = {"scaxis": "", "sccirc": ""}
+
+    def reload_data(self):
+        data = get_data(self.data_path, self.auttitude_data.kwargs)
+        self.auttitude_data = load(
+            data, calculate_statistics=False, **self.auttitude_data.kwargs
+        )
+
+    def reload_data_from_internal(self):
+        # data = get_data(self.data_path, self.auttitude_data.kwargs)
+        self.auttitude_data = load(
+            self.auttitude_data.input_data,
+            calculate_statistics=False,
+            **self.auttitude_data.kwargs
+        )
+
+    def plot_Axes(self):
+        if self.legend_settings["scaxis"]:
+            try:
+                legend_text = self.legend_settings["scaxis"].format(
+                    data=self.auttitude_data
+                )
+            except:
+                legend_text = self.legend_settings["scaxis"]
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get("scaxis", "scaxis")
+            )
+        return (
+            PointPlotData(
+                self.auttitude_data.data,
+                self.scaxis_settings,
+                self.checklegend_settings["scaxis"],
+                legend_text,
+            ),
+        )
+
+    def plot_SC(self):
+        plot_items = []
+        if self.legend_settings["sccirc"]:
+            try:
+                legend_text = self.legend_settings["sccirc"].format(
+                    data=self.auttitude_data
+                )
+            except:
+                legend_text = self.legend_settings["sccirc"]
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get("SC", "Small Circle")
+            )
+        circles = list(
+            chain.from_iterable(
+                small_circle(axis, radians(alpha))
+                for axis, alpha in zip(self.auttitude_data.data, self.alpha)
+            )
+        )
+        plot_items.append(
+            CirclePlotData(
+                circles,
+                self.sccirc_settings,
+                self.checklegend_settings["sccirc"]
+                if not self.check_settings["fillsc"]
+                else False,
+                legend_text,
+            )
+        )
+        if self.check_settings["fillsc"]:
+            plot_items.append(
+                PolygonPlotData(
+                    circles,
+                    self.polygon_settings,
+                    self.checklegend_settings["sccirc"],
+                    legend_text,
+                )
+            )
+        return plot_items
+
+    # def plot_poly(self):
+    #     plot_items = []
+    #     if self.legend_settings["sccirc"]:
+    #         try:
+    #             legend_text = self.legend_settings["sccirc"].format(
+    #                 data=self.auttitude_data
+    #             )
+    #         except:
+    #             legend_text = self.legend_settings["sccirc"]
+    #     else:
+    #         legend_text = "{} ({})".format(
+    #             self.text(0), self.plot_item_name.get("SC", "Small Circle")
+    #         )
+    #     circles = chain.from_iterable(
+    #         small_circle(axis, radians(alpha))
+    #         for axis, alpha in zip(self.auttitude_data.data, self.alpha)
+    #     )
+    #     plot_items.append(
+    #         PolygonPlotData(
+    #             circles,
+    #             self.polygon_settings,
+    #             self.checklegend_settings["sccirc"],
+    #             legend_text,
+    #         )
+    #     )
+    #     return plot_items
 
 
 # Kim Wilde

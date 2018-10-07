@@ -22,6 +22,14 @@ class CirclePlotData(ProjectionPlotData):
         self.legend_text = legend_text
 
 
+class PolygonPlotData(ProjectionPlotData):
+    def __init__(self, data, polygon_settings, legend=False, legend_text=""):
+        self.data = data
+        self.polygon_settings = polygon_settings
+        self.legend = legend
+        self.legend_text = legend_text
+
+
 class ArrowPlotData(ProjectionPlotData):
     def __init__(self, data, arrow_settings, sense=True, legend=False, legend_text=""):
         self.data = data

@@ -3,6 +3,8 @@ from math import pi, sin, cos, acos, atan2, degrees, radians, sqrt
 
 import numpy as np
 
+import auttitude as au
+
 earth_radius = 6371000
 
 
@@ -74,6 +76,11 @@ def direction_versor(a):
 def angle(A, B):
     a, b = A / np.linalg.norm(A), B / np.linalg.norm(B)
     return math.atan2(np.linalg.norm(np.cross(a, b)), np.inner(a, b))
+
+
+def angle_acos(A, B):
+    a, b = A / np.linalg.norm(A), B / np.linalg.norm(B)
+    return math.acos(np.clip(np.dot(a, b), -1.0, 1.0))
 
 
 def normalized_cross(a, b):
@@ -195,3 +202,60 @@ def clip_lines(data, clip_radius=1.1):
     if current:
         results.append(current)
     return results
+
+
+def au_clip_lines(data, z_tol=0.1):
+    """segment point pairs between inside and outside of primitive, for
+    avoiding spurious lines when plotting circles."""
+    z = np.transpose(data)[2]
+    inside = z < z_tol
+    results = []
+    current = []
+    for i, is_inside in enumerate(inside):
+        if is_inside:
+            current.append(data[i])
+        elif current:
+            results.append(current)
+            current = []
+    if current:
+        results.append(current)
+    return results
+
+
+def au_join_segments(segments, c_tol=radians(1.0)):
+    """segment point pairs between inside and outside of primitive, for
+    avoiding spurious lines when plotting circles."""
+    all_joined = False
+    while not all_joined and len(segments) > 1:
+        all_joined = True
+        segment = segments.pop(0)
+        if abs(angle_acos(segment[-1], segments[0][0])) < c_tol:
+            segment.extend(segments.pop(0))
+            all_joined = False
+        elif abs(angle_acos(segment[0], segments[0][-1])) < c_tol:
+            segment_b = segments.pop(0)
+            segment_b.extend(segment)
+            segment = segment_b
+            all_joined = False
+        elif abs(angle_acos(segment[-1], segments[0][-1])) < c_tol:
+            segment.extend(reversed(segments.pop(0)))
+            all_joined = False
+        elif abs(angle_acos(segment[0], segments[0][0])) < c_tol:
+            segment_b = segments.pop(0)
+            segment_b.extend(reversed(segment))
+            segment = segment_b
+            all_joined = False
+        segments.append(segment)
+    return segments
+
+
+def au_close_polygon(projected_polygon):
+    first = projected_polygon[0]
+    last = projected_polygon[-1]
+    mid = (first + last)/2
+    mid = mid/np.linalg.norm(mid)
+    if np.dot(first, last) == 0.0:
+        mid = np.array([first[1], -first[0]])
+    if np.linalg.norm(first) > 1.0 and np.linalg.norm(last) > 1.0:
+        return np.vstack([projected_polygon, [2*last, 3*mid, 2*first]])
+    return projected_polygon
