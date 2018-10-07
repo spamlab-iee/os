@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_files\plane_properties.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -25,7 +25,6 @@ class Ui_Dialog(object):
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
         self.gridLayout_20 = QtWidgets.QGridLayout(self.tab)
-        self.gridLayout_20.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_20.setObjectName("gridLayout_20")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
@@ -419,7 +418,6 @@ class Ui_Dialog(object):
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout(self.tab_2)
-        self.horizontalLayout_12.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
         self.verticalLayout_13 = QtWidgets.QVBoxLayout()
         self.verticalLayout_13.setObjectName("verticalLayout_13")
@@ -616,7 +614,6 @@ class Ui_Dialog(object):
         self.roseDiagram = QtWidgets.QWidget()
         self.roseDiagram.setObjectName("roseDiagram")
         self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.roseDiagram)
-        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
         self.gridLayout_6 = QtWidgets.QGridLayout()
         self.gridLayout_6.setObjectName("gridLayout_6")
@@ -878,7 +875,6 @@ class Ui_Dialog(object):
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout(self.tab_3)
-        self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
         self.show_auttitude_data_statistics = QtWidgets.QTextEdit(self.tab_3)
         self.show_auttitude_data_statistics.setObjectName("show_auttitude_data_statistics")
@@ -887,7 +883,6 @@ class Ui_Dialog(object):
         self.tab_5 = QtWidgets.QWidget()
         self.tab_5.setObjectName("tab_5")
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.tab_5)
-        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.verticalLayout_19 = QtWidgets.QVBoxLayout()
         self.verticalLayout_19.setObjectName("verticalLayout_19")
@@ -993,7 +988,6 @@ class Ui_Dialog(object):
         self.tab_4 = QtWidgets.QWidget()
         self.tab_4.setObjectName("tab_4")
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout(self.tab_4)
-        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
         self.show_auttitude_data_source = QtWidgets.QTextEdit(self.tab_4)
         self.show_auttitude_data_source.setObjectName("show_auttitude_data_source")

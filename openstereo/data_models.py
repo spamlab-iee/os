@@ -21,6 +21,9 @@ from openstereo.ui.smallcircle_properties_ui import (
 from openstereo.ui.circular_properties_ui import (
     Ui_Dialog as circular_Ui_Dialog,
 )
+from openstereo.ui.singleplane_properties_ui import (
+    Ui_Dialog as singleplane_Ui_Dialog,
+)
 
 from openstereo.os_math import small_circle, great_circle
 from openstereo.os_auttitude import load, DirectionalData
@@ -942,7 +945,7 @@ class SinglePlane(DataItem):
     plot_item_name = {"GC": "Great Circle"}
     item_order = {"Pole": 0, "GC": 1}
     default_checked = ["Pole", "Great Circle"]
-    properties_ui = smallcircle_Ui_Dialog
+    properties_ui = singleplane_Ui_Dialog
 
     def __init__(self, name, parent, item_id, data="", strike=False, **kwargs):
         super().__init__(name, parent, item_id)
@@ -951,17 +954,17 @@ class SinglePlane(DataItem):
 
     def build_configuration(self):
         super().build_configuration()
-        self.scaxis_settings = {"marker": "o", "c": "#000000", "ms": 3.0}
-        self.sccirc_settings = {
-            "linewidths": 1.0,
-            "colors": "#000000",
+        self.point_settings = {"marker": "o", "c": "#000000", "ms": 3.0}
+        self.GC_settings = {
+            "linewidths": 0.8,
+            "colors": "#4D4D4D",
             "linestyles": "-",
         }
+        self.legend_settings = {"point": "", "GC": ""}
 
-        self.checklegend_settings = {"scaxis": True, "sccirc": True}
-        self.legend_settings = {"scaxis": "", "sccirc": ""}
+        self.checklegend_settings = {"point": True, "GC": True}
 
-        self.data_settings = {}
+        self.data_settings = {"attitude": "", "strike": False}
 
     def reload_data(self):
         pass
@@ -972,54 +975,54 @@ class SinglePlane(DataItem):
 
     def get_attitude_Plane(self):
         attitude = split_attitude(self.data_settings["attitude"])
-        translated_attitude = au.translate_attitude(
-            attitude[0], attitude[1], strike=self.data_settings["strike"]
-        )
+        # translated_attitude = au.translate_attitude(
+        #     attitude[0], attitude[1], strike=self.data_settings["strike"]
+        # )
         return au.Plane.from_attitude(
-            *translated_attitude, strike=self.data_settings["strike"]
+            *attitude, strike=self.data_settings["strike"]
         )
 
     def plot_Pole(self):
-        if self.legend_settings["scaxis"]:
+        if self.legend_settings["point"]:
             try:
-                legend_text = self.legend_settings["scaxis"].format(
+                legend_text = self.legend_settings["point"].format(
                     data=self.auttitude_data
                 )
             except:
-                legend_text = self.legend_settings["scaxis"]
+                legend_text = self.legend_settings["point"]
         else:
             legend_text = "{} ({})".format(
-                self.text(0), self.plot_item_name.get("scaxis", "scaxis")
+                self.text(0), self.plot_item_name.get("point", "point")
             )
         plane = self.get_attitude_Plane()
         return (
             PointPlotData(
                 plane,
-                self.scaxis_settings,
-                self.checklegend_settings["scaxis"],
+                self.point_settings,
+                self.checklegend_settings["point"],
                 legend_text,
             ),
         )
 
     def plot_GC(self):
         plot_items = []
-        if self.legend_settings["sccirc"]:
+        if self.legend_settings["GC"]:
             try:
-                legend_text = self.legend_settings["sccirc"].format(
+                legend_text = self.legend_settings["GC"].format(
                     data=self.auttitude_data
                 )
             except:
-                legend_text = self.legend_settings["sccirc"]
+                legend_text = self.legend_settings["GC"]
         else:
             legend_text = "{} ({})".format(
-                self.text(0), self.plot_item_name.get("SC", "Small Circle")
+                self.text(0), self.plot_item_name.get("GC", "Great Circle")
             )
         circle = self.get_attitude_Plane().get_great_circle()
         plot_items.append(
             CirclePlotData(
                 circle,
-                self.sccirc_settings,
-                self.checklegend_settings["sccirc"],
+                self.GC_settings,
+                self.checklegend_settings["GC"],
                 legend_text,
             )
         )
