@@ -27,6 +27,13 @@ from openstereo.ui.singleplane_properties_ui import (
 from openstereo.ui.singleline_properties_ui import (
     Ui_Dialog as singleline_Ui_Dialog,
 )
+from openstereo.ui.singlesmallcircle_properties_ui import (
+    Ui_Dialog as singlesmallcircle_Ui_Dialog,
+)
+from openstereo.ui.fault_properties_ui import (
+    Ui_Dialog as fault_Ui_Dialog,
+)
+from openstereo.ui.slope_properties_ui import Ui_Dialog as slope_Ui_Dialog
 
 from openstereo.os_math import small_circle, great_circle
 from openstereo.os_auttitude import load, DirectionalData
@@ -35,6 +42,7 @@ from openstereo.data_import import get_data, split_attitude
 from openstereo.plot_data import (
     PointPlotData,
     CirclePlotData,
+    ArrowPlotData,
     ContourPlotData,
     PetalsPlotData,
     KitePlotData,
@@ -112,7 +120,7 @@ class DataItem(QtWidgets.QTreeWidgetItem):
     def item_settings(self, data):
         for name, settings in list(data[self.data_type].items()):
             if isinstance(settings, dict) and hasattr(self, name):
-                settings = ChainMap({}, settings, getattr(self, name))
+                settings = dict(ChainMap({}, settings, getattr(self, name)))
             setattr(self, name, settings)
 
     # @property
@@ -817,7 +825,7 @@ class FaultData(DataItem):
     data_type = "fault_data"
     plot_item_name = {"SC": "Small Circles"}
     default_checked = ["Dihedra", "Michael"]
-    properties_ui = smallcircle_Ui_Dialog
+    properties_ui = fault_Ui_Dialog
 
     def __init__(self, name, data, parent, item_id, **kwargs):
         self.kwargs = kwargs
@@ -829,11 +837,10 @@ class FaultData(DataItem):
 
     def build_configuration(self):
         super().build_configuration()
-        self.scaxis_settings = {"marker": "o", "c": "#000000", "ms": 3.0}
-        self.sccirc_settings = {
-            "linewidths": 1.0,
-            "colors": "#000000",
-            "linestyles": "-",
+        self.check_settings = {
+            "m1point": True,
+            "m2point": True,
+            "m3point": True,
         }
 
         self.contour_check_settings = {
@@ -873,14 +880,53 @@ class FaultData(DataItem):
             "scangle": 10.0,
         }
 
+        self.arrow_settings = {
+            "lw": 1.0,
+            "ls": "-",
+            "arrowsize": radians(10),
+            "arrowcolor": "#4D4D4D",
+            "footwall": False,
+            "arrowstyle": "->,head_length=2.5,head_width=1",
+        }
+
+        self.slickenline_settings = {
+            "lw": 1.0,
+            "ls": "-",
+            "arrowsize": radians(10),
+            "arrowcolor": "#4D4D4D",
+            "footwall": False,
+            "arrowstyle": "->,head_length=2.5,head_width=1",
+        }
+
+        self.slip_settings = {
+            "lw": 1.0,
+            "ls": "-",
+            "arrowsize": radians(10),
+            "arrowcolor": "#4D4D4D",
+            "footwall": False,
+            "arrowstyle": "->,head_length=2.5,head_width=1",
+        }
+
         self.m1point_settings = {"marker": "*", "c": "#FF0000", "ms": 12.0}
         self.m2point_settings = {"marker": "*", "c": "#00FF00", "ms": 12.0}
         self.m3point_settings = {"marker": "*", "c": "#00FFFF", "ms": 12.0}
 
-        self.checklegend_settings = {"scaxis": True, "sccirc": True}
-        self.legend_settings = {"scaxis": "", "sccirc": ""}
+        self.checklegend_settings = {
+            "slickenlines": True,
+            "slip": True,
+            "m1point": True,
+            "m2point": True,
+            "m3point": True,
+        }
+        self.legend_settings = {
+            "slickenlines": "",
+            "slip": "",
+            "m1point": "",
+            "m2point": "",
+            "m3point": "",
+        }
 
-        self.data_settings = {}
+        self.data_settings = {"sense": True, "plane_id": None, "line_id": None}
 
     def set_root(self, root):
         self.root = root
@@ -928,18 +974,70 @@ class FaultData(DataItem):
         )
 
         for i, miv in enumerate(("m1point", "m2point", "m3point")):
-            legend_text = "{} ({})".format(
-                self.text(0), ["compressive", "intermediate", "distensive"][i]
-            )
-            plot_data.append(
-                PointPlotData(
-                    stress_directions[i],
-                    self.get_item_props(miv),
-                    True,
-                    legend_text,
+            if self.check_settings[miv]:
+                if self.legend_settings[miv]:
+                    legend_text = self.legend_settings[miv]
+                else:
+                    legend_text = "{} ({})".format(
+                        self.text(0),
+                        ["compressive", "intermediate", "distensive"][i],
+                    )
+                plot_data.append(
+                    PointPlotData(
+                        stress_directions[i],
+                        self.get_item_props(miv),
+                        self.checklegend_settings[miv],
+                        legend_text,
+                    )
                 )
-            )
         return plot_data
+
+    def plot_Slickenlines(self):
+        self.ensure_data()
+        if self.legend_settings["slickenlines"]:
+            # try:
+            #     legend_text = self.legend_settings["slickenlines"].format(
+            #         data=self.auttitude_data
+            #     )
+            # except:
+            legend_text = self.legend_settings["slickenlines"]
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0),
+                self.plot_item_name.get("slickenlines", "Slickenlines"),
+            )
+        return (
+            ArrowPlotData(
+                [self.line_item.au_object, self.plane_item.au_object],
+                self.slickenline_settings,
+                self.data_settings["sense"],
+                self.checklegend_settings["slickenlines"],
+                legend_text,
+            ),
+        )
+
+    def plot_Slip(self):
+        self.ensure_data()
+        if self.legend_settings["slip"]:
+            # try:
+            #     legend_text = self.legend_settings["slip"].format(
+            #         data=self.auttitude_data
+            #     )
+            # except:
+            legend_text = self.legend_settings["slip"]
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get("slip", "Slip")
+            )
+        return (
+            ArrowPlotData(
+                [self.plane_item.au_object, self.line_item.au_object],
+                self.slip_settings,
+                self.data_settings["sense"],
+                self.checklegend_settings["slip"],
+                legend_text,
+            ),
+        )
 
 
 # Hairspray & Alexander Hamilton
@@ -1060,11 +1158,11 @@ class SingleLine(DataItem):
 
     def get_attitude_Line(self):
         attitude = split_attitude(self.data_settings["attitude"])
-        translated_attitude = au.translate_attitude(
-            attitude[0], attitude[1], strike=self.data_settings["strike"]
-        )
+        # translated_attitude = au.translate_attitude(
+        #     attitude[0], attitude[1], strike=self.data_settings["strike"]
+        # )
         return au.Line.from_attitude(
-            *translated_attitude, strike=self.data_settings["strike"]
+            *attitude, strike=self.data_settings["strike"]
         )
 
     def _plot_Point(self):
@@ -1094,7 +1192,7 @@ class SingleSmallCircle(DataItem):
     data_type = "singlesc_data"
     plot_item_name = {"SC": "Small Circles"}
     default_checked = ["Axis", "Small Circles"]
-    properties_ui = smallcircle_Ui_Dialog
+    properties_ui = singlesmallcircle_Ui_Dialog
 
     def __init__(self, name, parent, item_id, data="", strike=False, **kwargs):
         super().__init__(name, parent, item_id)
@@ -1113,7 +1211,7 @@ class SingleSmallCircle(DataItem):
         self.checklegend_settings = {"scaxis": True, "sccirc": True}
         self.legend_settings = {"scaxis": "", "sccirc": ""}
 
-        self.data_settings = {}
+        self.data_settings = {"attitude": "", "strike": False}
 
     def reload_data(self):
         pass
@@ -1125,12 +1223,12 @@ class SingleSmallCircle(DataItem):
     def get_attitude_LineAlpha(self):
         attitude = split_attitude(self.data_settings["attitude"])
         alpha = radians(float(attitude[2]))
-        translated_attitude = au.translate_attitude(
-            attitude[0], attitude[1], strike=self.data_settings["strike"]
-        )
+        # translated_attitude = au.translate_attitude(
+        #     attitude[0], attitude[1], strike=self.data_settings["strike"]
+        # )
         return (
             au.Line.from_attitude(
-                *translated_attitude, strike=self.data_settings["strike"]
+                *attitude[:2], strike=self.data_settings["strike"]
             ),
             alpha,
         )
@@ -1194,7 +1292,7 @@ class Slope(DataItem):
     }
     item_order = {"Pole": 0, "GC": 1}
     default_checked = ["Great Circle", "Daylight Envelope", "Lateral Limits"]
-    properties_ui = smallcircle_Ui_Dialog
+    properties_ui = slope_Ui_Dialog
 
     def __init__(self, name, parent, item_id, data="", strike=False, **kwargs):
         super().__init__(name, parent, item_id)
@@ -1203,17 +1301,56 @@ class Slope(DataItem):
 
     def build_configuration(self):
         super().build_configuration()
-        self.scaxis_settings = {"marker": "o", "c": "#000000", "ms": 3.0}
-        self.sccirc_settings = {
-            "linewidths": 1.0,
-            "colors": "#000000",
+        self.point_settings = {"marker": "o", "c": "#000000", "ms": 3.0}
+        self.GC_settings = {
+            "linewidths": 0.8,
+            "colors": "#4D4D4D",
             "linestyles": "-",
         }
+        self.daylight_settings = {
+            "linewidths": 0.8,
+            "colors": "#4D4D4D",
+            "linestyles": "-",
+        }
+        self.lateral_settings = {
+            "linewidths": 0.8,
+            "colors": "#4D4D4D",
+            "linestyles": "-",
+        }
+        self.planecone_settings = {
+            "linewidths": 0.8,
+            "colors": "#4D4D4D",
+            "linestyles": "-",
+        }
+        self.polecone_settings = {
+            "linewidths": 0.8,
+            "colors": "#4D4D4D",
+            "linestyles": "-",
+        }
+        self.legend_settings = {
+            "point": "",
+            "GC": "",
+            "daylight": "",
+            "lateral": "",
+            "planecone": "",
+            "polecone": "",
+        }
 
-        self.checklegend_settings = {"scaxis": True, "sccirc": True}
-        self.legend_settings = {"scaxis": "", "sccirc": ""}
+        self.checklegend_settings = {
+            "point": True,
+            "GC": True,
+            "daylight": True,
+            "lateral": True,
+            "planecone": True,
+            "polecone": True,
+        }
 
-        self.data_settings = {"friction_angle": 30.0}
+        self.data_settings = {
+            "attitude": "",
+            "strike": False,
+            "friction": 30.0,
+            "lateral": 20.0,
+        }
 
     def reload_data(self):
         pass
@@ -1224,54 +1361,54 @@ class Slope(DataItem):
 
     def get_attitude_Plane(self):
         attitude = split_attitude(self.data_settings["attitude"])
-        translated_attitude = au.translate_attitude(
-            attitude[0], attitude[1], strike=self.data_settings["strike"]
-        )
+        # translated_attitude = au.translate_attitude(
+        #     attitude[0], attitude[1], strike=self.data_settings["strike"]
+        # )
         return au.Plane.from_attitude(
-            *translated_attitude, strike=self.data_settings["strike"]
+            *attitude, strike=self.data_settings["strike"]
         )
 
     def plot_Pole(self):
-        if self.legend_settings["scaxis"]:
+        if self.legend_settings["point"]:
             try:
-                legend_text = self.legend_settings["scaxis"].format(
+                legend_text = self.legend_settings["point"].format(
                     data=self.auttitude_data
                 )
             except:
-                legend_text = self.legend_settings["scaxis"]
+                legend_text = self.legend_settings["point"]
         else:
             legend_text = "{} ({})".format(
-                self.text(0), self.plot_item_name.get("scaxis", "scaxis")
+                self.text(0), self.plot_item_name.get("point", "Pole")
             )
         plane = self.get_attitude_Plane()
         return (
             PointPlotData(
                 plane,
-                self.scaxis_settings,
-                self.checklegend_settings["scaxis"],
+                self.point_settings,
+                self.checklegend_settings["point"],
                 legend_text,
             ),
         )
 
     def plot_GC(self):
         plot_items = []
-        if self.legend_settings["sccirc"]:
+        if self.legend_settings["GC"]:
             try:
-                legend_text = self.legend_settings["sccirc"].format(
+                legend_text = self.legend_settings["GC"].format(
                     data=self.auttitude_data
                 )
             except:
-                legend_text = self.legend_settings["sccirc"]
+                legend_text = self.legend_settings["GC"]
         else:
             legend_text = "{} ({})".format(
-                self.text(0), self.plot_item_name.get("SC", "Small Circle")
+                self.text(0), self.plot_item_name.get("GC", "Great Circle")
             )
         circle = self.get_attitude_Plane().get_great_circle()
         plot_items.append(
             CirclePlotData(
                 circle,
-                self.sccirc_settings,
-                self.checklegend_settings["sccirc"],
+                self.GC_settings,
+                self.checklegend_settings["GC"],
                 legend_text,
             )
         )
@@ -1295,30 +1432,32 @@ class Slope(DataItem):
         return (
             CirclePlotData(
                 (daylight_envelope,),
-                self.sccirc_settings,
-                self.checklegend_settings["sccirc"],
+                self.daylight_settings,
+                self.checklegend_settings["daylight"],
                 legend_text,
             ),
         )
 
     def plot_Lateral(self):
         direction = self.get_attitude_Plane().direction_vector
-        lateral_limits = direction.get_small_circle(alpha=radians(70.0))
+        lateral_limits = direction.get_small_circle(
+            alpha=radians(90.0 - self.data_settings["lateral"])
+        )
         legend_text = "{} ({})".format(
             self.text(0), self.plot_item_name.get("Lateral", "Lateral Limits")
         )
         return (
             CirclePlotData(
                 lateral_limits,
-                self.sccirc_settings,
-                self.checklegend_settings["sccirc"],
+                self.lateral_settings,
+                self.checklegend_settings["lateral"],
                 legend_text,
             ),
         )
 
     def plot_PoleFriction(self):
         vertical = au.Line([0.0, 0.0, 1.0])
-        alpha = radians(self.data_settings["friction_angle"])
+        alpha = radians(self.data_settings["friction"])
         sc = vertical.get_small_circle(alpha)
         legend_text = "{} ({})".format(
             self.text(0),
@@ -1327,15 +1466,15 @@ class Slope(DataItem):
         return (
             CirclePlotData(
                 sc,
-                self.sccirc_settings,
-                self.checklegend_settings["sccirc"],
+                self.polecone_settings,
+                self.checklegend_settings["polecone"],
                 legend_text,
             ),
         )
 
     def plot_PlaneFriction(self):
         vertical = au.Line([0.0, 0.0, 1.0])
-        alpha = radians(90.0 - self.data_settings["friction_angle"])
+        alpha = radians(90.0 - self.data_settings["friction"])
         sc = vertical.get_small_circle(alpha)
         legend_text = "{} ({})".format(
             self.text(0),
@@ -1344,9 +1483,8 @@ class Slope(DataItem):
         return (
             CirclePlotData(
                 sc,
-                self.sccirc_settings,
-                self.checklegend_settings["sccirc"],
+                self.planecone_settings,
+                self.checklegend_settings["planecone"],
                 legend_text,
             ),
         )
-

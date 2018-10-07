@@ -30,6 +30,7 @@ from openstereo.plot_data import (
     RosePlotData,
     PointPlotData,
     CirclePlotData,
+    ArrowPlotData,
     ContourPlotData,
     PetalsPlotData,
     KitePlotData,
@@ -273,8 +274,15 @@ class StereoPlot(PlotPanel):
                 plot_item.contour_check_settings,
                 plot_item.n,
             )
+        elif isinstance(plot_item, ArrowPlotData):
+            element = self.plot_arrow(
+                plot_item.data[0],
+                plot_item.data[1],
+                plot_item.arrow_settings,
+                sense=plot_item.sense,
+            )
         else:
-            element = plot_item.plot_data(self)
+            element = plot_item.plot_data(self)  # somewhat visitor pattern
         if plot_item.legend:
             self.legend_items.append((element, plot_item.legend_text))
         # old = self.plotFigure.get_size_inches()
@@ -352,6 +360,57 @@ class StereoPlot(PlotPanel):
         circle_segments.set_clip_path(self.circle)
         self.plotaxes.add_collection(circle_segments, autolim=True)
         return circle_segments
+
+    def plot_arrow(self, planes, lines, arrow_settings, sense):
+        for plane, line in zip(planes, lines):
+            arrow_from = (
+                cos(arrow_settings["arrowsize"] / 2.0) * plane
+                + sin(arrow_settings["arrowsize"] / 2.0) * line
+            )
+            arrow_to = (
+                cos(-arrow_settings["arrowsize"] / 2.0) * plane
+                + sin(-arrow_settings["arrowsize"] / 2.0) * line
+            )
+            if arrow_settings.get("footwall", False):
+                arrow_from, arrow_to = arrow_to, arrow_from
+            X, Y = self.project(
+                *np.transpose((arrow_from, arrow_to)), invert_positive=False
+            )
+            if not sense:
+                self.plotaxes.add_line(
+                    Line2D(
+                        X,
+                        Y,
+                        c=arrow_settings["arrowcolor"],
+                        label="_nolegend_",
+                        lw=arrow_settings["lw"],
+                        ls=arrow_settings["ls"],
+                    )
+                )
+            else:
+                a, b = (X[0], Y[0]), (X[1], Y[1])
+                self.plotaxes.add_patch(
+                    FancyArrowPatch(
+                        a,
+                        b,
+                        shrinkA=0.0,
+                        shrinkB=0.0,
+                        arrowstyle="->,head_length=2.5,head_width=1",
+                        connectionstyle="arc3,rad=0.0",
+                        mutation_scale=2.0,
+                        ec=arrow_settings["arrowcolor"],
+                        lw=arrow_settings["lw"],
+                        ls=arrow_settings["ls"],
+                    )
+                )
+        return Line2D(
+            X,
+            Y,
+            c=arrow_settings["arrowcolor"],
+            label="_nolegend_",
+            lw=arrow_settings["lw"],
+            ls=arrow_settings["ls"],
+        )
 
     def plot_cardinal(self):
         cpoints = np.array(
