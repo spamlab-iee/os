@@ -24,6 +24,9 @@ from openstereo.ui.circular_properties_ui import (
 from openstereo.ui.singleplane_properties_ui import (
     Ui_Dialog as singleplane_Ui_Dialog,
 )
+from openstereo.ui.singleline_properties_ui import (
+    Ui_Dialog as singleline_Ui_Dialog,
+)
 
 from openstereo.os_math import small_circle, great_circle
 from openstereo.os_auttitude import load, DirectionalData
@@ -1031,7 +1034,7 @@ class SinglePlane(DataItem):
 
 class SingleLine(DataItem):
     data_type = "singleline_data"
-    properties_ui = smallcircle_Ui_Dialog
+    properties_ui = singleline_Ui_Dialog
 
     def __init__(self, name, parent, item_id, data="", strike=False, **kwargs):
         super().__init__(name, parent, item_id)
@@ -1040,17 +1043,13 @@ class SingleLine(DataItem):
 
     def build_configuration(self):
         super().build_configuration()
-        self.scaxis_settings = {"marker": "o", "c": "#000000", "ms": 3.0}
-        self.sccirc_settings = {
-            "linewidths": 1.0,
-            "colors": "#000000",
-            "linestyles": "-",
-        }
+        self.point_settings = {"marker": "o", "c": "#000000", "ms": 3.0}
 
-        self.checklegend_settings = {"scaxis": True, "sccirc": True}
-        self.legend_settings = {"scaxis": "", "sccirc": ""}
+        self.legend_settings = {"point": ""}
 
-        self.data_settings = {}
+        self.checklegend_settings = {"point": True}
+
+        self.data_settings = {"attitude": "", "strike": False}
 
     def reload_data(self):
         pass
@@ -1069,23 +1068,23 @@ class SingleLine(DataItem):
         )
 
     def _plot_Point(self):
-        if self.legend_settings["scaxis"]:
+        if self.legend_settings["point"]:
             try:
-                legend_text = self.legend_settings["scaxis"].format(
+                legend_text = self.legend_settings["point"].format(
                     data=self.auttitude_data
                 )
             except:
-                legend_text = self.legend_settings["scaxis"]
+                legend_text = self.legend_settings["point"]
         else:
             legend_text = "{} ({})".format(
-                self.text(0), self.plot_item_name.get("scaxis", "scaxis")
+                self.text(0), self.plot_item_name.get("point", "Line")
             )
         line = self.get_attitude_Line()
         return (
             PointPlotData(
                 line,
-                self.scaxis_settings,
-                self.checklegend_settings["scaxis"],
+                self.point_settings,
+                self.checklegend_settings["point"],
                 legend_text,
             ),
         )
