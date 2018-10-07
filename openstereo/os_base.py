@@ -1030,6 +1030,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         os_qsettings.setValue("recentProjectList", projects)
         self.update_recent_projects()
 
+    # https://github.com/Werkov/PyQt4/blob/master/examples/mainwindows/recentfiles.py
     def update_recent_projects(self):
         projects = os_qsettings.value("recentProjectList", [])
 
