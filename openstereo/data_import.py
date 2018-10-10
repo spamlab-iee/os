@@ -127,17 +127,18 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
 
     def sniff_geoEAS(self, f):
         return False
-        self.title = f.readline().strip()
-        try:
-            nvars = int(f.readline())
-        except ValueError:
-            self.geoeas = False
-            f.seek(0)
-            return False
-        self.header = [f.readline().strip() for i in range(nvars)]
-        self.offset = f.tell()
-        self.geoeas = True
-        return True
+        # TODO: remove geoEAS support
+        # self.title = f.readline().strip()
+        # try:
+        #     nvars = int(f.readline())
+        # except ValueError:
+        #     self.geoeas = False
+        #     f.seek(0)
+        #     return False
+        # self.header = [f.readline().strip() for i in range(nvars)]
+        # self.offset = f.tell()
+        # self.geoeas = True
+        # return True
 
     def sniff_dialect(self):
         try:
