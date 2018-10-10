@@ -126,6 +126,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                     break
 
     def sniff_geoEAS(self, f):
+        return False
         self.title = f.readline().strip()
         try:
             nvars = int(f.readline())
@@ -139,7 +140,10 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         return True
 
     def sniff_dialect(self):
-        self.dialect = self.csv_sniffer.sniff(self.sample)
+        try:
+            self.dialect = self.csv_sniffer.sniff(self.sample)
+        except csv.Error:
+            self.dialect = csv.get_dialect("excel")
         return self.dialect
 
     def sniff_header(self, header):
@@ -215,9 +219,12 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 self.dialect = self.sniff_dialect()
                 self.delimiter.setText(repr(self.dialect.delimiter))
                 self.header = self.get_header()
-                if self.csv_sniffer.has_header(self.sample) or geoeas:
-                    self.has_header.setChecked(True)
-                else:
+                try:
+                    if self.csv_sniffer.has_header(self.sample) or geoeas:
+                        self.has_header.setChecked(True)
+                    else:
+                        self.has_header.setChecked(False)
+                except csv.Error:
                     self.has_header.setChecked(False)
                 self.header_row.setValue(0)
                 self.on_header_changed()

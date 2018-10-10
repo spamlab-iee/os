@@ -215,21 +215,21 @@ def universal_translator(
         #         strike=not dip_direction) for line in data if line
         # ])
     else:
-        translated_data = np.array(
-            [
-                au.translate_attitude(
-                    line[longitude_column], "45", strike=not dip_direction
-                )
-                for line in data
-                if line
-            ]
-        )[:, 0]
+        # translated_data = np.array(
+        #     [
+        #         au.translate_attitude(
+        #             line[longitude_column], "45", strike=not dip_direction
+        #         )
+        #         for line in data
+        #         if line
+        #     ]
+        # )[:, 0]
         for line in data:
             try:
                 translated_data.append(
                     au.translate_attitude(
                         line[longitude_column], "45", strike=not dip_direction
-                    )
+                    )[0]
                 )
             except ValueError:
                 continue
