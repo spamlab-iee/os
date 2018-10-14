@@ -1718,10 +1718,10 @@ def os_main():
     sys.excepthook = my_excepthook
 
     app = QtWidgets.QApplication(sys.argv)
-    locale = os_qsettings.value("locale", QtCore.QLocale.system().name())
-    qtTranslator = QtCore.QTranslator()
-    if qtTranslator.load("openstereo_" + locale, ":/i18n"):
-        app.installTranslator(qtTranslator)
+    # locale = os_qsettings.value("locale", QtCore.QLocale.system().name())
+    # qtTranslator = QtCore.QTranslator()
+    # if qtTranslator.load("openstereo_" + locale, ":/i18n"):
+    #     app.installTranslator(qtTranslator)
     main = Main()
     icon = QtGui.QIcon()
     icon.addPixmap(
