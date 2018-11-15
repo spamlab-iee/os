@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>287</width>
-    <height>499</height>
+    <width>310</width>
+    <height>552</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,11 +39,29 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QRadioButton" name="lines">
-        <property name="text">
-         <string>Lines</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QRadioButton" name="lines">
+          <property name="text">
+           <string>Lines</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="lineType">
+          <item>
+           <property name="text">
+            <string>Trend/Plunge</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Rake</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -157,7 +175,7 @@
      <property name="title">
       <string>Attitude Columns</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="longitude_label">
         <property name="text">
@@ -179,13 +197,23 @@
        <widget class="QComboBox" name="colatitude"/>
       </item>
       <item row="2" column="0">
+       <widget class="QLabel" name="rake_label">
+        <property name="text">
+         <string>Rake</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="rake"/>
+      </item>
+      <item row="3" column="0">
        <widget class="QLabel" name="alpha_label">
         <property name="text">
          <string>Alpha</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QComboBox" name="alpha"/>
       </item>
      </layout>
