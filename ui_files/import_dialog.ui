@@ -7,31 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>310</width>
-    <height>552</height>
+    <height>484</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Import Data</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLineEdit" name="fname">
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="browse">
-       <property name="text">
-        <string>Browse...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
@@ -48,7 +30,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="lineType">
+         <widget class="QComboBox" name="linetype">
           <item>
            <property name="text">
             <string>Trend/Plunge</string>

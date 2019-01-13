@@ -301,14 +301,16 @@ class StereoPlot(PlotPanel):
 
     def draw_plot(self):
         if self.legend_items:
-            self.plotaxes.legend(
+            L = self.plotaxes.legend(
                 *list(zip(*self.legend_items)),
                 bbox_to_anchor=(0.95, 0.95),
                 loc=2,
                 fontsize=self.settings.general_settings["fontsize"],
                 numpoints=1,
                 fancybox=True
-            ).draw_frame(False)
+            ) # .draw_frame(False)
+            # L.draw_frame(False)
+            # L.set_draggable(True)
         self.legend_items = []
         if self.drawn:
             self.plot_projection_net()
