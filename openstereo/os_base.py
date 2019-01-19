@@ -493,7 +493,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             return
         for fname in fnames:
             dialog = ImportDialog(
-                self, fname=fname, data_type=data_type, direction=direction
+                parent=self,
+                fname=fname,
+                data_type=data_type,
+                direction=direction,
+                rake=False,
             )
             fname = dialog.fname.text()
             data_type, letter = dialog.data_type
@@ -504,7 +508,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 data_name,
                 data_path=fname,
                 data=reader,
-                **dialog.import_kwargs
+                **dialog.importer.import_data()
             )
 
     def import_dialog(
@@ -523,7 +527,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if try_default and not fname:
             return
         dialog = ImportDialog(
-            self, fname=fname, data_type=data_type, direction=direction
+            parent=self,
+            fname=fname,
+            data_type=data_type,
+            direction=direction,
+            rake=False,
         )
         if try_default or dialog.exec_():
             fname = dialog.fname.text()
@@ -535,7 +543,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 data_name,
                 data_path=fname,
                 data=reader,
-                **dialog.import_kwargs
+                **dialog.importer.import_data()
             )
 
     def import_shapefile(self):
@@ -672,7 +680,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         webbrowser.open("http://openstereo.readthedocs.io")
 
     def show_tutorial(self):
-        webbrowser.open("https://openstereo.readthedocs.io/en/latest/tutorial.html")
+        webbrowser.open(
+            "https://openstereo.readthedocs.io/en/latest/tutorial.html"
+        )
 
     def show_about(self):
         msg = QtWidgets.QMessageBox()

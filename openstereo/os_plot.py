@@ -309,7 +309,7 @@ class StereoPlot(PlotPanel):
                 numpoints=1,
                 fancybox=True
             ) # .draw_frame(False)
-            # L.draw_frame(False)
+            L.draw_frame(False)
             # L.set_draggable(True)
         self.legend_items = []
         if self.drawn:
