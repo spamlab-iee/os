@@ -192,6 +192,8 @@ def universal_translator(
     colatitude=True,
     dip_direction=False,
     circular=False,
+    obliquity_column=2,
+    rake=False
 ):
     """Translates data from many different notations into dipdirection/dip,
     semi-automatically"""
@@ -199,15 +201,18 @@ def universal_translator(
     if not circular:
         for line in data:
             try:
-                translated_data.append(
+                translated_line = list(
                     au.translate_attitude(
                         line[longitude_column],
                         line[colatitude_column],
                         strike=not dip_direction,
                     )
                 )
+                if rake:
+                    translated_line.append(-float(line[obliquity_column]))
             except ValueError:
                 continue
+            translated_data.append(translated_line)
         # translated_data = np.array([
         #     au.translate_attitude(
         #         line[longitude_column],
@@ -268,6 +273,8 @@ interpret data as lines, instead of planes."""
     colatitude_column = kwargs.get("dip_column", 1)
     translate = kwargs.get("translate_data", True)
     circular = kwargs.get("circular", False)
+    rake = kwargs.get("rake", False)
+    obliquity_column = kwargs.get("obliquity_column", 2)
     converted_data = (
         universal_translator(
             input_data,
@@ -276,14 +283,19 @@ interpret data as lines, instead of planes."""
             colatitude=line,
             dip_direction=dip_direction,
             circular=circular,
+            rake=rake,
+            obliquity_column=obliquity_column
         )
         if translate
         else input_data
     )
     if not circular:
-        if not line:
-            converted_data = invert(converted_data)
-        vector_data = dcos_lines(converted_data)
+        if rake:
+            vector_data = au.dcos_rake(converted_data)
+        else:
+            if not line:
+                converted_data = invert(converted_data)
+            vector_data = dcos_lines(converted_data)
     else:
         vector_data = dcos_circular(converted_data)
     return DirectionalData(vector_data, *args, **kwargs)
@@ -375,11 +387,11 @@ class DirectionalData(object):
                 if self.data_circle is not None
                 else circle(data, kwargs.get("axial", False))
             )
-        try:
-            if kwargs.get("calculate_statistics", True) and self.n > 1:
-                self.initialize_statistics()
-        except ValueError:
-            pass
+        # try:
+        if kwargs.get("calculate_statistics", True) and self.n > 1:
+            self.initialize_statistics()
+        # except ValueError:
+        #     pass
         self._grid = None
         self._cgrid = None
 

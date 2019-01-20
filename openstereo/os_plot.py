@@ -48,7 +48,7 @@ from openstereo.os_math import (
     in_interval,
     au_clip_lines,
     au_join_segments,
-    au_close_polygon
+    au_close_polygon,
 )
 
 import auttitude as au
@@ -308,7 +308,7 @@ class StereoPlot(PlotPanel):
                 fontsize=self.settings.general_settings["fontsize"],
                 numpoints=1,
                 fancybox=True
-            ) # .draw_frame(False)
+            )  # .draw_frame(False)
             L.draw_frame(False)
             # L.set_draggable(True)
         self.legend_items = []
@@ -373,15 +373,18 @@ class StereoPlot(PlotPanel):
 
     def plot_polygons(self, polygons, polygon_settings):
         projected_polygons = [
-            au_close_polygon(np.transpose(
-                self.project(
-                    *np.transpose(segment), invert_positive=False#, rotate=False
+            au_close_polygon(
+                np.transpose(
+                    self.project(
+                        *np.transpose(segment),
+                        invert_positive=False  # , rotate=False
+                    )
                 )
-            ))
+            )
             for circle in polygons
-            for segment in au_join_segments(au_clip_lines(
-                np.dot(circle, self.projection.R.T)
-            ))
+            for segment in au_join_segments(
+                au_clip_lines(np.dot(circle, self.projection.R.T))
+            )
         ]
         polygon_segments = PolyCollection(
             projected_polygons, **polygon_settings
