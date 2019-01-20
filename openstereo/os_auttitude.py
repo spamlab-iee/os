@@ -375,9 +375,11 @@ class DirectionalData(object):
                 if self.data_circle is not None
                 else circle(data, kwargs.get("axial", False))
             )
-
-        if kwargs.get("calculate_statistics", True) and self.n > 1:
-            self.initialize_statistics()
+        try:
+            if kwargs.get("calculate_statistics", True) and self.n > 1:
+                self.initialize_statistics()
+        except ValueError:
+            pass
         self._grid = None
         self._cgrid = None
 
