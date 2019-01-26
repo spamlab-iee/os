@@ -11,6 +11,18 @@ from openstereo.ui.import_dialog_ui import Ui_Dialog as import_dialog_Ui_Dialog
 keep_chars = re.compile("\W+")
 
 
+def get_dialect_data(dialect):
+    return {
+        "delimiter": dialect.delimiter,
+        "doublequote": dialect.doublequote,
+        "escapechar": dialect.escapechar,
+        "lineterminator": dialect.lineterminator,
+        "quotechar": dialect.quotechar,
+        "quoting": dialect.quoting,
+        "skipinitialspace": dialect.skipinitialspace,
+    }
+
+
 # is this a good name?
 class Importer:
     direction_names = ["direction", "dipdirection", "dd", "clar", "dipdir"]
@@ -38,20 +50,21 @@ class Importer:
         self.csv_sniffer = csv.Sniffer()
 
         self.sample = None
-        self.ext = None
+        self.worksheet = None
 
         self.header = []
+
         self.dialect = (
-            None if dialect is not None else csv.get_dialect("excel")
-        )
+            dialect
+            if dialect is not None
+            else get_dialect_data(csv.get_dialect("excel"))
+        )  # TODO: set to none if non csv
 
         self.comment = self.default_comment
         # self.geoeas = False
 
         self.data_type = data_type if data_type is not None else "plane"
 
-        # if direction:
-        #     self.planetype.setCurrentIndex(1)
         self.direction = direction
         self.rake = rake
 
@@ -65,13 +78,15 @@ class Importer:
 
     def get_header(self):
         return getattr(
-            self, "get_header_{}".format(self.ext), self.get_header_csv
+            self,
+            "get_header_{}".format(self.ext.strip(".")),
+            self.get_header_csv,
         )()
 
     def get_header_csv(self):
         reader = csv.reader(  # should it really get it from sample?
             skip_comments(StringIO(self.sample), self.comment_marker),
-            self.dialect,  # should it skip comments?
+            **self.dialect,  # should it skip comments?
         )
         header_row = self.header_row
         if self.do_skip:
@@ -98,62 +113,81 @@ class Importer:
             self.sniff_columns_plane,
         )()
 
+    def normalize_column_name(self, column):
+        if isinstance(column, str):
+            return keep_chars.sub("", column).lower()
+        else:
+            return ""
+
     def sniff_columns_plane(self):
-        n_header = len(self.header)
+        n_header = len(self.header) - 1
         self.longitude = min(n_header, 0)
         self.colatitude = min(n_header, 1)
         self.alpha = None
         self.obliquity = None
 
         for i, column in enumerate(self.header):
-            if keep_chars.sub("", column).lower() in self.direction_names:
+            if self.normalize_column_name(column) in self.direction_names:
                 self.longitude = i
                 break
         for i, column in enumerate(self.header):
-            if keep_chars.sub("", column).lower() in self.dip_names:
+            if self.normalize_column_name(column) in self.dip_names:
                 self.colatitude = i
                 break
 
     def sniff_columns_line(self):
-        n_header = len(self.header)
+        n_header = len(self.header) - 1
         self.longitude = min(n_header, 0)
         self.colatitude = min(n_header, 1)
         self.alpha = None
         self.obliquity = None
 
         for i, column in enumerate(self.header):
-            if keep_chars.sub("", column).lower() in self.trend_names:
+            if self.normalize_column_name(column) in self.trend_names:
                 self.longitude = i
                 break
         for i, column in enumerate(self.header):
-            if keep_chars.sub("", column).lower() in self.plunge_names:
+            if self.normalize_column_name(column) in self.plunge_names:
                 self.colatitude = i
                 break
 
     def sniff_columns_rake(self):
         self.sniff_columns_plane()
-        n_header = len(self.header)
+        n_header = len(self.header) - 1
         self.obliquity = min(n_header, 2)
         for i, column in enumerate(self.header):
-            if keep_chars.sub("", column).lower() in self.obliquity_names:
+            if self.normalize_column_name(column) in self.obliquity_names:
                 self.obliquity = i
                 break
 
     def sniff_columns_smallcircle(self):
         self.sniff_columns_line()
-        n_header = len(self.header)
+        n_header = len(self.header) - 1
         self.alpha = min(n_header, 2)
         for i, column in enumerate(self.header):
-            if keep_chars.sub("", column).lower() in self.alpha_names:
+            if self.normalize_column_name(column) in self.alpha_names:
                 self.alpha = i
+                break
+
+    def sniff_columns_circular(self):
+        n_header = len(self.header) - 1
+        self.longitude = min(n_header, 0)
+        self.colatitude = None
+        self.alpha = None
+        self.obliquity = None
+        for i, column in enumerate(self.header):
+            if self.normalize_column_name(column) in self.trend_names:
+                self.longitude = i
                 break
 
     def sniff_dialect(self):
         self.sample = self.read_sample()
         try:
-            self.dialect = self.csv_sniffer.sniff(self.sample)
+            self.dialect = get_dialect_data(
+                self.csv_sniffer.sniff(self.sample)
+            )
         except csv.Error:
-            self.dialect = csv.get_dialect("excel")
+            self.dialect = get_dialect_data(csv.get_dialect("excel"))
         return self.dialect
 
     def sniff_header(self):  # is this OK?
@@ -174,7 +208,7 @@ class Importer:
                 read_length += len(sample)
                 if read_length > self.sample_size:
                     break
-        return "\n".join(sample)
+        return "".join(sample)
 
     def get_data(self):
         return getattr(
@@ -191,7 +225,7 @@ class Importer:
         if self.has_header:
             skip_rows += self.header_row + 1
         reader = csv.reader(
-            skip_comments(f, self.comment_marker), self.dialect
+            skip_comments(f, self.comment_marker), **self.dialect
         )
         for i in range(skip_rows):
             next(reader)
@@ -211,9 +245,14 @@ class Importer:
         return self.get_data_xlsx()
 
     def process_file(self):
-        getattr(
-            self, "process_file_{}".format(self.ext), self.process_file_csv
-        )()
+        if self.fname:
+            getattr(
+                self,
+                "process_file_{}".format(self.ext.strip(".")),
+                self.process_file_csv,
+            )()
+        else:
+            pass
 
     def process_file_csv(self):
         self.sample = self.read_sample()
@@ -224,7 +263,7 @@ class Importer:
 
     def process_file_xlsx(self):
         book = xlrd.open_workbook(self.fname)
-        self.worksheets = book.sheet_names()
+        self.worksheets = book.sheet_names()  # TODO: check if necessary
         self.worksheet = self.worksheets[0]
         self.header = self.get_header()  # how to set the worksheet to first?
         self.sniff_columns()
@@ -232,18 +271,21 @@ class Importer:
     def process_file_shp(self):
         pass
 
-    @property
-    def import_data(self):
-        data = {
+    def import_data(self):  # TODO: rework all this, rly
+        data = {  # TODO:  add direction, rake?
             "worksheet": self.worksheet,
             "keep_input": True,  # TODO: remove this
-            "line": self.lines or self.small_circle,
-            "data_type": self.data_type,
-            "dip_direction": not self.direction,
+            "line": True
+            if self.data_type in ["line", "smallcircle", "rake", "circular"]
+            else False,
+            "attitude_type": self.data_type,
+            "dip_direction": not self.direction,  # normalize
             "dipdir_column": self.longitude,
             "dip_column": self.colatitude,
             "alpha_column": self.alpha,
-            "circular": self.circular,
+            "obliquity_column": self.obliquity,
+            "circular": self.data_type == "circular",
+            "rake": self.data_type == "rake",
             "data_headers": self.header if self.has_header else None,
             "has_header": self.has_header,
             "header_row": self.header_row if self.has_header else None,
@@ -251,20 +293,8 @@ class Importer:
             "comment_marker": self.comment_marker,
         }
         if self.dialect is not None:
-            data["dialect_data"] = {
-                "delimiter": self.dialect.delimiter,
-                "doublequote": self.dialect.doublequote,
-                "escapechar": self.dialect.escapechar,
-                "lineterminator": self.dialect.lineterminator,
-                "quotechar": self.dialect.quotechar,
-                "quoting": self.dialect.quoting,
-                "skipinitialspace": self.dialect.skipinitialspace,
-            }
+            data["dialect_data"] = self.dialect
         return data
-
-    @import_data.setter
-    def import_data(self, kwargs):
-        pass
 
 
 class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
@@ -282,7 +312,18 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.importer = Importer(
             fname=fname, data_type=data_type, direction=direction, rake=rake
         )
+
+        if data_type:
+            self.data_type = data_type
+        if direction:
+            self.planetype.setCurrentIndex(1)
+        if rake:
+            self.linetype.setCurrentIndex(1)
+
         self.importer.process_file()
+
+        # if fname:
+        self.fname.setText(fname)
 
         self.comment_marker.setText(self.importer.comment)
         self.ext = self.importer.ext
@@ -303,14 +344,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.do_skip.stateChanged.connect(self.on_skip_rows)
         self.skip_rows.valueChanged.connect(self.on_skip_rows)
         self.on_type_changed()
-        if data_type:
-            self.data_type = data_type
-        if direction:
-            self.planetype.setCurrentIndex(1)
-        if rake:
-            self.linetype.setCurrentIndex(1)
-        # if fname:
-        self.fname.setText(fname)
+
         self.on_file_selected()
 
     # TODO: colapse these
@@ -329,7 +363,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         # self.dialect.delimiter = (
         #     str(self.delimiter.text()).strip("'").strip('"')
         # )
-        self.importer.dialect.delimiter = (
+        self.importer.dialect["delimiter"] = (
             str(self.delimiter.text()).strip("'").strip('"')
         )
         self.on_header_changed()
@@ -340,21 +374,23 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         if self.importer.ext in [".xls", ".xlsx"]:
             pass
         else:
-            self.importer.read_sample()
+            self.importer.sample = self.importer.read_sample()
         self.on_header_changed()
 
     def on_header_changed(self):
+        self.importer.has_header = self.has_header.isChecked()
+        self.importer.header_row = self.header_row.value()
         self.importer.header = self.importer.get_header()
         if self.has_header.isChecked():
             self.set_headers_on_dialog(self.importer.header)
         else:
             self.set_headers_on_dialog(list(range(len(self.importer.header))))
-        self.importer.sniff_columns()
+        self.on_type_changed()
         # endregion
 
     # region type changed
     def on_type_changed(self):
-        if (  # rewrite
+        if (
             self.lines.isChecked()
             or self.small_circle.isChecked()
             or self.circular.isChecked()
@@ -364,7 +400,15 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             self.colatitude_label.setText("Plunge")
             self.colatitude.setEnabled(not self.circular.isChecked())
             self.alpha.setEnabled(self.small_circle.isChecked())
-            self.rake.setEnabled(self.linetype.currentIndex() == 1)
+            if self.lines.isChecked() and self.linetype.currentIndex() == 1:
+                self.rake.setEnabled(True)
+                if self.planetype.currentIndex() == 0:
+                    self.longitude_label.setText("Dip Direction")
+                else:
+                    self.longitude_label.setText("Direction")
+                self.colatitude_label.setText("Dip")
+            else:
+                self.rake.setEnabled(False)
         elif self.planes.isChecked():
             if self.planetype.currentIndex() == 0:
                 self.longitude_label.setText("Dip Direction")
@@ -373,8 +417,37 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             self.longitude.setEnabled(True)
             self.colatitude_label.setText("Dip")
             self.colatitude.setEnabled(True)
+            self.rake.setEnabled(False)
             self.alpha.setEnabled(False)
+
+        self.importer.direction = False
+        if self.lines.isChecked():
+            if self.linetype.currentIndex() == 0:
+                self.importer.data_type = "line"
+            else:
+                self.importer.data_type = "rake"
+                if self.planetype.currentIndex() == 1:
+                    self.importer.direction = True
+        elif self.planes.isChecked():
+            self.importer.data_type = "plane"
+            if self.planetype.currentIndex() == 1:
+                self.importer.direction = True
+        elif self.small_circle.isChecked():
+            self.importer.data_type = "smallcircle"
+        elif self.circular.isEnabled():
+            self.importer.data_type = "circular"
+
         self.importer.sniff_columns()
+
+        if self.importer.longitude is not None:
+            self.longitude.setCurrentIndex(self.importer.longitude)
+        if self.importer.colatitude is not None:
+            self.colatitude.setCurrentIndex(self.importer.colatitude)
+        if self.importer.obliquity is not None:
+            self.rake.setCurrentIndex(self.importer.obliquity)
+        if self.importer.alpha is not None:
+            self.alpha.setCurrentIndex(self.importer.alpha)
+
     # end region
 
     # region file change
@@ -392,6 +465,8 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         if not path.exists(fname):
             return
         name, self.ext = path.splitext(fname)
+        self.importer.fname = fname
+        self.importer.ext = self.ext
         if self.ext in [".xls", ".xlsx"]:
             self.worksheet.clear()
             self.worksheet.setEnabled(True)
@@ -407,14 +482,16 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             for worksheet in worksheets:
                 self.worksheet.addItem(worksheet)
 
-            self.header = self.get_header()
-            if self.sniff_header(self.header):
+            # TODO: fix this madness!
+            self.header = self.importer.header = self.importer.get_header()
+            if self.importer.sniff_header():
                 self.has_header.setChecked(True)
+                self.importer.has_header = True
             else:
                 self.has_header.setChecked(False)
+                self.importer.has_header = False
 
-            self.on_worksheet_changed()
-            self.dialect = None
+            # self.on_worksheet_changed()
         elif self.ext in [".ply", ".shp"]:
             pass
         else:
@@ -431,7 +508,8 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             self.has_header.setEnabled(True)
             self.header_row.setEnabled(True)
 
-            self.delimiter.setText(repr(self.importer.dialect.delimiter))
+            self.delimiter.setText(repr(self.importer.dialect["delimiter"]))
+            self.importer.sample = self.importer.read_sample()
             self.header = self.importer.get_header()
             try:  # TODO: check if should use this or unified
                 if self.importer.csv_sniffer.has_header(self.importer.sample):
@@ -444,8 +522,10 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 self.has_header.setChecked(False)
                 self.importer.has_header = False
             self.header_row.setValue(0)
-            self.on_header_changed()
-            self.importer.sniff_columns()  # TODO: maybe add a method for this?
+        self.on_type_changed()
+        self.importer.process_file()
+        self.on_header_changed()
+
     # endregion
 
     # def update_importer(self):
@@ -476,22 +556,14 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             "comment_marker": self.comment_marker.text(),
         }
         if self.importer.dialect is not None:
-            kwargs["dialect_data"] = {
-                "delimiter": self.importer.dialect.delimiter,
-                "doublequote": self.importer.dialect.doublequote,
-                "escapechar": self.importer.dialect.escapechar,
-                "lineterminator": self.importer.dialect.lineterminator,
-                "quotechar": self.importer.dialect.quotechar,
-                "quoting": self.importer.dialect.quoting,
-                "skipinitialspace": self.importer.dialect.skipinitialspace,
-            }
+            kwargs["dialect_data"] = self.importer.dialect
         return kwargs
 
     # @import_kwargs.setter
     # def import_kwargs(self, kwargs):
     #     pass
 
-    @property
+    @property  # TODO: change this whole behaviour
     def data_type(self):
         if self.lines.isChecked():
             return "line_data", "L"
@@ -502,16 +574,20 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         elif self.planes.isChecked():
             return "plane_data", "P"
 
-    @data_type.setter
+    @data_type.setter  # This is madness...
     def data_type(self, data_type):
         if data_type == "line_data":
             self.lines.setChecked(True)
+            self.importer.data_type = "line"
         elif data_type == "smallcircle_data":
             self.small_circle.setChecked(True)
+            self.importer.data_type = "smallcircle"
         elif data_type == "circular_data":
             self.circular.setChecked(True)
+            self.importer.data_type = "circular"
         elif data_type == "plane_data":
             self.planes.setChecked(True)
+            self.importer.data_type = "plane"
         self.importer.data_type = data_type
 
     def get_data(self):
@@ -539,13 +615,14 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 skip_rows += self.header_row.value() + 1
             reader = csv.reader(
                 skip_comments(f, self.comment_marker.text()),
-                self.importer.dialect,
+                **self.importer.dialect,
             )
             for i in range(skip_rows):
                 next(reader)
             return reader
 
 
+# region old importer
 # TODO: Abstract away the specifics to allow easier integration of new types
 # class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
 #     direction_names = ["direction", "dipdirection", "dd", "clar"]
@@ -664,7 +741,6 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
 
 #     def sniff_geoEAS(self, f):
 #         return False
-#         # TODO: remove geoEAS support
 #         # self.title = f.readline().strip()
 #         # try:
 #         #     nvars = int(f.readline())
@@ -926,6 +1002,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
 #             for i in range(skip_rows):
 #                 next(reader)
 #             return reader
+# endregion
 
 
 def get_data(fname, kwargs):
