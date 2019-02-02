@@ -395,6 +395,8 @@ class StereoPlot(PlotPanel):
 
     def plot_arrow(self, planes, lines, arrow_settings, sense):
         for plane, line in zip(planes, lines):
+            if plane[-1] > 0:
+                plane = -plane
             arrow_from = (
                 cos(arrow_settings["arrowsize"] / 2.0) * plane
                 + sin(arrow_settings["arrowsize"] / 2.0) * line
