@@ -14,6 +14,7 @@ from tempfile import mkdtemp
 import traceback
 import webbrowser
 import codecs
+from math import degrees
 
 utf8_reader = codecs.getreader("utf-8")
 
@@ -35,6 +36,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 _translate = QtCore.QCoreApplication.translate
 
 import openstereo.os_auttitude as autti
+import auttitude as au
 from openstereo.data_import import get_data, ImportDialog
 from openstereo.data_models import (
     AttitudeData,
@@ -405,6 +407,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             "Ctrl+,", self, self.show_settings_dialog
         )
 
+        self.add_plane_shortcut = QtWidgets.QShortcut(
+            "Ctrl+1", self, self.add_single_plane_from_plot
+        )
+        self.add_line_shortcut = QtWidgets.QShortcut(
+            "Ctrl+2", self, self.add_single_line_from_plot
+        )
+        self.add_sc_shortcut = QtWidgets.QShortcut(
+            "Ctrl+3", self, self.add_single_sc_from_plot
+        )
+
         self.cb = QtWidgets.QApplication.clipboard()
 
         self.current_project = None
@@ -674,6 +686,65 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             name = "{} ({})".format(data_name, data)
             return self.import_data(
                 data_type=data_type, name=name, data=data, **kwargs
+            )
+
+    def add_single_plane_from_plot(self):
+        if self.projection_plot.last_from_measure is None:
+            return
+        else:
+            a = au.Plane(self.projection_plot.last_from_measure)
+        if self.projection_plot.last_to_measure is None:
+            dd, d = a.attitude
+            attitude = "{:.2f}/{:.2f}".format(dd, d)
+            name = "Plane ({})".format(attitude)
+            return self.import_data(
+                data_type="singleplane_data", name=name, data=attitude
+            )
+        else:
+            plane = au.Plane(a.normalized_cross_with(
+                self.projection_plot.last_to_measure
+            ))
+            dd, d = plane.attitude
+            attitude = "{:.2f}/{:.2f}".format(dd, d)
+            name = "Plane ({})".format(attitude)
+            return self.import_data(
+                data_type="singleplane_data", name=name, data=attitude
+            )
+
+    def add_single_line_from_plot(self):
+        if self.projection_plot.last_from_measure is None:
+            return
+        else:
+            a = au.Line(self.projection_plot.last_from_measure)
+        if self.projection_plot.last_to_measure is None:
+            tr, pl = a.attitude
+            attitude = "{:.2f}/{:.2f}".format(tr, pl)
+            name = "Line ({})".format(attitude)
+            return self.import_data(
+                data_type="singleline_data", name=name, data=attitude
+            )
+        else:
+            line = au.Line(a.normalized_cross_with(
+                self.projection_plot.last_to_measure
+            ))
+            tr, pl = line.attitude
+            attitude = "{:.2f}/{:.2f}".format(tr, pl)
+            name = "Line ({})".format(attitude)
+            return self.import_data(
+                data_type="singleline_data", name=name, data=attitude
+            )
+
+    def add_single_sc_from_plot(self):
+        if self.projection_plot.last_center is None:
+            return
+        else:
+            a = au.Line(self.projection_plot.last_center)
+            dd, d = a.attitude
+            theta = self.projection_plot.last_theta
+            attitude = "{:.2f}/{:.2f}/{:.2f}".format(dd, d, degrees(theta))
+            name = "Small Circle ({})".format(attitude)
+            return self.import_data(
+                data_type="singlesc_data", name=name, data=attitude
             )
 
     def show_documentation(self):

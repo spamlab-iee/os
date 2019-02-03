@@ -132,8 +132,14 @@ class StereoPlot(PlotPanel):
         self.measure_from = None
         self.measure_line = None
         self.measure_gc = None
+        self.measure_sc = None
+        self.button_pressed = None
         self.from_line = None
         self.to_line = None
+        self.last_center = None
+        self.last_theta = None
+        self.last_from_measure = None
+        self.last_to_measure = None
         self.connect_measure()
 
     def connect_measure(self):
@@ -158,18 +164,39 @@ class StereoPlot(PlotPanel):
         if x * x + y * y > 1.0:
             return
         self.background = self.plot_canvas.copy_from_bbox(self.plotaxes.bbox)
+        self.button_pressed = event.button
+        print(self.button_pressed)
         self.measure_from = x, y
+        a = au.Vector(self.projection.inverse(*self.measure_from))
+        self.last_from_measure = a
+        self.last_to_measure = None
+        self.last_center = None
+        self.last_theta = None
 
     def measure_release(self, event):
         self.measure_from = None
-        if self.measure_line is not None:
-            self.measure_line.remove()
+        try:
+            if self.measure_sc is not None:
+                self.measure_sc.remove()
+        except ValueError:
+            pass
+        try:
+            if self.measure_line is not None:
+                self.measure_line.remove()
+        except ValueError:
+            pass
+        try:
             if self.settings.check_settings["measurelinegc"]:
-                self.measure_gc.remove()
-                self.from_line.remove()
-                self.to_line.remove()
-            self.measure_line = None
-            self.plot_canvas.draw()
+                for line in [self.measure_gc, self.from_line, self.to_line]:
+                    if line is not None:
+                        line.remove()
+                # self.measure_gc.remove()
+                # self.from_line.remove()
+                # self.to_line.remove()
+        except ValueError:
+            pass
+        self.measure_line = None
+        self.plot_canvas.draw()
 
     # thanks forever to http://stackoverflow.com/a/8956211/1457481 for basics on blit
     def measure_motion(self, event):
@@ -177,11 +204,12 @@ class StereoPlot(PlotPanel):
             return
         if event.inaxes != self.plotaxes:
             return
-        a = np.array(self.projection.inverse(*self.measure_from))
+        a = self.last_from_measure
         x, y = event.xdata, event.ydata
         if x * x + y * y > 1:
             return
-        b = np.array(self.projection.inverse(event.xdata, event.ydata))
+        b = au.Vector(self.projection.inverse(event.xdata, event.ydata))
+        self.last_to_measure = b
         theta = acos(np.dot(a, b))
         theta_range = np.arange(0, theta, radians(1))
         sin_range = np.sin(theta_range)
@@ -195,6 +223,25 @@ class StereoPlot(PlotPanel):
         full_gc = self.projection.project_data(
             *great_circle_simple(c, pi).T, rotate=False
         )
+        if self.button_pressed == 3:
+            self.last_center = a
+            self.last_theta = theta
+            full_sc = self.projection.project_data(
+                *a.get_small_circle(theta)[0].T,
+                rotate=False,
+                invert_positive=False
+            )
+        else:
+            ab = (a + b)/2
+            ab /= ab.length
+            self.last_center = ab
+            self.last_theta = theta/2
+            full_sc = self.projection.project_data(
+                *ab.get_small_circle(theta/2)[0].T,
+                rotate=False,
+                invert_positive=False
+            )
+
         c_ = self.projection.project_data(*c, rotate=False)
 
         from_ = self.projection.project_data(
@@ -213,6 +260,11 @@ class StereoPlot(PlotPanel):
                 x, y, **self.settings.mLine_settings
             )
             self.measure_line.set_clip_path(self.circle)
+            if self.button_pressed in (2, 3):
+                self.measure_sc, = self.plotaxes.plot(
+                    *full_sc, **self.settings.mLine_settings
+                )
+                self.measure_sc.set_clip_path(self.circle)
             if self.settings.check_settings["measurelinegc"]:
                 self.measure_gc, = self.plotaxes.plot(
                     *full_gc, **self.settings.mGC_settings
@@ -228,6 +280,8 @@ class StereoPlot(PlotPanel):
                 self.to_line.set_clip_path(self.circle)
         else:
             self.measure_line.set_data(x, y)
+            if self.button_pressed in (2, 3):
+                self.measure_sc.set_data(*full_sc)
             if self.settings.check_settings["measurelinegc"]:
                 self.measure_gc.set_data(*full_gc)
                 self.from_line.set_data(*from_)
@@ -240,8 +294,11 @@ class StereoPlot(PlotPanel):
         self.plot_canvas.restore_region(self.background)
         if self.settings.check_settings["measurelinegc"]:
             self.plotaxes.draw_artist(self.measure_gc)
-            self.plotaxes.draw_artist(self.from_line)
-            self.plotaxes.draw_artist(self.to_line)
+            if self.button_pressed in (2, 3):
+                self.plotaxes.draw_artist(self.measure_sc)
+            else:
+                self.plotaxes.draw_artist(self.from_line)
+                self.plotaxes.draw_artist(self.to_line)
         self.plotaxes.draw_artist(self.measure_line)
         self.plot_canvas.blit(self.plotaxes.bbox)
 
