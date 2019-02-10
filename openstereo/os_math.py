@@ -5,7 +5,9 @@ import numpy as np
 
 import auttitude as au
 
-earth_radius = 6371000
+
+#https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
+earth_radius = 6371008.8
 
 
 # http://www.movable-type.co.uk/scripts/latlong.html
