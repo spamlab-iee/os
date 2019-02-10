@@ -166,7 +166,7 @@ class StereoPlot(PlotPanel):
             return
         self.background = self.plot_canvas.copy_from_bbox(self.plotaxes.bbox)
         self.button_pressed = event.button
-        print(self.button_pressed)
+        # print(self.button_pressed)
         self.measure_from = x, y
         a = au.Vector(self.projection.inverse(*self.measure_from))
         self.last_from_measure = a
