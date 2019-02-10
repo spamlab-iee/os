@@ -60,6 +60,7 @@ class DataItem(QtWidgets.QTreeWidgetItem):
     plot_item_name = {}
     default_checked = []
     item_order = {}
+    extractable_order = {}
 
     def __init__(self, name, parent, item_id=None):
         super(DataItem, self).__init__(parent)
@@ -103,8 +104,22 @@ class DataItem(QtWidgets.QTreeWidgetItem):
             ):
                 yield item_name
 
+    @property
+    def extractable_items(self):
+        items = [
+            (item_name[8:].replace("_", " "), getattr(self, item_name))
+            for item_name in dir(self)
+            if item_name.startswith("extract_")
+            and callable(getattr(self, item_name))
+        ]
+        items.sort(key=lambda x: self.extractable_order.get(x[0], 999))
+        return items
+
     def get_item(self, item_name):
         return getattr(self, "plot_" + item_name.replace(" ", "_"))
+
+    # def get_extractable_item(self, item_name):
+    #     return getattr(self, "extract_" + item_name.replace(" ", "_"))
 
     def get_item_props(self, item_name):
         return getattr(self, item_name.replace(" ", "_") + "_settings")
@@ -389,6 +404,13 @@ class CircularData(DataItem):
 class AttitudeData(CircularData):  # TODO: change name to VectorData
     data_type = "attitude_data"
     auttitude_class = au.VectorSet
+    singledata_auttitude_class = au.Vector
+    extractable_order = {
+        "Mean Vector": 0,
+        "First Eigenvector": 1,
+        "Second Eigenvector": 2,
+        "Third Eigenvector": 3,
+    }
 
     def build_configuration(self):
         super(AttitudeData, self).build_configuration()
@@ -738,6 +760,76 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
             ),
         )
 
+    def extract_Mean_Vector(self):
+        mean_vector = au.Vector(
+            self.auttitude_data.mean_vector
+            if not self.check_settings["meanpointeiv"]
+            else self.auttitude_data.concentrated_mean_vector
+        )
+        item_data = {
+            "singleline_data": {  # TODO: this is redundant!
+                "data_settings": {
+                    "attitude": "{}/{}".format(*mean_vector.attitude),
+                    "strike": False,
+                },
+                "point_settings": dict(self.meanpoint_settings),
+            }
+        }
+        return "singleline_data", item_data
+
+    def _extract_nth_Eigenvector(self, n):
+        attitude = au.Plane(self.auttitude_data.eigenvectors[n]).attitude
+        item_data = {
+            "singleplane_data": {
+                "data_settings": {
+                    "attitude": "{}/{}".format(*attitude),
+                    "strike": False,
+                },
+                "point_settings": dict(
+                    getattr(self, "v{}point_settings".format(n + 1))
+                ),
+                "GC_settings": dict(
+                    getattr(self, "v{}GC_settings".format(n + 1))
+                ),
+            }
+        }
+        return "singleplane_data", item_data
+
+    def extract_First_Eigenvector(self):
+        return self._extract_nth_Eigenvector(0)
+
+    def extract_Second_Eigenvector(self):
+        return self._extract_nth_Eigenvector(1)
+
+    def extract_Third_Eigenvector(self):
+        return self._extract_nth_Eigenvector(2)
+
+    def extract_Small_Circle(self):
+        data = self.auttitude_data.data
+        projection = self.treeWidget().window().projection()
+        if self.check_settings["concentratesc"]:
+            eiv = self.auttitude_data.eigenvectors[self.sccalc_settings["eiv"]]
+            data = data * np.where(data.dot(eiv) > 0, 1, -1)[:, None]
+        elif projection.settings.check_settings["rotate"]:
+            data = projection.rotate(*data.T).T
+            data = data * np.where(data[:, 2] > 0, -1, 1)[:, None]
+        axis, alpha = autti.small_circle_axis(data)
+        attitude = au.Vector(axis).attitude
+        alpha = degrees(alpha)
+        item_data = {
+            "singlesc_data": {  # TODO: this is redundant!
+                "data_settings": {
+                    "attitude": "{}/{}/{}".format(
+                        attitude[0], attitude[1], alpha
+                    ),
+                    "strike": False,
+                },
+                "scaxis_settings": dict(self.scaxis_settings),
+                "sccirc_settings": dict(self.sccirc_settings)
+            }
+        }
+        return "singlesc_data", item_data
+
 
 class PlaneData(AttitudeData):
     data_type = "plane_data"
@@ -746,6 +838,7 @@ class PlaneData(AttitudeData):
     default_checked = ["Poles", "Rose"]
     properties_ui = plane_Ui_Dialog
     auttitude_class = au.PlaneSet
+    singledata_auttitude_class = au.Plane
 
     def build_configuration(self):
         super(PlaneData, self).build_configuration()

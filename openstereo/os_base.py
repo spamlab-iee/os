@@ -690,6 +690,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 )
 
     def add_single_data(self, data_type, data_name, dialog_title, **kwargs):
+        # TODO: change the way data is stored to pave the way for internal data
         data, ok = QtWidgets.QInputDialog.getText(
             self, dialog_title, _translate("main", "Attitude:")
         )
@@ -698,6 +699,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             return self.import_data(
                 data_type=data_type, name=name, data=data, **kwargs
             )
+
+    def add_extracted_data(
+        self, data_name, source_dataset, data_type, item_data, **kwargs
+    ):
+        # TODO: add the name of the source data?
+        name = "{} ({})".format(data_name, source_dataset)
+        item = self.import_data(data_type=data_type, name=name, **kwargs)
+        item.item_settings = item_data
+        return item
 
     def add_single_plane_from_plot(self):
         if self.projection_plot.last_from_measure is None:
@@ -1082,7 +1092,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if diff_dialog.exec_():
             A = data_items[diff_dialog_ui.A.currentText()]
             fname, extension = QtWidgets.QFileDialog.getSaveFileName(
-                self, _translate("main", "Save difference vectors data"),
+                self,
+                _translate("main", "Save difference vectors data"),
                 "{} (diff).txt".format(A.text(0)),
                 filter="Text Files (*.txt);;All Files (*.*)",
             )
@@ -1780,6 +1791,14 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             _translate("main", "Reloaded data for {}").format(item.text(0))
         )
 
+    def extractor_factory(self, item_name, source_dataset, item_method):
+        def extractor():
+            return self.add_extracted_data(
+                item_name, source_dataset, *item_method()
+            )
+
+        return extractor
+
     def tree_context_menu(self, position):
         item = self.get_selected()
         if item is None:
@@ -1804,6 +1823,14 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         import_props_action = menu.addAction(
             _translate("main", "Import layer properties")
         )
+        menu.addSeparator()
+        extract_menu = menu.addMenu(_translate("main", "Extract..."))
+        extractable_items = item.extractable_items
+        for item_name, item_method in extractable_items:
+            item_action = extract_menu.addAction(item_name)
+            item_action.triggered.connect(
+                self.extractor_factory(item_name, item.text(0), item_method)
+            )
         menu.addSeparator()
         # merge_with_action = menu.addAction("Merge with...")
         # rotate_action = menu.addAction("Rotate...")
