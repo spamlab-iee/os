@@ -516,6 +516,8 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
             "v3GC": "",
         }
 
+        self.data_settings = {"smallcircle": ""}
+
     def reload_data(self):
         data = get_data(self.data_path, self.auttitude_data.kwargs)
         self.auttitude_data = load(data, **self.auttitude_data.kwargs)
@@ -562,7 +564,13 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
             elif projection.settings.check_settings["rotate"]:
                 data = projection.rotate(*data.T).T
                 data = data * np.where(data[:, 2] > 0, -1, 1)[:, None]
-            axis, alpha = autti.small_circle_axis(data)
+            axis, alpha, std = autti.small_circle_axis(data)
+            attitude = au.Vector(axis).attitude
+            self.data_settings[
+                "smallcircle"
+            ] = "{:.2f}/{:.2f}/{:.2f} +- {:.4f}".format(
+                attitude[0], attitude[1], degrees(alpha), std
+            )
             if self.check_settings["scaxis"]:
                 if self.legend_settings["scaxis"]:
                     try:
@@ -813,7 +821,7 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
         elif projection.settings.check_settings["rotate"]:
             data = projection.rotate(*data.T).T
             data = data * np.where(data[:, 2] > 0, -1, 1)[:, None]
-        axis, alpha = autti.small_circle_axis(data)
+        axis, alpha, std = autti.small_circle_axis(data)
         attitude = au.Vector(axis).attitude
         alpha = degrees(alpha)
         item_data = {
@@ -825,9 +833,14 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
                     "strike": False,
                 },
                 "scaxis_settings": dict(self.scaxis_settings),
-                "sccirc_settings": dict(self.sccirc_settings)
+                "sccirc_settings": dict(self.sccirc_settings),
             }
         }
+        self.data_settings[
+            "smallcircle"
+        ] = "{:.2f}/{:.2f}/{:.2f} +- {:.4f}".format(
+            attitude[0], attitude[1], alpha, std
+        )
         return "singlesc_data", item_data
 
 

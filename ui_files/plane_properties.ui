@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>632</width>
-    <height>502</height>
+    <height>541</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1176,6 +1176,9 @@
             </item>
            </layout>
           </item>
+          <item>
+           <widget class="QLineEdit" name="prop_data_smallcircle"/>
+          </item>
          </layout>
         </widget>
        </item>
@@ -2237,8 +2240,6 @@
       </layout>
       <zorder></zorder>
       <zorder>verticalSpacer</zorder>
-      <zorder>prop_rose_180half</zorder>
-      <zorder>prop_rose_check_180d</zorder>
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">

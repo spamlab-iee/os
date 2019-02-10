@@ -68,7 +68,10 @@ def populate_properties_dialog(
                 attribute = kwargs[widget_item][prop_name]
             else:
                 item_data = getattr(item, widget_item)
-                attribute = getattr(item_data, prop_name)
+                if not isinstance(item_data, dict):
+                    attribute = getattr(item_data, prop_name)
+                else:
+                    attribute = item_data[prop_name]
             if type(widget) == QtWidgets.QTextEdit:
                 widget.clear()
                 widget.insertPlainText(attribute)
@@ -121,6 +124,14 @@ def parse_properties_dialog(properties_ui, item, post_hook=None):
     if post_hook is not None:
         for f in post_hook:
             f()  # could pass self to post_hook?
+
+
+def apply_action_factory(main_window, item):
+    def apply_action():
+        if main_window.actionPlot_on_Apply.isChecked():
+            main_window.plot_data()
+        populate_properties_dialog(item.dialog_ui, item, update_data_only=True)
+    return apply_action
 
 
 def update_data_button_factory(item, post_hook=None):

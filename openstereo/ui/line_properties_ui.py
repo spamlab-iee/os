@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(632, 502)
+        Dialog.resize(632, 522)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.tabWidget = QtWidgets.QTabWidget(Dialog)
@@ -389,6 +389,9 @@ class Ui_Dialog(object):
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_14.addItem(spacerItem1)
         self.verticalLayout_7.addLayout(self.horizontalLayout_14)
+        self.prop_data_smallcircle = QtWidgets.QLineEdit(self.groupBox_11)
+        self.prop_data_smallcircle.setObjectName("prop_data_smallcircle")
+        self.verticalLayout_7.addWidget(self.prop_data_smallcircle)
         self.verticalLayout_17.addWidget(self.groupBox_11)
         self.horizontalLayout_3.addLayout(self.verticalLayout_17)
         self.tabWidget.addTab(self.tab, "")

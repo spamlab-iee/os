@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>632</width>
-    <height>502</height>
+    <height>522</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1126,6 +1126,9 @@
                </spacer>
               </item>
              </layout>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="prop_data_smallcircle"/>
             </item>
            </layout>
           </widget>

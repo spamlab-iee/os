@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(632, 502)
+        Dialog.resize(632, 541)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.tabWidget = QtWidgets.QTabWidget(Dialog)
@@ -413,6 +413,9 @@ class Ui_Dialog(object):
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_14.addItem(spacerItem)
         self.verticalLayout_7.addLayout(self.horizontalLayout_14)
+        self.prop_data_smallcircle = QtWidgets.QLineEdit(self.groupBox_11)
+        self.prop_data_smallcircle.setObjectName("prop_data_smallcircle")
+        self.verticalLayout_7.addWidget(self.prop_data_smallcircle)
         self.gridLayout_20.addWidget(self.groupBox_11, 1, 1, 1, 1)
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtWidgets.QWidget()
@@ -869,8 +872,6 @@ class Ui_Dialog(object):
         self.verticalLayout_8.addLayout(self.gridLayout_6)
         spacerItem7 = QtWidgets.QSpacerItem(20, 75, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_8.addItem(spacerItem7)
-        self.prop_rose_180half.raise_()
-        self.prop_rose_check_180d.raise_()
         self.tabWidget.addTab(self.roseDiagram, "")
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")

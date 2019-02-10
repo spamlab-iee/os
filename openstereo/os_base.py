@@ -76,6 +76,7 @@ from openstereo.ui.ui_interface import (
     populate_properties_dialog,
     update_data_button_factory,
     populate_item_table,
+    apply_action_factory
 )
 from openstereo.ui import waiting_effects
 from openstereo.ui import openstereo_rc
@@ -1647,17 +1648,18 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             item.dialog_ui.apply.clicked.connect(
                 lambda: parse_properties_dialog(item.dialog_ui, item)
             )
+
             # http://stackoverflow.com/a/20021646/1457481
-            item.dialog_ui.apply.clicked.connect(
-                lambda: self.plot_data()
-                if self.actionPlot_on_Apply.isChecked()
-                else None
-            )
+            apply_action = apply_action_factory(self, item)
+
+            item.dialog_ui.apply.clicked.connect(lambda: apply_action())
+
             item.dialog_ui.ok_button.clicked.connect(
                 lambda: self.plot_data()
                 if self.actionPlot_on_Accept.isChecked()
                 else None
             )
+
             populate_properties_dialog(item.dialog_ui, item)
         else:
             item.dialog.setWindowTitle(item.text(0))

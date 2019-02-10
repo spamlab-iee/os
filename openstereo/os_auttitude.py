@@ -1144,4 +1144,4 @@ def small_circle_axis(data, concentration_axis=None):
 
     angle_axis = np.arccos(np.abs(data.dot(axis)))
 
-    return axis, angle_axis.mean()
+    return axis, angle_axis.mean(), np.degrees(angle_axis).std()
