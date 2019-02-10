@@ -259,3 +259,13 @@ def au_close_polygon(projected_polygon):
     if np.linalg.norm(first) > 1.0 and np.linalg.norm(last) > 1.0:
         return np.vstack([projected_polygon, [2*last, 3*mid, 2*first]])
     return projected_polygon
+
+
+def extents_from_center(cx, cy, ex, ey, nx, ny, w, h):
+    dx = cx - ex
+    dy = cy - ny
+    left = -1.0 - ex/dx
+    right = (w - cx)/dx
+    top = 1.0 + ny/dy
+    bottom = -(h - cy)/dy
+    return (left, right, bottom, top)

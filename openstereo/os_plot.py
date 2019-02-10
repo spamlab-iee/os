@@ -3,7 +3,7 @@ from math import pi, sin, cos, acos, atan2, degrees, radians, sqrt
 import re
 
 from PyQt5 import QtWidgets
-from matplotlib.pyplot import colorbar
+from matplotlib.pyplot import colorbar, imread, get_cmap
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
@@ -49,6 +49,7 @@ from openstereo.os_math import (
     au_clip_lines,
     au_join_segments,
     au_close_polygon,
+    extents_from_center
 )
 
 import auttitude as au
@@ -232,12 +233,12 @@ class StereoPlot(PlotPanel):
                 invert_positive=False
             )
         else:
-            ab = (a + b)/2
+            ab = (a + b) / 2
             ab /= ab.length
             self.last_center = ab
-            self.last_theta = theta/2
+            self.last_theta = theta / 2
             full_sc = self.projection.project_data(
-                *ab.get_small_circle(theta/2)[0].T,
+                *ab.get_small_circle(theta / 2)[0].T,
                 rotate=False,
                 invert_positive=False
             )
@@ -287,10 +288,22 @@ class StereoPlot(PlotPanel):
                 self.from_line.set_data(*from_)
                 self.to_line.set_data(*to_)
 
-        self.plot_toolbar.set_message(
-            "Angle: %3.2f\nPlane: %05.1f/%04.1f"
-            % (degrees(theta), c_sphere[0], c_sphere[1])
-        )
+        if self.button_pressed in (2, 3):
+            self.plot_toolbar.set_message(
+                "Angle: {:3.2f}\nAxis: {:05.1f}/{:04.1f}".format(
+                    degrees(self.last_theta), *self.last_center.attitude
+                )
+            )
+        else:
+            self.plot_toolbar.set_message(
+                "Angle: {:3.2f}\nLine: {:05.1f}/{:04.1f} Plane: {:05.1f}/{:04.1f}".format(
+                    degrees(theta),
+                    (c_sphere[0] - 180) % 360,
+                    90 - c_sphere[1],
+                    c_sphere[0],
+                    c_sphere[1],
+                )
+            )
         self.plot_canvas.restore_region(self.background)
         if self.settings.check_settings["measurelinegc"]:
             self.plotaxes.draw_artist(self.measure_gc)
@@ -371,6 +384,7 @@ class StereoPlot(PlotPanel):
         self.legend_items = []
         if self.drawn:
             self.plot_projection_net()
+        # self.plot_image()
         self.plot_canvas.draw()
         self.drawn = True
 
@@ -502,6 +516,12 @@ class StereoPlot(PlotPanel):
             lw=arrow_settings["lw"],
             ls=arrow_settings["ls"],
         )
+
+    # def plot_image(self):
+    #     imfile = imread("C:/Users/arthur.endlein/Documents/projects/repos/os/A9 manual.JPG")
+    #     extent = extents_from_center(453, 451, 160, 0, 0, 159, 824, 780)
+    #     im = self.plotaxes.imshow(imfile, cmap=get_cmap('gray'), extent=extent)
+    #     im.set_clip_path(self.circle)
 
     def plot_cardinal(self):
         cpoints = np.array(
