@@ -66,6 +66,9 @@ from openstereo.ui.merge_data_ui import Ui_Dialog as merge_data_Ui_Dialog
 from openstereo.ui.openstereo_ui import Ui_MainWindow
 from openstereo.ui.os_settings_ui import Ui_Dialog as os_settings_Ui_Dialog
 from openstereo.ui.rotate_data_ui import Ui_Dialog as rotate_data_Ui_Dialog
+from openstereo.ui.difference_vectors_ui import (
+    Ui_Dialog as difference_vectors_Ui_Dialog,
+)
 from openstereo.ui.fault_data_ui import Ui_Dialog as fault_data_Ui_Dialog
 from openstereo.ui.item_table_ui import Ui_Dialog as item_table_Ui_Dialog
 from openstereo.ui.ui_interface import (
@@ -340,6 +343,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             self.import_mesh
         )
 
+        self.actionCalculate_difference_vectors.triggered.connect(
+            lambda: self.difference_vectors_dialog()
+        )
+
         self.recent_projects = []
         for i in range(self.max_recent_projects):
             self.recent_projects.append(
@@ -415,6 +422,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         self.add_sc_shortcut = QtWidgets.QShortcut(
             "Ctrl+3", self, self.add_single_sc_from_plot
+        )
+
+        self.add_diff_line_shortcut = QtWidgets.QShortcut(
+            "Shift+2", self, self.add_single_diff_line_from_plot
         )
 
         self.cb = QtWidgets.QApplication.clipboard()
@@ -701,9 +712,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 data_type="singleplane_data", name=name, data=attitude
             )
         else:
-            plane = au.Plane(a.normalized_cross_with(
-                self.projection_plot.last_to_measure
-            ))
+            plane = au.Plane(
+                a.normalized_cross_with(self.projection_plot.last_to_measure)
+            )
             dd, d = plane.attitude
             attitude = "{:.2f}/{:.2f}".format(dd, d)
             name = "Plane ({})".format(attitude)
@@ -724,12 +735,31 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 data_type="singleline_data", name=name, data=attitude
             )
         else:
-            line = au.Line(a.normalized_cross_with(
-                self.projection_plot.last_to_measure
-            ))
+            line = au.Line(
+                a.normalized_cross_with(self.projection_plot.last_to_measure)
+            )
             tr, pl = line.attitude
             attitude = "{:.2f}/{:.2f}".format(tr, pl)
             name = "Line ({})".format(attitude)
+            return self.import_data(
+                data_type="singleline_data", name=name, data=attitude
+            )
+
+    def add_single_diff_line_from_plot(self):
+        if self.projection_plot.last_from_measure is None:
+            return
+        else:
+            a = au.Line(self.projection_plot.last_from_measure)
+        if self.projection_plot.last_to_measure is None:
+            # TODO: message on toolbar
+            return
+        else:
+            b = self.projection_plot.last_to_measure
+            line = a - b
+            line /= line.length
+            tr, pl = line.attitude
+            attitude = "{:.2f}/{:.2f}".format(tr, pl)
+            name = "Difference Vector ({})".format(attitude)
             return self.import_data(
                 data_type="singleline_data", name=name, data=attitude
             )
@@ -1020,6 +1050,81 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 _translate("main", "Rotated item {} to {}").format(
                     A.text(0), rotated_name
                 )
+            )
+
+    def difference_vectors_dialog(self, current_item=None):
+        diff_dialog = QtWidgets.QDialog(self)
+        diff_dialog_ui = difference_vectors_Ui_Dialog()
+        diff_dialog_ui.setupUi(diff_dialog)
+        data_items = {
+            item.text(0): item
+            for item in self.get_data_items()
+            if isinstance(item, AttitudeData)
+        }
+        if not data_items:
+            self.statusBar().showMessage(
+                _translate("main", "No items to calculate difference vectors")
+            )
+            return
+        for item_name in list(data_items.keys()):
+            diff_dialog_ui.A.addItem(item_name)
+
+        if current_item is not None:
+            index = diff_dialog_ui.A.findText(current_item)
+            if index >= 0:
+                diff_dialog_ui.A.setCurrentIndex(index)
+
+        # rotate_dialog_ui.A.activated[str].connect(data_changed)
+        # rotate_dialog_ui.trend.valueChanged.connect(data_changed)
+        # rotate_dialog_ui.plunge.valueChanged.connect(data_changed)
+        # rotate_dialog_ui.angle.valueChanged.connect(data_changed)
+        # rotate_dialog_ui.browse.clicked.connect(on_browse)
+        if diff_dialog.exec_():
+            A = data_items[diff_dialog_ui.A.currentText()]
+            fname, extension = QtWidgets.QFileDialog.getSaveFileName(
+                self, _translate("main", "Save difference vectors data"),
+                "{} (diff).txt".format(A.text(0)),
+                filter="Text Files (*.txt);;All Files (*.*)",
+            )
+            if not fname:
+                return
+            diff_data = []
+            lengths = []
+            n = A.au_object.shape[0]
+            for i in range(n):
+                for j in range(i + 1, n):
+                    diff = A.au_object[i] - A.au_object[j]
+                    length = diff.length
+                    diff_data.append(diff / length)
+                    lengths.append(length)
+            m = len(diff_data)
+            diff_data = np.array(diff_data)[np.argsort(-np.array(lengths))]
+
+            if diff_dialog_ui.do_percentage.isChecked():
+                m_kept = int(
+                    m * diff_dialog_ui.percentage_largest.value() / 100.0
+                )
+            else:
+                m_kept = int(min(m, int(diff_dialog_ui.n_largest.text())))
+
+            diff_data = au.VectorSet(diff_data[:m_kept])
+
+            np.savetxt(fname, diff_data.attitude)
+
+            # if rotate_dialog_ui.keep.isChecked():
+            #     rotated_item = self.data_types[A.data_type](
+            #         name=rotated_name,
+            #         data_path=rotated_fname,
+            #         data=rotated_data,
+            #         parent=self.treeWidget,
+            #         item_id=self.assign_id(),
+            #         **A.kwargs
+            #     )
+            #     rotated_item.item_settings = A.item_settings
+            self.statusBar().showMessage(
+                _translate(
+                    "main", "Calculated difference vectors for {}"
+                ).format(A.text(0))
             )
 
     # @waiting_effects

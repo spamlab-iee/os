@@ -174,6 +174,8 @@ class Ui_MainWindow(object):
         self.actionRecent_Projects.setObjectName("actionRecent_Projects")
         self.actionTutorial = QtWidgets.QAction(MainWindow)
         self.actionTutorial.setObjectName("actionTutorial")
+        self.actionCalculate_difference_vectors = QtWidgets.QAction(MainWindow)
+        self.actionCalculate_difference_vectors.setObjectName("actionCalculate_difference_vectors")
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
@@ -202,6 +204,8 @@ class Ui_MainWindow(object):
         self.menuTools.addSeparator()
         self.menuTools.addAction(self.actionConvert_Shapefile_to_Azimuth_data)
         self.menuTools.addAction(self.actionConvert_Mesh_to_Plane_Data)
+        self.menuTools.addSeparator()
+        self.menuTools.addAction(self.actionCalculate_difference_vectors)
         self.menuHelp.addAction(self.actionAbout)
         self.menuHelp.addAction(self.actionDocumentation)
         self.menuHelp.addAction(self.actionTutorial)
@@ -277,4 +281,5 @@ class Ui_MainWindow(object):
         self.actionDocumentation.setText(_translate("MainWindow", "Documentation"))
         self.actionRecent_Projects.setText(_translate("MainWindow", "Recent Projects"))
         self.actionTutorial.setText(_translate("MainWindow", "Tutorial"))
+        self.actionCalculate_difference_vectors.setText(_translate("MainWindow", "Calculate difference vectors"))
 

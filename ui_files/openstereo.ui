@@ -182,6 +182,8 @@
     <addaction name="separator"/>
     <addaction name="actionConvert_Shapefile_to_Azimuth_data"/>
     <addaction name="actionConvert_Mesh_to_Plane_Data"/>
+    <addaction name="separator"/>
+    <addaction name="actionCalculate_difference_vectors"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -430,6 +432,11 @@
   <action name="actionTutorial">
    <property name="text">
     <string>Tutorial</string>
+   </property>
+  </action>
+  <action name="actionCalculate_difference_vectors">
+   <property name="text">
+    <string>Calculate difference vectors</string>
    </property>
   </action>
  </widget>
