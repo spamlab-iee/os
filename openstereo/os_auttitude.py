@@ -210,7 +210,7 @@ def universal_translator(
                 )
                 if rake:
                     translated_line.append(-float(line[obliquity_column]))
-            except ValueError:
+            except (ValueError, IndexError):
                 continue
             translated_data.append(translated_line)
         # translated_data = np.array([
@@ -236,7 +236,7 @@ def universal_translator(
                         line[longitude_column], "45", strike=not dip_direction
                     )[0]
                 )
-            except ValueError:
+            except (ValueError, IndexError):
                 continue
     return np.array(translated_data)
 

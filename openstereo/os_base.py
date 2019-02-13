@@ -37,7 +37,7 @@ _translate = QtCore.QCoreApplication.translate
 
 import openstereo.os_auttitude as autti
 import auttitude as au
-from openstereo.data_import import get_data, ImportDialog
+from openstereo.data_import import get_data, ImportDialog, Importer
 from openstereo.data_models import (
     AttitudeData,
     CircularData,
@@ -76,7 +76,7 @@ from openstereo.ui.ui_interface import (
     populate_properties_dialog,
     update_data_button_factory,
     populate_item_table,
-    apply_action_factory
+    apply_action_factory,
 )
 from openstereo.ui import waiting_effects
 from openstereo.ui import openstereo_rc
@@ -280,6 +280,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 direction=False,
                 dialog_title=_translate("main", "Import Azimuth data"),
             )
+        )
+
+        self.actionOpen_fault_data_Plane_Line_Sense.triggered.connect(
+            lambda: self.import_fault_data()
         )
 
         self.actionAdd_Plane.triggered.connect(
@@ -569,6 +573,48 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 data=reader,
                 **dialog.importer.import_data()
             )
+
+    def import_fault_data(self):
+        fnames, extension = QtWidgets.QFileDialog.getOpenFileNames(
+            self, "Import Fault Data (Plane/Line/Sense)"
+        )
+        if not fnames:
+            return
+        for fname in fnames:
+            importer = Importer(fname=fname, data_type="plane")
+            importer.process_file()
+            importer.longitude, importer.colatitude = 0, 1
+            planes_import_data = importer.import_data()
+            planes_data_reader = list(importer.get_data())
+            planes_data_name = "(P){}".format(path.basename(fname))
+            importer.longitude, importer.colatitude = 2, 3
+            importer.data_type = "line"
+            lines_import_data = importer.import_data()
+            lines_data_reader = list(importer.get_data())
+            lines_data_name = "(L){}".format(path.basename(fname))
+
+            planes_item = self.import_data(
+                "plane_data",
+                planes_data_name,
+                data_path=fname,
+                data=planes_data_reader,
+                **planes_import_data
+            )
+
+            lines_item = self.import_data(
+                "line_data",
+                lines_data_name,
+                data_path=fname,
+                data=lines_data_reader,
+                **lines_import_data
+            )
+
+
+            merged_name = _translate("main", "Faults ({})").format(fname)
+            faults_item = self.import_data(
+                "fault_data", merged_name, data=[planes_item, lines_item]
+            )
+            return planes_item, lines_item, faults_item
 
     def import_shapefile(self):
         fname, extension = QtWidgets.QFileDialog.getOpenFileName(

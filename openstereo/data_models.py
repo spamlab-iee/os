@@ -516,7 +516,7 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
             "v3GC": "",
         }
 
-        self.data_settings = {"smallcircle": ""}
+        self.data_settings = {"smallcircle": "", "sense_column": 0}
 
     def reload_data(self):
         data = get_data(self.data_path, self.auttitude_data.kwargs)

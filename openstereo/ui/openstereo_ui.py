@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_files\openstereo.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -75,6 +75,8 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
+        self.menuImport_Fault_Data = QtWidgets.QMenu(self.menuFile)
+        self.menuImport_Fault_Data.setObjectName("menuImport_Fault_Data")
         self.menuSettings = QtWidgets.QMenu(self.menubar)
         self.menuSettings.setObjectName("menuSettings")
         self.menuTools = QtWidgets.QMenu(self.menubar)
@@ -176,6 +178,15 @@ class Ui_MainWindow(object):
         self.actionTutorial.setObjectName("actionTutorial")
         self.actionCalculate_difference_vectors = QtWidgets.QAction(MainWindow)
         self.actionCalculate_difference_vectors.setObjectName("actionCalculate_difference_vectors")
+        self.actionOpen_fault_data_Plane_Line_Sense = QtWidgets.QAction(MainWindow)
+        self.actionOpen_fault_data_Plane_Line_Sense.setObjectName("actionOpen_fault_data_Plane_Line_Sense")
+        self.actionOpen_TectonicsFP_Fault_Data = QtWidgets.QAction(MainWindow)
+        self.actionOpen_TectonicsFP_Fault_Data.setObjectName("actionOpen_TectonicsFP_Fault_Data")
+        self.actionOpen_T_TECTO_Fault_Data = QtWidgets.QAction(MainWindow)
+        self.actionOpen_T_TECTO_Fault_Data.setObjectName("actionOpen_T_TECTO_Fault_Data")
+        self.menuImport_Fault_Data.addAction(self.actionOpen_fault_data_Plane_Line_Sense)
+        self.menuImport_Fault_Data.addAction(self.actionOpen_TectonicsFP_Fault_Data)
+        self.menuImport_Fault_Data.addAction(self.actionOpen_T_TECTO_Fault_Data)
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
@@ -189,6 +200,7 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionImport_Small_Circle_Data)
         self.menuFile.addAction(self.actionImport_Circular_Data_Trend)
         self.menuFile.addAction(self.actionImport)
+        self.menuFile.addAction(self.menuImport_Fault_Data.menuAction())
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionQuit)
         self.menuSettings.addAction(self.actionPlot_on_Apply)
@@ -238,6 +250,7 @@ class Ui_MainWindow(object):
         self.clearButton.setText(_translate("MainWindow", "Clear"))
         self.settingsButton.setText(_translate("MainWindow", "Settings"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
+        self.menuImport_Fault_Data.setTitle(_translate("MainWindow", "Import Fault Data"))
         self.menuSettings.setTitle(_translate("MainWindow", "Settings"))
         self.menuTools.setTitle(_translate("MainWindow", "Tools"))
         self.menuHelp.setTitle(_translate("MainWindow", "Help"))
@@ -282,4 +295,7 @@ class Ui_MainWindow(object):
         self.actionRecent_Projects.setText(_translate("MainWindow", "Recent Projects"))
         self.actionTutorial.setText(_translate("MainWindow", "Tutorial"))
         self.actionCalculate_difference_vectors.setText(_translate("MainWindow", "Calculate difference vectors"))
+        self.actionOpen_fault_data_Plane_Line_Sense.setText(_translate("MainWindow", "Open fault data (Dipdir/Dip // Trend/Plunge // Sense)"))
+        self.actionOpen_TectonicsFP_Fault_Data.setText(_translate("MainWindow", "Open TectonicsFP Fault Data"))
+        self.actionOpen_T_TECTO_Fault_Data.setText(_translate("MainWindow", "Open T-TECTO Fault Data"))
 

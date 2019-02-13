@@ -144,6 +144,14 @@
     <property name="title">
      <string>File</string>
     </property>
+    <widget class="QMenu" name="menuImport_Fault_Data">
+     <property name="title">
+      <string>Import Fault Data</string>
+     </property>
+     <addaction name="actionOpen_fault_data_Plane_Line_Sense"/>
+     <addaction name="actionOpen_TectonicsFP_Fault_Data"/>
+     <addaction name="actionOpen_T_TECTO_Fault_Data"/>
+    </widget>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
@@ -157,6 +165,7 @@
     <addaction name="actionImport_Small_Circle_Data"/>
     <addaction name="actionImport_Circular_Data_Trend"/>
     <addaction name="actionImport"/>
+    <addaction name="menuImport_Fault_Data"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -437,6 +446,21 @@
   <action name="actionCalculate_difference_vectors">
    <property name="text">
     <string>Calculate difference vectors</string>
+   </property>
+  </action>
+  <action name="actionOpen_fault_data_Plane_Line_Sense">
+   <property name="text">
+    <string>Open fault data (Dipdir/Dip // Trend/Plunge // Sense)</string>
+   </property>
+  </action>
+  <action name="actionOpen_TectonicsFP_Fault_Data">
+   <property name="text">
+    <string>Open TectonicsFP Fault Data</string>
+   </property>
+  </action>
+  <action name="actionOpen_T_TECTO_Fault_Data">
+   <property name="text">
+    <string>Open T-TECTO Fault Data</string>
    </property>
   </action>
  </widget>
