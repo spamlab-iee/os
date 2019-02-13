@@ -609,6 +609,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 **lines_import_data
             )
 
+            lines_item.data_settings["sense_column"] = 4
 
             merged_name = _translate("main", "Faults ({})").format(fname)
             faults_item = self.import_data(
