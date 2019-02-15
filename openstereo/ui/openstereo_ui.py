@@ -184,6 +184,8 @@ class Ui_MainWindow(object):
         self.actionOpen_TectonicsFP_Fault_Data.setObjectName("actionOpen_TectonicsFP_Fault_Data")
         self.actionOpen_T_TECTO_Fault_Data = QtWidgets.QAction(MainWindow)
         self.actionOpen_T_TECTO_Fault_Data.setObjectName("actionOpen_T_TECTO_Fault_Data")
+        self.actionAdd_Arc = QtWidgets.QAction(MainWindow)
+        self.actionAdd_Arc.setObjectName("actionAdd_Arc")
         self.menuImport_Fault_Data.addAction(self.actionOpen_fault_data_Plane_Line_Sense)
         self.menuImport_Fault_Data.addAction(self.actionOpen_TectonicsFP_Fault_Data)
         self.menuImport_Fault_Data.addAction(self.actionOpen_T_TECTO_Fault_Data)
@@ -227,6 +229,7 @@ class Ui_MainWindow(object):
         self.menuData.addAction(self.actionAdd_Small_Circle)
         self.menuData.addSeparator()
         self.menuData.addAction(self.actionAdd_Slope)
+        self.menuData.addAction(self.actionAdd_Arc)
         self.menuData.addAction(self.actionAssemble_Fault)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuData.menuAction())
@@ -298,4 +301,5 @@ class Ui_MainWindow(object):
         self.actionOpen_fault_data_Plane_Line_Sense.setText(_translate("MainWindow", "Open fault data (Dipdir/Dip // Trend/Plunge // Sense)"))
         self.actionOpen_TectonicsFP_Fault_Data.setText(_translate("MainWindow", "Open TectonicsFP Fault Data"))
         self.actionOpen_T_TECTO_Fault_Data.setText(_translate("MainWindow", "Open T-TECTO Fault Data"))
+        self.actionAdd_Arc.setText(_translate("MainWindow", "Add Arc"))
 

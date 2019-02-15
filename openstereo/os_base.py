@@ -48,6 +48,7 @@ from openstereo.data_models import (
 from openstereo.data_models import FaultData
 from openstereo.data_models import (
     SinglePlane,
+    SingleArc,
     SingleLine,
     SingleSmallCircle,
     Slope,
@@ -212,6 +213,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             CircularData,
             FaultData,
             SinglePlane,
+            SingleArc,
             SingleLine,
             SingleSmallCircle,
             Slope,
@@ -312,6 +314,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 "slope_data",
                 _translate("main", "Slope"),
                 dialog_title=_translate("main", "Add Slope"),
+            )
+        )
+        self.actionAdd_Arc.triggered.connect(
+            lambda: self.add_single_data(
+                "singlearc_data",
+                _translate("main", "Arc"),
+                dialog_title=_translate("main", "Add Arc"),
             )
         )
         self.actionAssemble_Fault.triggered.connect(
@@ -431,6 +440,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.add_diff_line_shortcut = QtWidgets.QShortcut(
             "Shift+2", self, self.add_single_diff_line_from_plot
+        )
+
+        self.add_arc_shortcut = QtWidgets.QShortcut(
+            "Shift+1", self, self.add_arc_from_plot
         )
 
         self.cb = QtWidgets.QApplication.clipboard()
@@ -801,6 +814,27 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             name = "Line ({})".format(attitude)
             return self.import_data(
                 data_type="singleline_data", name=name, data=attitude
+            )
+
+    def add_arc_from_plot(self):
+        if self.projection_plot.last_from_measure is None:
+            return
+        else:
+            a = au.Line(self.projection_plot.last_from_measure)
+        if self.projection_plot.last_to_measure is None:
+            # TODO: message on toolbar
+            return
+        else:
+            b = self.projection_plot.last_to_measure
+            tr_a, pl_a = a.attitude
+            tr_b, pl_b = b.attitude
+            attitude_a = "{:.2f}/{:.2f}".format(tr_a, pl_a)
+            attitude_b = "{:.2f}/{:.2f}".format(tr_b, pl_b)
+            name = "Arc from {} to {}".format(attitude_a, attitude_b)
+            return self.import_data(
+                data_type="singlearc_data",
+                name=name,
+                data="{},{}".format(attitude_a, attitude_b),
             )
 
     def add_single_diff_line_from_plot(self):

@@ -212,6 +212,7 @@
     <addaction name="actionAdd_Small_Circle"/>
     <addaction name="separator"/>
     <addaction name="actionAdd_Slope"/>
+    <addaction name="actionAdd_Arc"/>
     <addaction name="actionAssemble_Fault"/>
    </widget>
    <addaction name="menuFile"/>
@@ -461,6 +462,11 @@
   <action name="actionOpen_T_TECTO_Fault_Data">
    <property name="text">
     <string>Open T-TECTO Fault Data</string>
+   </property>
+  </action>
+  <action name="actionAdd_Arc">
+   <property name="text">
+    <string>Add Arc</string>
    </property>
   </action>
  </widget>

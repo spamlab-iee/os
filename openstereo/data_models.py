@@ -1143,7 +1143,14 @@ class FaultData(DataItem):
             "m3point": "",
         }
 
-        self.data_settings = {"sense": True, "plane_id": None, "line_id": None}
+        self.data_settings = {
+            "sense": True,
+            "plane_id": None,
+            "line_id": None,
+            "invertsense": False,
+            "sensecolumn": 0,
+            "sensecolumncheck": True,
+        }
 
     def set_root(self, root):
         self.root = root
@@ -1339,6 +1346,105 @@ class SinglePlane(DataItem):
         plot_items.append(
             CirclePlotData(
                 circle,
+                self.GC_settings,
+                self.checklegend_settings["GC"],
+                legend_text,
+            )
+        )
+        return plot_items
+
+
+class SingleArc(DataItem):
+    data_type = "singlearc_data"
+    # plot_item_name = {"GC": "Great Circle"}
+    item_order = {"Pole": 0, "GC": 1}
+    default_checked = ["Pole", "Arc"]
+    properties_ui = singleplane_Ui_Dialog
+
+    def __init__(self, name, parent, item_id, data="", strike=False, **kwargs):
+        super().__init__(name, parent, item_id)
+        self.data_settings["attitude"] = data
+        self.data_settings["strike"] = strike
+
+    def build_configuration(self):
+        super().build_configuration()
+        self.point_settings = {"marker": "o", "c": "#000000", "ms": 3.0}
+        self.GC_settings = {
+            "linewidths": 0.8,
+            "colors": "#4D4D4D",
+            "linestyles": "-",
+        }
+        self.legend_settings = {"point": "", "GC": ""}
+
+        self.checklegend_settings = {"point": True, "GC": True}
+
+        self.data_settings = {"attitude": "", "strike": False}
+
+    def reload_data(self):
+        pass
+
+    def change_attitude(self, data, strike=False):
+        self.data_settings["attitude"] = data
+        self.data_settings["strike"] = strike
+
+    def get_attitude_Plane(self):
+        A_attitude, B_attitude = self.data_settings["attitude"].split(",")
+        A = split_attitude(A_attitude)
+        B = split_attitude(B_attitude)
+        # translated_attitude = au.translate_attitude(
+        #     attitude[0], attitude[1], strike=self.data_settings["strike"]
+        # )
+        return (
+            au.Line.from_attitude(*A, strike=self.data_settings["strike"]),
+            au.Line.from_attitude(*B, strike=self.data_settings["strike"]),
+        )
+
+    def plot_Pole(self):
+        if self.legend_settings["point"]:
+            try:
+                legend_text = self.legend_settings["point"].format(
+                    data=self.auttitude_data
+                )
+            except:
+                legend_text = self.legend_settings["point"]
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get("point", "point")
+            )
+        A, B = self.get_attitude_Plane()
+        return (
+            PointPlotData(
+                A,
+                self.point_settings,
+                self.checklegend_settings["point"],
+                legend_text,
+            ),
+            PointPlotData(
+                B,
+                self.point_settings,
+                self.checklegend_settings["point"],
+                legend_text,
+            ),
+        )
+
+    def plot_Arc(self):
+        plot_items = []
+        if self.legend_settings["GC"]:
+            try:
+                legend_text = self.legend_settings["GC"].format(
+                    data=self.auttitude_data
+                )
+            except:
+                legend_text = self.legend_settings["GC"]
+        else:
+            legend_text = "{} ({})".format(
+                self.text(0), self.plot_item_name.get("GC", "Great Circle")
+            )
+        A, B = self.get_attitude_Plane()
+        # circle = self.get_attitude_Plane().get_great_circle()
+        plot_items.append(
+            CirclePlotData(
+                A.arc_to(B),
                 self.GC_settings,
                 self.checklegend_settings["GC"],
                 legend_text,
