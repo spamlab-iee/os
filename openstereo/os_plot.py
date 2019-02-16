@@ -147,6 +147,9 @@ class StereoPlot(PlotPanel):
         self.point_elements = []
         self.circle_elements = []
         self.drag_rotate_mode = False
+        self.current_rotation = np.eye(3)
+        self.last_rotation = np.eye(3)
+        self.last_rotation_I = np.eye(3)
 
     def connect_measure(self):
         "connect to all the events we need"
@@ -202,6 +205,9 @@ class StereoPlot(PlotPanel):
         except ValueError:
             pass
         self.measure_line = None
+        self.last_rotation = self.current_rotation
+        self.last_rotation_I = np.linalg.inv(self.current_rotation)
+        self.current_rotation = np.eye(3)
         self.plot_canvas.draw()
 
     # thanks forever to http://stackoverflow.com/a/8956211/1457481 for basics on blit
@@ -262,20 +268,23 @@ class StereoPlot(PlotPanel):
 
         if self.projection.settings.check_settings["rotate"]:
             c = self.projection.Ri.dot(c)
-            au_c = au_c.dot(self.projection.Ri.T)
+            au_c = au_c.dot(self.last_rotation.T).dot(self.projection.Ri.T)
         c_sphere = sphere(*c)
 
         if self.drag_rotate_mode:
-            rotation_axis = au_c.get_rotation_matrix(-theta)
+            rotation_matrix = self.last_rotation.dot(
+                au_c.get_rotation_matrix(-theta)
+            )
+            self.current_rotation = rotation_matrix
             for point, element in self.point_elements:
-                Xp, Yp = self.project(*(point.dot(rotation_axis)).T)
+                Xp, Yp = self.project(*(point.dot(rotation_matrix)).T)
                 element.set_data(Xp, Yp)
 
             for circles, element in self.circle_elements:
                 projected_circles = [
                     np.transpose(
                         self.project(
-                            *(circle.dot(rotation_axis)).T,
+                            *(circle.dot(rotation_matrix)).T,
                             invert_positive=False
                         )
                     )
@@ -407,6 +416,8 @@ class StereoPlot(PlotPanel):
     def clear_plot_element_data(self):
         self.point_elements = []
         self.circle_elements = []
+        self.last_rotation = np.eye(3)
+        self.last_rotation_I = self.last_rotation
 
     def draw_plot(self):
         if self.legend_items:
