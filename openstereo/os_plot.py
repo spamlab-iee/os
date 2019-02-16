@@ -49,7 +49,7 @@ from openstereo.os_math import (
     au_clip_lines,
     au_join_segments,
     au_close_polygon,
-    extents_from_center
+    extents_from_center,
 )
 
 import auttitude as au
@@ -143,6 +143,11 @@ class StereoPlot(PlotPanel):
         self.last_to_measure = None
         self.connect_measure()
 
+        # experimental
+        self.point_elements = []
+        self.circle_elements = []
+        self.drag_rotate_mode = False
+
     def connect_measure(self):
         "connect to all the events we need"
         self.cidpress = self.plotFigure.canvas.mpl_connect(
@@ -220,6 +225,9 @@ class StereoPlot(PlotPanel):
         )
         c = np.cross(a, b)
         c /= np.linalg.norm(c)
+
+        au_c = au.Vector(c)
+
         c = c if c[2] < 0.0 else -c
         full_gc = self.projection.project_data(
             *great_circle_simple(c, pi).T, rotate=False
@@ -254,7 +262,26 @@ class StereoPlot(PlotPanel):
 
         if self.projection.settings.check_settings["rotate"]:
             c = self.projection.Ri.dot(c)
+            au_c = au_c.dot(self.projection.Ri.T)
         c_sphere = sphere(*c)
+
+        if self.drag_rotate_mode:
+            rotation_axis = au_c.get_rotation_matrix(-theta)
+            for point, element in self.point_elements:
+                Xp, Yp = self.project(*(point.dot(rotation_axis)).T)
+                element.set_data(Xp, Yp)
+
+            for circles, element in self.circle_elements:
+                projected_circles = [
+                    np.transpose(
+                        self.project(
+                            *(circle.dot(rotation_axis)).T,
+                            invert_positive=False
+                        )
+                    )
+                    for circle in circles
+                ]
+                element.set_segments(projected_circles)
 
         if self.measure_line is None:  # make configurable
             self.measure_line, = self.plotaxes.plot(
@@ -313,6 +340,12 @@ class StereoPlot(PlotPanel):
                 self.plotaxes.draw_artist(self.from_line)
                 self.plotaxes.draw_artist(self.to_line)
         self.plotaxes.draw_artist(self.measure_line)
+        # experimental
+        if self.drag_rotate_mode:
+            for point, element in self.point_elements:
+                self.plotaxes.draw_artist(element)
+            for circles, element in self.circle_elements:
+                self.plotaxes.draw_artist(element)
         self.plot_canvas.blit(self.plotaxes.bbox)
 
     def read_plot(self, X, Y):
@@ -335,10 +368,12 @@ class StereoPlot(PlotPanel):
             element = self.plot_points(
                 plot_item.data, plot_item.point_settings
             )
+            self.point_elements.append((plot_item.data, element))
         elif isinstance(plot_item, CirclePlotData):
             element = self.plot_circles(
                 plot_item.data, plot_item.circle_settings
             )
+            self.circle_elements.append((plot_item.data, element))
         elif isinstance(plot_item, ContourPlotData):
             element = self.plot_contours(
                 plot_item.nodes,
@@ -368,6 +403,10 @@ class StereoPlot(PlotPanel):
         # self.plotFigure.savefig("test.png")
         # self.plotFigure.set_size_inches(old)
         # print self.plotFigure.get_size_inches()
+
+    def clear_plot_element_data(self):
+        self.point_elements = []
+        self.circle_elements = []
 
     def draw_plot(self):
         if self.legend_items:

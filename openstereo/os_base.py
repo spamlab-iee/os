@@ -446,6 +446,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             "Shift+1", self, self.add_arc_from_plot
         )
 
+        # experimental
+        self.set_drag_rotate_mode_shortcut = QtWidgets.QShortcut(
+            "Ctrl+R", self, self.set_drag_rotate_mode
+        )
+
         self.cb = QtWidgets.QApplication.clipboard()
 
         self.current_project = None
@@ -622,12 +627,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 **lines_import_data
             )
 
-            lines_item.data_settings["sense_column"] = 4
-
             merged_name = _translate("main", "Faults ({})").format(fname)
             faults_item = self.import_data(
                 "fault_data", merged_name, data=[planes_item, lines_item]
             )
+            faults_item.data_settings["sensecolumn"] = 4
             return planes_item, lines_item, faults_item
 
     def import_shapefile(self):
@@ -1223,6 +1227,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     # @waiting_effects
     def plot_data(self):
         self.statusBar().showMessage(_translate("main", "Plotting data..."))
+
+        # experimental
+        if self.tabWidget.currentIndex() == 0:
+            self.projection_plot.clear_plot_element_data()
+
         for index in range(self.treeWidget.topLevelItemCount() - 1, -1, -1):
             item = self.treeWidget.topLevelItem(index)
             if item.checkState(0):
@@ -1270,6 +1279,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             CirclePlotData(gc, self.OS_settings.GC_settings),
             CirclePlotData(sc, self.OS_settings.SC_settings),
         )
+
+    def set_drag_rotate_mode(self):
+        if not self.projection_plot.drag_rotate_mode:
+            self.statusBar().showMessage(
+                "Drag rotation mode enabled (Ctrl+R to disable)."
+            )
+            self.projection_plot.drag_rotate_mode = True
+        else:
+            self.statusBar().showMessage("Drag rotation mode disabled.")
+            self.projection_plot.drag_rotate_mode = False
 
     def new_project(self):
         self.remove_all()
