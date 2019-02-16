@@ -176,6 +176,7 @@
     <addaction name="actionPlot_on_Apply"/>
     <addaction name="actionPlot_on_Accept"/>
     <addaction name="actionPlot_on_Update_Table"/>
+    <addaction name="actionRotate_on_Drag"/>
     <addaction name="separator"/>
     <addaction name="actionSettings"/>
     <addaction name="actionChange_Language"/>
@@ -467,6 +468,14 @@
   <action name="actionAdd_Arc">
    <property name="text">
     <string>Add Arc</string>
+   </property>
+  </action>
+  <action name="actionRotate_on_Drag">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Rotate on Drag</string>
    </property>
   </action>
  </widget>

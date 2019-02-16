@@ -341,6 +341,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.actionChange_Language.triggered.connect(self.show_language_dialog)
 
+        self.actionRotate_on_Drag.triggered.connect(self.set_drag_rotate_mode)
+
         self.actionUnpack_Project_to.triggered.connect(self.unpack_data_dialog)
 
         self.actionMerge_Data.triggered.connect(
@@ -1286,9 +1288,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 "Drag rotation mode enabled (Ctrl+R to disable)."
             )
             self.projection_plot.drag_rotate_mode = True
+            self.actionRotate_on_Drag.setChecked(True)
         else:
             self.statusBar().showMessage("Drag rotation mode disabled.")
             self.projection_plot.drag_rotate_mode = False
+            self.actionRotate_on_Drag.setChecked(False)
 
     def new_project(self):
         self.remove_all()

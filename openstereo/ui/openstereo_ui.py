@@ -186,6 +186,9 @@ class Ui_MainWindow(object):
         self.actionOpen_T_TECTO_Fault_Data.setObjectName("actionOpen_T_TECTO_Fault_Data")
         self.actionAdd_Arc = QtWidgets.QAction(MainWindow)
         self.actionAdd_Arc.setObjectName("actionAdd_Arc")
+        self.actionRotate_on_Drag = QtWidgets.QAction(MainWindow)
+        self.actionRotate_on_Drag.setCheckable(True)
+        self.actionRotate_on_Drag.setObjectName("actionRotate_on_Drag")
         self.menuImport_Fault_Data.addAction(self.actionOpen_fault_data_Plane_Line_Sense)
         self.menuImport_Fault_Data.addAction(self.actionOpen_TectonicsFP_Fault_Data)
         self.menuImport_Fault_Data.addAction(self.actionOpen_T_TECTO_Fault_Data)
@@ -208,6 +211,7 @@ class Ui_MainWindow(object):
         self.menuSettings.addAction(self.actionPlot_on_Apply)
         self.menuSettings.addAction(self.actionPlot_on_Accept)
         self.menuSettings.addAction(self.actionPlot_on_Update_Table)
+        self.menuSettings.addAction(self.actionRotate_on_Drag)
         self.menuSettings.addSeparator()
         self.menuSettings.addAction(self.actionSettings)
         self.menuSettings.addAction(self.actionChange_Language)
@@ -302,4 +306,5 @@ class Ui_MainWindow(object):
         self.actionOpen_TectonicsFP_Fault_Data.setText(_translate("MainWindow", "Open TectonicsFP Fault Data"))
         self.actionOpen_T_TECTO_Fault_Data.setText(_translate("MainWindow", "Open T-TECTO Fault Data"))
         self.actionAdd_Arc.setText(_translate("MainWindow", "Add Arc"))
+        self.actionRotate_on_Drag.setText(_translate("MainWindow", "Rotate on Drag"))
 
