@@ -762,7 +762,11 @@ Spherical Mode:
 
     @property
     def statistics(self):
-        return str(self)
+        try:
+            return str(self)
+        except:
+            return """\
+Statistics couldn't be calculated."""
 
     @property
     def source(self):
