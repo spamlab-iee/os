@@ -149,6 +149,7 @@
       <string>Import Fault Data</string>
      </property>
      <addaction name="actionOpen_fault_data_Plane_Line_Sense"/>
+     <addaction name="actionOpen_fault_data_PlaneDir_Line_Sense"/>
      <addaction name="actionOpen_TectonicsFP_Fault_Data"/>
      <addaction name="actionOpen_T_TECTO_Fault_Data"/>
     </widget>
@@ -476,6 +477,11 @@
    </property>
    <property name="text">
     <string>Rotate on Drag</string>
+   </property>
+  </action>
+  <action name="actionOpen_fault_data_PlaneDir_Line_Sense">
+   <property name="text">
+    <string>Open fault data (Dir/Dip // Trend/Plunge // Sense)</string>
    </property>
   </action>
  </widget>

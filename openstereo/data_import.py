@@ -469,6 +469,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             self.rake.setCurrentIndex(self.importer.obliquity)
         if self.importer.alpha is not None:
             self.alpha.setCurrentIndex(self.importer.alpha)
+
     # end region
 
     # region file change

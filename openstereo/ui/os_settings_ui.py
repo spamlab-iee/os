@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_files\os_settings.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -25,7 +25,6 @@ class Ui_Dialog(object):
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.tab)
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.groupBox_2 = QtWidgets.QGroupBox(self.tab)
         self.groupBox_2.setObjectName("groupBox_2")
@@ -232,7 +231,6 @@ class Ui_Dialog(object):
         self.roseDiagram = QtWidgets.QWidget()
         self.roseDiagram.setObjectName("roseDiagram")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.roseDiagram)
-        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
         self.groupBox_8 = QtWidgets.QGroupBox(self.roseDiagram)
         self.groupBox_8.setObjectName("groupBox_8")
@@ -336,7 +334,6 @@ class Ui_Dialog(object):
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.tab_2)
-        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setFieldGrowthPolicy(QtWidgets.QFormLayout.AllNonFixedFieldsGrow)

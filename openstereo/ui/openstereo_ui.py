@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_files\openstereo.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -189,7 +189,10 @@ class Ui_MainWindow(object):
         self.actionRotate_on_Drag = QtWidgets.QAction(MainWindow)
         self.actionRotate_on_Drag.setCheckable(True)
         self.actionRotate_on_Drag.setObjectName("actionRotate_on_Drag")
+        self.actionOpen_fault_data_PlaneDir_Line_Sense = QtWidgets.QAction(MainWindow)
+        self.actionOpen_fault_data_PlaneDir_Line_Sense.setObjectName("actionOpen_fault_data_PlaneDir_Line_Sense")
         self.menuImport_Fault_Data.addAction(self.actionOpen_fault_data_Plane_Line_Sense)
+        self.menuImport_Fault_Data.addAction(self.actionOpen_fault_data_PlaneDir_Line_Sense)
         self.menuImport_Fault_Data.addAction(self.actionOpen_TectonicsFP_Fault_Data)
         self.menuImport_Fault_Data.addAction(self.actionOpen_T_TECTO_Fault_Data)
         self.menuFile.addAction(self.actionNew)
@@ -307,4 +310,5 @@ class Ui_MainWindow(object):
         self.actionOpen_T_TECTO_Fault_Data.setText(_translate("MainWindow", "Open T-TECTO Fault Data"))
         self.actionAdd_Arc.setText(_translate("MainWindow", "Add Arc"))
         self.actionRotate_on_Drag.setText(_translate("MainWindow", "Rotate on Drag"))
+        self.actionOpen_fault_data_PlaneDir_Line_Sense.setText(_translate("MainWindow", "Open fault data (Dir/Dip // Trend/Plunge // Sense)"))
 

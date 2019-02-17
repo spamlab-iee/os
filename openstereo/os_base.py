@@ -288,6 +288,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             lambda: self.import_fault_data()
         )
 
+        self.actionOpen_fault_data_PlaneDir_Line_Sense.triggered.connect(
+            lambda: self.import_fault_data(direction=True)
+        )
+
         self.actionAdd_Plane.triggered.connect(
             lambda: self.add_single_data(
                 "singleplane_data",
@@ -594,14 +598,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 **dialog.importer.import_data()
             )
 
-    def import_fault_data(self):
+    def import_fault_data(self, direction=False):
         fnames, extension = QtWidgets.QFileDialog.getOpenFileNames(
             self, "Import Fault Data (Plane/Line/Sense)"
         )
         if not fnames:
             return
         for fname in fnames:
-            importer = Importer(fname=fname, data_type="plane")
+            importer = Importer(
+                fname=fname, data_type="plane", direction=direction
+            )
             importer.process_file()
             importer.longitude, importer.colatitude = 0, 1
             planes_import_data = importer.import_data()
@@ -609,6 +615,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             planes_data_name = "(P){}".format(path.basename(fname))
             importer.longitude, importer.colatitude = 2, 3
             importer.data_type = "line"
+            importer.direction = False
             lines_import_data = importer.import_data()
             lines_data_reader = list(importer.get_data())
             lines_data_name = "(L){}".format(path.basename(fname))
