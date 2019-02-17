@@ -343,6 +343,12 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.header_row.valueChanged.connect(self.on_header_changed)
         self.do_skip.stateChanged.connect(self.on_skip_rows)
         self.skip_rows.valueChanged.connect(self.on_skip_rows)
+
+        self.longitude.currentIndexChanged.connect(self.on_column_change)
+        self.colatitude.currentIndexChanged.connect(self.on_column_change)
+        self.rake.currentIndexChanged.connect(self.on_column_change)
+        self.alpha.currentIndexChanged.connect(self.on_column_change)
+
         self.on_type_changed()
 
         self.on_file_selected()
@@ -447,7 +453,6 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             self.rake.setCurrentIndex(self.importer.obliquity)
         if self.importer.alpha is not None:
             self.alpha.setCurrentIndex(self.importer.alpha)
-
     # end region
 
     # region file change
@@ -525,6 +530,15 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         self.on_type_changed()
         self.importer.process_file()
         self.on_header_changed()
+
+    # endregion
+
+    # region data settings
+    def on_column_change(self):
+        self.importer.longitude = self.longitude.currentIndex()
+        self.importer.colatitude = self.colatitude.currentIndex()
+        self.importer.obliquity = self.rake.currentIndex()
+        self.importer.alpha = self.alpha.currentIndex()
 
     # endregion
 
