@@ -35,7 +35,11 @@ from openstereo.ui.singlesmallcircle_properties_ui import (
 from openstereo.ui.fault_properties_ui import Ui_Dialog as fault_Ui_Dialog
 from openstereo.ui.slope_properties_ui import Ui_Dialog as slope_Ui_Dialog
 
-from openstereo.os_math import small_circle, great_circle
+from openstereo.os_math import (
+    small_circle,
+    great_circle,
+    resolve_sense_from_vectors,
+)
 from openstereo.os_auttitude import load, DirectionalData
 from openstereo import os_auttitude as autti
 from openstereo.data_import import get_data, split_attitude
@@ -516,7 +520,7 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
             "v3GC": "",
         }
 
-        self.data_settings = {"smallcircle": "", "sense_column": 0}
+        self.data_settings = {"smallcircle": ""}
 
     def reload_data(self):
         data = get_data(self.data_path, self.auttitude_data.kwargs)
@@ -1149,7 +1153,7 @@ class FaultData(DataItem):
             "line_id": None,
             "invertsense": False,
             "sensecolumn": 0,
-            "sensecolumncheck": True,
+            "sensecolumncheck": True,  # TODO: change to False after merge
         }
 
     def set_root(self, root):
@@ -1169,11 +1173,39 @@ class FaultData(DataItem):
         else:
             self.data_settings["line_id"] = self.line_item.id
 
+    def get_lines_with_sense(self):
+        if not (
+            self.data_settings["sense"]
+            and self.data_settings["sensecolumncheck"]
+        ):
+            if not self.data_settings["invertsense"]:
+                return self.line_item.au_object
+            else:
+                return -self.line_item.au_object
+        sense_data = []
+        sense_column = self.data_settings["sensecolumn"]
+        for line in self.line_item.auttitude_data.input_data:
+            if len(line) < sense_column:  # TODO: guarantee column for line
+                continue
+            else:
+                sense_data.append(line[sense_column])
+        lines = []
+        for plane, line, sense in zip(
+            self.plane_item.au_object, self.line_item.au_object, sense_data
+        ):
+            lines.append(resolve_sense_from_vectors(plane, line, sense))
+
+        if not self.data_settings["invertsense"]:
+            return au.LineSet(lines)
+        else:
+            return -au.LineSet(lines)
+
     def plot_Dihedra(self):
         self.ensure_data()
+        line_data = self.get_lines_with_sense()
 
         dihedra = stress.angelier_graphical(
-            self.plane_item.au_object, self.line_item.au_object
+            self.plane_item.au_object, line_data
         )
 
         return (
@@ -1189,9 +1221,10 @@ class FaultData(DataItem):
 
     def plot_Michael(self):
         self.ensure_data()
+        line_data = self.get_lines_with_sense()
         plot_data = []
         stress_matrix, residuals = stress.michael(
-            self.plane_item.au_object, self.line_item.au_object
+            self.plane_item.au_object, line_data
         )
         stress_directions, (s1, s2, s3) = stress.principal_stresses(
             stress_matrix
@@ -1218,6 +1251,7 @@ class FaultData(DataItem):
 
     def plot_Slickenlines(self):
         self.ensure_data()
+        line_data = self.get_lines_with_sense()
         if self.legend_settings["slickenlines"]:
             # try:
             #     legend_text = self.legend_settings["slickenlines"].format(
@@ -1232,7 +1266,7 @@ class FaultData(DataItem):
             )
         return (
             ArrowPlotData(
-                [self.line_item.au_object, self.plane_item.au_object],
+                [line_data, self.plane_item.au_object],
                 self.slickenline_settings,
                 self.data_settings["sense"],
                 self.checklegend_settings["slickenlines"],
@@ -1242,6 +1276,7 @@ class FaultData(DataItem):
 
     def plot_Slip(self):
         self.ensure_data()
+        line_data = self.get_lines_with_sense()
         if self.legend_settings["slip"]:
             # try:
             #     legend_text = self.legend_settings["slip"].format(
@@ -1255,7 +1290,7 @@ class FaultData(DataItem):
             )
         return (
             ArrowPlotData(
-                [self.plane_item.au_object, self.line_item.au_object],
+                [self.plane_item.au_object, line_data],
                 self.slip_settings,
                 self.data_settings["sense"],
                 self.checklegend_settings["slip"],

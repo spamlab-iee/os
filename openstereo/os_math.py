@@ -6,7 +6,7 @@ import numpy as np
 import auttitude as au
 
 
-#https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
+# https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
 earth_radius = 6371008.8
 
 
@@ -254,20 +254,46 @@ def au_join_segments(segments, c_tol=radians(1.0)):
 def au_close_polygon(projected_polygon):
     first = projected_polygon[0]
     last = projected_polygon[-1]
-    mid = (first + last)/2
-    mid = mid/np.linalg.norm(mid)
+    mid = (first + last) / 2
+    mid = mid / np.linalg.norm(mid)
     if np.dot(first, last) == 0.0:
         mid = np.array([first[1], -first[0]])
     if np.linalg.norm(first) > 1.0 and np.linalg.norm(last) > 1.0:
-        return np.vstack([projected_polygon, [2*last, 3*mid, 2*first]])
+        return np.vstack([projected_polygon, [2 * last, 3 * mid, 2 * first]])
     return projected_polygon
 
 
 def extents_from_center(cx, cy, ex, ey, nx, ny, w, h):
     dx = cx - ex
     dy = cy - ny
-    left = -1.0 - ex/dx
-    right = (w - cx)/dx
-    top = 1.0 + ny/dy
-    bottom = -(h - cy)/dy
+    left = -1.0 - ex / dx
+    right = (w - cx) / dx
+    top = 1.0 + ny / dy
+    bottom = -(h - cy) / dy
     return (left, right, bottom, top)
+
+
+def resolve_sense_from_vectors(plane, line, sense):
+    if plane[-1] > 0:
+        plane = -plane
+    sense = sense.lower()
+    if sense in ("u", "f", "0", "5"):
+        return line
+    elif sense in ("n", "2", "-"):
+        return line
+    elif sense in ("i", "1", "+"):
+        return -line
+
+    line_sense = plane.direction_vector.dot(line)
+    if sense in ("d", "3"):
+        if line_sense > 0:
+            return line
+        else:
+            return -line
+    elif sense in ("s", "4"):
+        if line_sense < 0:
+            return line
+        else:
+            return -line
+    else:  # is this right?
+        return line
