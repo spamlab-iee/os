@@ -78,7 +78,8 @@ setup(
         'PyShp',
         'networkx',
         'ply2atti',
-        'auttitude'
+        'auttitude',
+        'chardet'
     ],
     cmdclass={
         'buildui': BuildUICommand,

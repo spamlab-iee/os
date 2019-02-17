@@ -7,4 +7,5 @@ networkx
 ply2atti
 auttitude
 appdirs
+chardet
 pynsist

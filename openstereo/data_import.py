@@ -5,6 +5,7 @@ import xlrd
 from os import path
 
 from PyQt5 import QtWidgets
+import chardet
 
 from openstereo.ui.import_dialog_ui import Ui_Dialog as import_dialog_Ui_Dialog
 
@@ -60,6 +61,7 @@ class Importer:
             else get_dialect_data(csv.get_dialect("excel"))
         )  # TODO: set to none if non csv
 
+        self.encoding = None
         self.comment = self.default_comment
         # self.geoeas = False
 
@@ -199,10 +201,22 @@ class Importer:
                 pass
         return True
 
+    def sniff_encoding(self):  # TODO: where to call this?
+        detector = chardet.UniversalDetector()
+        with open(self.fname, "rb") as f:
+            for line in f:
+                detector.feed(line)
+                if detector.done:
+                    break
+        detector.close()
+        self.encoding = detector.result["encoding"]
+
     def read_sample(self):
+        if self.encoding is None:
+            self.sniff_encoding()
         read_length = 0
         sample = []
-        with open(self.fname, "r", encoding="utf-8-sig") as f:
+        with open(self.fname, "r", encoding=self.encoding) as f:
             for line in skip_comments(f, self.comment_marker):
                 sample.append(line)
                 read_length += len(sample)
@@ -216,7 +230,7 @@ class Importer:
         )()
 
     def get_data_csv(self):
-        f = open(self.fname, "r", encoding="utf-8-sig")
+        f = open(self.fname, "r", encoding=self.encoding)
         # f.seek(self.offset)
         if self.do_skip:
             skip_rows = self.skip_rows
@@ -255,6 +269,8 @@ class Importer:
             pass
 
     def process_file_csv(self):
+        if self.encoding is None:
+            self.sniff_encoding()
         self.sample = self.read_sample()
         self.sniff_dialect()
         self.header = self.get_header()
@@ -509,6 +525,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             self.header_row.setEnabled(True)
 
             self.delimiter.setText(repr(self.importer.dialect["delimiter"]))
+            self.importer.sniff_encoding()
             self.importer.sample = self.importer.read_sample()
             self.header = self.importer.get_header()
             try:  # TODO: check if should use this or unified
@@ -554,6 +571,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
             # "is_geoeas": self.geoeas,
             # "geoeas_offset": self.offset if self.geoeas else None,
             "comment_marker": self.comment_marker.text(),
+            "encoding": self.encoding,
         }
         if self.importer.dialect is not None:
             kwargs["dialect_data"] = self.importer.dialect
@@ -605,7 +623,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
                 sheet.row_values(i) for i in range(header_row, sheet.nrows)
             ]
         else:
-            f = open(fname, "r", encoding="utf-8-sig")
+            f = open(fname, "r", encoding=self.importer.encoding)
             f.seek(self.offset)
             if self.do_skip.isChecked():
                 skip_rows = self.skip_rows.value()
@@ -1016,7 +1034,8 @@ def get_data(fname, kwargs):
         header_row += 0 if kwargs["skip_rows"] is None else kwargs["skip_rows"]
         return [sheet.row_values(i) for i in range(header_row, sheet.nrows)]
     else:
-        f = open(fname, "r", encoding="utf-8-sig")
+        encoding = kwargs.get("encoding", "utf-8-sig")
+        f = open(fname, "r", encoding=encoding)
         if kwargs.get("is_geoeas", False):
             f.seek(kwargs["geoeas_offset"])
         skip_rows = (
