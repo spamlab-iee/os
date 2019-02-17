@@ -1194,6 +1194,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 for j in range(i + 1, n):
                     diff = A.au_object[i] - A.au_object[j]
                     length = diff.length
+                    if length == 0.0:
+                        continue
                     diff_data.append(diff / length)
                     lengths.append(length)
             m = len(diff_data)
