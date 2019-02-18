@@ -277,7 +277,7 @@ def extents_from_center(cx, cy, ex, ey, nx, ny, w, h):
 def resolve_sense(plane, line, sense):
     if plane[-1] > 0:
         plane = -plane
-    sense = sense.lower()[0]
+    sense = str(sense).lower()[0]
     if sense in ("u", "f", "0", "5", "?"):
         return line, False
     elif sense in ("n", "2", "-"):

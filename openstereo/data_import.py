@@ -44,7 +44,7 @@ class Importer:
         rake=False,
         fname=None,
         dialect=None,
-        comment=None
+        comment=None,
     ):
         self.fname = fname
         self.ext = path.splitext(fname)[1]
@@ -230,7 +230,7 @@ class Importer:
 
     def get_data(self):
         return getattr(
-            self, "get_data_{}".format(self.ext), self.get_data_csv
+            self, "get_data_{}".format(self.ext.strip(".")), self.get_data_csv
         )()
 
     def get_data_csv(self):
@@ -257,7 +257,10 @@ class Importer:
             header_row += self.header_row + 1
         if self.do_skip:
             header_row += self.skip_rows
-        return [sheet.row_values(i) for i in range(header_row, sheet.nrows)]
+        return skip_comments_xlsx(
+            [sheet.row_values(i) for i in range(header_row, sheet.nrows)],
+            self.comment_marker,
+        )
 
     def get_data_xls(self):
         return self.get_data_xlsx()
@@ -1051,7 +1054,10 @@ def get_data(fname, kwargs):
             0 if kwargs["header_row"] is None else kwargs["header_row"] + 1
         )
         header_row += 0 if kwargs["skip_rows"] is None else kwargs["skip_rows"]
-        return [sheet.row_values(i) for i in range(header_row, sheet.nrows)]
+        return skip_comments_xlsx(
+            [sheet.row_values(i) for i in range(header_row, sheet.nrows)],
+            kwargs.get("comment_marker", "#"),
+        )
     else:
         encoding = kwargs.get("encoding", "utf-8-sig")
         f = open(fname, "r", encoding=encoding)
@@ -1075,6 +1081,13 @@ def get_data(fname, kwargs):
 def skip_comments(iterable, comment="#"):  # TODO: skip comments in xlsx
     for line in iterable:
         if line.startswith(comment):
+            continue
+        yield line
+
+
+def skip_comments_xlsx(iterable, comment="#"):
+    for line in iterable:
+        if len(line) > 0 and str(line[0]).startswith(comment):
             continue
         yield line
 
