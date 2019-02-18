@@ -1252,7 +1252,7 @@ class FaultData(DataItem):
                 )
         return plot_data
 
-    def plot_Slickenlines(self):
+    def plot_Slickenlines(self):  # TODO: fix this plot
         self.ensure_data()
         line_data, sense = self.get_lines_with_sense()
         if self.legend_settings["slickenlines"]:
@@ -1271,9 +1271,10 @@ class FaultData(DataItem):
             ArrowPlotData(
                 [line_data, self.plane_item.au_object],
                 self.slickenline_settings,
-                self.data_settings["sense"],
+                sense,
                 self.checklegend_settings["slickenlines"],
                 legend_text,
+                invert=True,
             ),
         )
 

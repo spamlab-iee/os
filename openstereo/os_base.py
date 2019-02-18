@@ -291,7 +291,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         self.actionOpen_fault_data_PlaneDir_Line_Sense.triggered.connect(
-            lambda: self.import_fault_data(direction=True)
+            lambda: self.import_fault_data(
+                direction=True,
+                plane_columns=(0, 1),
+                line_columns=(2, 3),
+                sense_column=4,
+            )
         )
 
         self.actionOpen_TectonicsFP_Fault_Data.triggered.connect(
@@ -301,7 +306,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 sense_column=0,
                 comment=";",
                 delimiter=",",
-                has_header=False
+                has_header=False,
             )
         )
 
@@ -312,7 +317,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 sense_column=1,
                 rake_sense_column=5,
                 delimiter=" ",
-                has_header=False
+                has_header=False,
             )
         )
 

@@ -398,6 +398,7 @@ class StereoPlot(PlotPanel):
                 plot_item.data[1],
                 plot_item.arrow_settings,
                 has_sense=plot_item.sense,
+                invert=plot_item.invert
             )
         elif isinstance(plot_item, PolygonPlotData):
             element = self.plot_polygons(
@@ -514,7 +515,7 @@ class StereoPlot(PlotPanel):
         self.plotaxes.add_collection(polygon_segments, autolim=True)
         return polygon_segments
 
-    def plot_arrow(self, planes, lines, arrow_settings, has_sense):
+    def plot_arrow(self, planes, lines, arrow_settings, has_sense, invert):
         for plane, line, sense in zip(planes, lines, has_sense):
             if plane[-1] > 0:
                 plane = -plane
@@ -526,6 +527,8 @@ class StereoPlot(PlotPanel):
                 cos(-arrow_settings["arrowsize"] / 2.0) * plane
                 + sin(-arrow_settings["arrowsize"] / 2.0) * line
             )
+            if invert:  # FIXME: Kind of a kludge
+                arrow_from, arrow_to = arrow_to, arrow_from
             if arrow_settings.get("footwall", False):
                 arrow_from, arrow_to = arrow_to, arrow_from
             X, Y = self.project(
