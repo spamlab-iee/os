@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>631</width>
-    <height>564</height>
+    <height>616</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,6 +62,9 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="2">
+           <widget class="QDoubleSpinBox" name="prop_slickenline_lw"/>
+          </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="prop_color_slickenline_arrowcolor">
             <property name="text">
@@ -69,13 +72,20 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QDoubleSpinBox" name="prop_slickenline_lw"/>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_18">
             <property name="text">
              <string>Color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QDoubleSpinBox" name="prop_slickenline_arrowsize"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Length</string>
             </property>
            </widget>
           </item>
@@ -502,37 +512,6 @@
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="0">
-           <widget class="QPushButton" name="prop_color_slip_arrowcolor">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QDoubleSpinBox" name="prop_slip_lw"/>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Symbol</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Width</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Color</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
            <widget class="QComboBox" name="prop_slip_ls">
             <item>
@@ -557,10 +536,51 @@
             </item>
            </widget>
           </item>
-          <item row="2" column="0" colspan="3">
+          <item row="1" column="0">
+           <widget class="QPushButton" name="prop_color_slip_arrowcolor">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="3">
            <widget class="QCheckBox" name="prop_slip_footwall">
             <property name="text">
              <string>Plot slip for footwall</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Symbol</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QDoubleSpinBox" name="prop_slip_lw"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QDoubleSpinBox" name="prop_slip_arrowsize"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Length</string>
             </property>
            </widget>
           </item>

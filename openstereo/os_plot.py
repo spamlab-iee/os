@@ -518,18 +518,17 @@ class StereoPlot(PlotPanel):
     def plot_arrow(self, planes, lines, arrow_settings, has_sense, sliplinear):
         for plane, line, sense in zip(planes, lines, has_sense):
             if not sliplinear:
+                arrowsize = radians(arrow_settings["arrowsize"])
                 if plane[-1] > 0:
                     plane = -plane
                 arrow_to = (
-                    cos(arrow_settings["arrowsize"] / 2.0) * plane
-                    + sin(arrow_settings["arrowsize"] / 2.0) * line
+                    cos(arrowsize / 2.0) * plane
+                    + sin(arrowsize / 2.0) * line
                 )
                 arrow_from = (
-                    cos(-arrow_settings["arrowsize"] / 2.0) * plane
-                    + sin(-arrow_settings["arrowsize"] / 2.0) * line
+                    cos(-arrowsize / 2.0) * plane
+                    + sin(-arrowsize / 2.0) * line
                 )
-                # if invert:  # FIXME: Kind of a kludge
-                #     arrow_from, arrow_to = arrow_to, arrow_from
                 if arrow_settings.get("footwall", False):
                     arrow_from, arrow_to = arrow_to, arrow_from
                 X, Y = self.project(
@@ -538,7 +537,7 @@ class StereoPlot(PlotPanel):
                 )
             else:
                 line_direction = line[:2]/np.linalg.norm(line[:2])
-                dx, dy = line_direction * arrow_settings["arrowsize"]
+                dx, dy = line_direction * arrow_settings["arrowsize"]*0.0075
                 x, y = self.project(*line, invert_positive=True)
                 X, Y = [x - dx, x + dx], [y - dy, y + dy]
             if not sense:

@@ -1113,7 +1113,7 @@ class FaultData(DataItem):
         self.slickenline_settings = {
             "lw": 1.0,
             "ls": "-",
-            "arrowsize": 0.075,
+            "arrowsize": 10.0,
             "arrowcolor": "#4D4D4D",
             "footwall": False,
             "arrowstyle": "->,head_length=2.5,head_width=1",
@@ -1122,7 +1122,7 @@ class FaultData(DataItem):
         self.slip_settings = {
             "lw": 1.0,
             "ls": "-",
-            "arrowsize": radians(10),
+            "arrowsize": 10.0,
             "arrowcolor": "#4D4D4D",
             "footwall": False,
             "arrowstyle": "->,head_length=2.5,head_width=1",
