@@ -20,7 +20,7 @@ def get_dialect_data(dialect):
         "lineterminator": dialect.lineterminator,
         "quotechar": dialect.quotechar,
         "quoting": dialect.quoting,
-        "skipinitialspace": dialect.skipinitialspace,
+        "skipinitialspace": True,
     }
 
 
@@ -44,6 +44,7 @@ class Importer:
         rake=False,
         fname=None,
         dialect=None,
+        comment=None
     ):
         self.fname = fname
         self.ext = path.splitext(fname)[1]
@@ -62,7 +63,7 @@ class Importer:
         )  # TODO: set to none if non csv
 
         self.encoding = None
-        self.comment = self.default_comment
+
         # self.geoeas = False
 
         self.data_type = data_type if data_type is not None else "plane"
@@ -73,7 +74,10 @@ class Importer:
         self.header_row = 0
         self.has_header = False
 
-        self.comment_marker = self.default_comment
+        if comment is None:
+            self.comment_marker = self.default_comment
+        else:
+            self.comment_marker = comment
 
         self.skip_lines = 0
         self.do_skip = False

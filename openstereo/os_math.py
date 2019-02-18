@@ -273,27 +273,28 @@ def extents_from_center(cx, cy, ex, ey, nx, ny, w, h):
     return (left, right, bottom, top)
 
 
-def resolve_sense_from_vectors(plane, line, sense):
+# TODO: send this upstream to autti
+def resolve_sense(plane, line, sense):
     if plane[-1] > 0:
         plane = -plane
-    sense = sense.lower()
-    if sense in ("u", "f", "0", "5"):
-        return line
+    sense = sense.lower()[0]
+    if sense in ("u", "f", "0", "5", "?"):
+        return line, False
     elif sense in ("n", "2", "-"):
-        return line
+        return line, True
     elif sense in ("i", "1", "+"):
-        return -line
+        return -line, True
 
     line_sense = plane.direction_vector.dot(line)
     if sense in ("d", "3"):
         if line_sense > 0:
-            return line
+            return line, True
         else:
-            return -line
+            return -line, True
     elif sense in ("s", "4"):
         if line_sense < 0:
-            return line
+            return line, True
         else:
-            return -line
+            return -line, True
     else:  # is this right?
-        return line
+        return line, True

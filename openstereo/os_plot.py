@@ -397,7 +397,7 @@ class StereoPlot(PlotPanel):
                 plot_item.data[0],
                 plot_item.data[1],
                 plot_item.arrow_settings,
-                sense=plot_item.sense,
+                has_sense=plot_item.sense,
             )
         elif isinstance(plot_item, PolygonPlotData):
             element = self.plot_polygons(
@@ -514,15 +514,15 @@ class StereoPlot(PlotPanel):
         self.plotaxes.add_collection(polygon_segments, autolim=True)
         return polygon_segments
 
-    def plot_arrow(self, planes, lines, arrow_settings, sense):
-        for plane, line in zip(planes, lines):
+    def plot_arrow(self, planes, lines, arrow_settings, has_sense):
+        for plane, line, sense in zip(planes, lines, has_sense):
             if plane[-1] > 0:
                 plane = -plane
-            arrow_from = (
+            arrow_to = (
                 cos(arrow_settings["arrowsize"] / 2.0) * plane
                 + sin(arrow_settings["arrowsize"] / 2.0) * line
             )
-            arrow_to = (
+            arrow_from = (
                 cos(-arrow_settings["arrowsize"] / 2.0) * plane
                 + sin(-arrow_settings["arrowsize"] / 2.0) * line
             )

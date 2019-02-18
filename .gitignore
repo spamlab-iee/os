@@ -96,3 +96,6 @@ ENV/
 
 # current commit hash
 # openstereo/tools/git_hash.py
+
+# pytest
+.pytest_cache/

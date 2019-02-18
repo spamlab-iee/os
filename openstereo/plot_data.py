@@ -31,7 +31,7 @@ class PolygonPlotData(ProjectionPlotData):
 
 
 class ArrowPlotData(ProjectionPlotData):
-    def __init__(self, data, arrow_settings, sense=True, legend=False, legend_text=""):
+    def __init__(self, data, arrow_settings, sense, legend=False, legend_text=""):
         self.data = data
         self.arrow_settings = arrow_settings
         self.sense = sense

@@ -38,7 +38,7 @@ from openstereo.ui.slope_properties_ui import Ui_Dialog as slope_Ui_Dialog
 from openstereo.os_math import (
     small_circle,
     great_circle,
-    resolve_sense_from_vectors,
+    resolve_sense,
 )
 from openstereo.os_auttitude import load, DirectionalData
 from openstereo import os_auttitude as autti
@@ -1189,20 +1189,23 @@ class FaultData(DataItem):
                 continue
             else:
                 sense_data.append(line[sense_column])
-        lines = []
+        oriented_lines = []
+        has_sense = []
         for plane, line, sense in zip(
             self.plane_item.au_object, self.line_item.au_object, sense_data
         ):
-            lines.append(resolve_sense_from_vectors(plane, line, sense))
+            oriented_line, defined_sense = resolve_sense(plane, line, sense)
+            oriented_lines.append(oriented_line)
+            has_sense.append(defined_sense)
 
         if not self.data_settings["invertsense"]:
-            return au.LineSet(lines)
+            return au.LineSet(oriented_lines), has_sense
         else:
-            return -au.LineSet(lines)
+            return -au.LineSet(oriented_lines), has_sense
 
     def plot_Dihedra(self):
         self.ensure_data()
-        line_data = self.get_lines_with_sense()
+        line_data, sense = self.get_lines_with_sense()
 
         dihedra = stress.angelier_graphical(
             self.plane_item.au_object, line_data
@@ -1221,7 +1224,7 @@ class FaultData(DataItem):
 
     def plot_Michael(self):
         self.ensure_data()
-        line_data = self.get_lines_with_sense()
+        line_data, sense = self.get_lines_with_sense()
         plot_data = []
         stress_matrix, residuals = stress.michael(
             self.plane_item.au_object, line_data
@@ -1251,7 +1254,7 @@ class FaultData(DataItem):
 
     def plot_Slickenlines(self):
         self.ensure_data()
-        line_data = self.get_lines_with_sense()
+        line_data, sense = self.get_lines_with_sense()
         if self.legend_settings["slickenlines"]:
             # try:
             #     legend_text = self.legend_settings["slickenlines"].format(
@@ -1276,7 +1279,7 @@ class FaultData(DataItem):
 
     def plot_Slip(self):
         self.ensure_data()
-        line_data = self.get_lines_with_sense()
+        line_data, sense = self.get_lines_with_sense()
         if self.legend_settings["slip"]:
             # try:
             #     legend_text = self.legend_settings["slip"].format(
@@ -1292,7 +1295,7 @@ class FaultData(DataItem):
             ArrowPlotData(
                 [self.plane_item.au_object, line_data],
                 self.slip_settings,
-                self.data_settings["sense"],
+                sense,
                 self.checklegend_settings["slip"],
                 legend_text,
             ),

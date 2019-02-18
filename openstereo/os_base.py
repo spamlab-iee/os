@@ -285,11 +285,35 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         self.actionOpen_fault_data_Plane_Line_Sense.triggered.connect(
-            lambda: self.import_fault_data()
+            lambda: self.import_fault_data(
+                plane_columns=(0, 1), line_columns=(2, 3), sense_column=4
+            )
         )
 
         self.actionOpen_fault_data_PlaneDir_Line_Sense.triggered.connect(
             lambda: self.import_fault_data(direction=True)
+        )
+
+        self.actionOpen_TectonicsFP_Fault_Data.triggered.connect(
+            lambda: self.import_fault_data(
+                plane_columns=(1, 2),
+                line_columns=(3, 4),
+                sense_column=0,
+                comment=";",
+                delimiter=",",
+                has_header=False
+            )
+        )
+
+        self.actionOpen_T_TECTO_Fault_Data.triggered.connect(
+            lambda: self.import_fault_data(
+                plane_columns=(2, 3),
+                line_columns=(2, 3, 4),
+                sense_column=1,
+                rake_sense_column=5,
+                delimiter=" ",
+                has_header=False
+            )
         )
 
         self.actionAdd_Plane.triggered.connect(
@@ -598,7 +622,18 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 **dialog.importer.import_data()
             )
 
-    def import_fault_data(self, direction=False):
+    def import_fault_data(
+        self,
+        plane_columns,
+        line_columns,
+        sense_column,
+        direction=False,
+        rake_sense_column=None,
+        delimiter=None,
+        has_header=None,
+        comment=None,
+        **importer_kwargs
+    ):
         fnames, extension = QtWidgets.QFileDialog.getOpenFileNames(
             self, "Import Fault Data (Plane/Line/Sense)"
         )
@@ -609,12 +644,27 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 fname=fname, data_type="plane", direction=direction
             )
             importer.process_file()
-            importer.longitude, importer.colatitude = 0, 1
+            if has_header is not None:
+                importer.has_header = has_header
+            if delimiter is not None:
+                importer.dialect["delimiter"] = delimiter
+            if comment is not None:
+                importer.comment_marker = comment
+            importer.longitude, importer.colatitude = plane_columns
             planes_import_data = importer.import_data()
             planes_data_reader = list(importer.get_data())
             planes_data_name = "(P){}".format(path.basename(fname))
-            importer.longitude, importer.colatitude = 2, 3
-            importer.data_type = "line"
+            if len(line_columns) == 2:
+                importer.longitude, importer.colatitude = line_columns
+                importer.data_type = "line"
+            elif len(line_columns) == 3:
+                importer.longitude, importer.colatitude, importer.obliquity = (
+                    line_columns
+                )
+                importer.data_type = "rake"
+            else:
+                pass  # toolbar invalid data for ttecto?
+
             importer.direction = False
             lines_import_data = importer.import_data()
             lines_data_reader = list(importer.get_data())
@@ -633,14 +683,21 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 lines_data_name,
                 data_path=fname,
                 data=lines_data_reader,
+                obliquity_sense_column=rake_sense_column,
                 **lines_import_data
             )
 
-            merged_name = _translate("main", "Faults ({})").format(fname)
+            merged_name = _translate("main", "Faults ({})").format(
+                path.basename(fname)
+            )
             faults_item = self.import_data(
                 "fault_data", merged_name, data=[planes_item, lines_item]
             )
-            faults_item.data_settings["sensecolumn"] = 4
+            if sense_column is not None:
+                faults_item.data_settings["sensecolumn"] = sense_column
+                faults_item.data_settings["sensecolumncheck"] = True
+            else:
+                faults_item.data_settings["sensecolumncheck"] = False
             return planes_item, lines_item, faults_item
 
     def import_shapefile(self):

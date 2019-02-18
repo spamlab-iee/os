@@ -193,6 +193,7 @@ def universal_translator(
     dip_direction=False,
     circular=False,
     obliquity_column=2,
+    obliquity_sense_column=None,
     rake=False
 ):
     """Translates data from many different notations into dipdirection/dip,
@@ -209,7 +210,32 @@ def universal_translator(
                     )
                 )
                 if rake:
-                    translated_line.append(-float(line[obliquity_column]))
+                    if obliquity_sense_column is None:
+                        translated_line.append(float(line[obliquity_column]))
+                    else:
+                        dd = translated_line[0]
+                        rake = float(line[obliquity_column])
+                        sense = line[obliquity_sense_column].lower()
+                        if 0 < dd <= 90:
+                            if sense in "nw":
+                                translated_line.append(rake)
+                            else:
+                                translated_line.append(180 - rake)
+                        elif 90 < dd <= 180:
+                            if sense in "ne":
+                                translated_line.append(rake)
+                            else:
+                                translated_line.append(180 - rake)
+                        elif 180 < dd <= 270:
+                            if sense in "se":
+                                translated_line.append(rake)
+                            else:
+                                translated_line.append(180 - rake)
+                        else:  # 270 < dd < 0
+                            if sense in "sw":
+                                translated_line.append(rake)
+                            else:
+                                translated_line.append(180 - rake)
             except (ValueError, IndexError):
                 continue
             translated_data.append(translated_line)
@@ -275,6 +301,7 @@ interpret data as lines, instead of planes."""
     circular = kwargs.get("circular", False)
     rake = kwargs.get("rake", False)
     obliquity_column = kwargs.get("obliquity_column", 2)
+    obliquity_sense_column = kwargs.get("obliquity_sense_column", None)
     converted_data = (
         universal_translator(
             input_data,
@@ -284,7 +311,8 @@ interpret data as lines, instead of planes."""
             dip_direction=dip_direction,
             circular=circular,
             rake=rake,
-            obliquity_column=obliquity_column
+            obliquity_column=obliquity_column,
+            obliquity_sense_column=obliquity_sense_column
         )
         if translate
         else input_data
