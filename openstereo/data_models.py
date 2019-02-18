@@ -1113,7 +1113,7 @@ class FaultData(DataItem):
         self.slickenline_settings = {
             "lw": 1.0,
             "ls": "-",
-            "arrowsize": radians(10),
+            "arrowsize": 0.075,
             "arrowcolor": "#4D4D4D",
             "footwall": False,
             "arrowstyle": "->,head_length=2.5,head_width=1",
@@ -1208,7 +1208,7 @@ class FaultData(DataItem):
         line_data, sense = self.get_lines_with_sense()
 
         dihedra = stress.angelier_graphical(
-            self.plane_item.au_object, line_data
+            self.plane_item.au_object[sense], line_data[sense]
         )
 
         return (
@@ -1227,7 +1227,7 @@ class FaultData(DataItem):
         line_data, sense = self.get_lines_with_sense()
         plot_data = []
         stress_matrix, residuals = stress.michael(
-            self.plane_item.au_object, line_data
+            self.plane_item.au_object[sense], line_data[sense]
         )
         stress_directions, (s1, s2, s3) = stress.principal_stresses(
             stress_matrix
@@ -1269,12 +1269,12 @@ class FaultData(DataItem):
             )
         return (
             ArrowPlotData(
-                [line_data, self.plane_item.au_object],
+                [self.plane_item.au_object, line_data],
                 self.slickenline_settings,
                 sense,
                 self.checklegend_settings["slickenlines"],
                 legend_text,
-                invert=True,
+                sliplinear=True,
             ),
         )
 

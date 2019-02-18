@@ -38,14 +38,14 @@ class ArrowPlotData(ProjectionPlotData):
         sense,
         legend=False,
         legend_text="",
-        invert=False,
+        sliplinear=False,
     ):
         self.data = data
         self.arrow_settings = arrow_settings
         self.sense = sense
         self.legend = legend
         self.legend_text = legend_text
-        self.invert = invert
+        self.sliplinear = sliplinear
 
 
 class ContourPlotData(ProjectionPlotData):

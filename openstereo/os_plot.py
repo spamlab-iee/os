@@ -398,7 +398,7 @@ class StereoPlot(PlotPanel):
                 plot_item.data[1],
                 plot_item.arrow_settings,
                 has_sense=plot_item.sense,
-                invert=plot_item.invert
+                sliplinear=plot_item.sliplinear,
             )
         elif isinstance(plot_item, PolygonPlotData):
             element = self.plot_polygons(
@@ -515,25 +515,32 @@ class StereoPlot(PlotPanel):
         self.plotaxes.add_collection(polygon_segments, autolim=True)
         return polygon_segments
 
-    def plot_arrow(self, planes, lines, arrow_settings, has_sense, invert):
+    def plot_arrow(self, planes, lines, arrow_settings, has_sense, sliplinear):
         for plane, line, sense in zip(planes, lines, has_sense):
-            if plane[-1] > 0:
-                plane = -plane
-            arrow_to = (
-                cos(arrow_settings["arrowsize"] / 2.0) * plane
-                + sin(arrow_settings["arrowsize"] / 2.0) * line
-            )
-            arrow_from = (
-                cos(-arrow_settings["arrowsize"] / 2.0) * plane
-                + sin(-arrow_settings["arrowsize"] / 2.0) * line
-            )
-            if invert:  # FIXME: Kind of a kludge
-                arrow_from, arrow_to = arrow_to, arrow_from
-            if arrow_settings.get("footwall", False):
-                arrow_from, arrow_to = arrow_to, arrow_from
-            X, Y = self.project(
-                *np.transpose((arrow_from, arrow_to)), invert_positive=False
-            )
+            if not sliplinear:
+                if plane[-1] > 0:
+                    plane = -plane
+                arrow_to = (
+                    cos(arrow_settings["arrowsize"] / 2.0) * plane
+                    + sin(arrow_settings["arrowsize"] / 2.0) * line
+                )
+                arrow_from = (
+                    cos(-arrow_settings["arrowsize"] / 2.0) * plane
+                    + sin(-arrow_settings["arrowsize"] / 2.0) * line
+                )
+                # if invert:  # FIXME: Kind of a kludge
+                #     arrow_from, arrow_to = arrow_to, arrow_from
+                if arrow_settings.get("footwall", False):
+                    arrow_from, arrow_to = arrow_to, arrow_from
+                X, Y = self.project(
+                    *np.transpose((arrow_from, arrow_to)),
+                    invert_positive=False
+                )
+            else:
+                line_direction = line[:2]/np.linalg.norm(line[:2])
+                dx, dy = line_direction * arrow_settings["arrowsize"]
+                x, y = self.project(*line, invert_positive=True)
+                X, Y = [x - dx, x + dx], [y - dy, y + dy]
             if not sense:
                 self.plotaxes.add_line(
                     Line2D(
