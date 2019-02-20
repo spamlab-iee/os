@@ -1,4 +1,4 @@
-from math import pi, radians, degrees, acos
+from math import pi, radians, degrees, acos, sin
 
 from itertools import chain
 
@@ -1154,6 +1154,8 @@ class FaultData(DataItem):
             "invertsense": False,
             "sensecolumn": 0,
             "sensecolumncheck": True,  # TODO: change to False after merge
+            "filterangle": 20.0,
+            "filteranglecheck": True
         }
 
     def set_root(self, root):
@@ -1191,12 +1193,20 @@ class FaultData(DataItem):
                 sense_data.append(line[sense_column])
         oriented_lines = []
         has_sense = []
+        tolerance = sin(radians(self.data_settings["filterangle"]))
         for plane, line, sense in zip(
             self.plane_item.au_object, self.line_item.au_object, sense_data
         ):
             oriented_line, defined_sense = resolve_sense(plane, line, sense)
-            oriented_lines.append(oriented_line)
-            has_sense.append(defined_sense)
+            if not self.data_settings["filteranglecheck"]:
+                oriented_lines.append(oriented_line)
+                has_sense.append(defined_sense)
+            else:
+                lp = oriented_line.dot(plane)
+                if abs(lp) <= tolerance:  # should this be a tool?
+                    oriented_line = oriented_line - lp*plane
+                    oriented_lines.append(oriented_line/oriented_line.length)
+                    has_sense.append(defined_sense)
 
         if not self.data_settings["invertsense"]:
             return au.LineSet(oriented_lines), has_sense

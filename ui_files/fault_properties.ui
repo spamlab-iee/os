@@ -948,6 +948,16 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="prop_data_filteranglecheck">
+            <property name="text">
+             <string>Filter Lines by angle</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="prop_data_filterangle"/>
+          </item>
          </layout>
         </item>
         <item>

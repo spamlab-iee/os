@@ -348,7 +348,7 @@ class ImportDialog(QtWidgets.QDialog, import_dialog_Ui_Dialog):
         # if fname:
         self.fname.setText(fname)
 
-        self.comment_marker.setText(self.importer.comment)
+        self.comment_marker.setText(self.importer.comment_marker)
         self.ext = self.importer.ext
         self.fname.editingFinished.connect(self.on_file_selected)  # remove?
         self.browse.clicked.connect(self.on_browse)  # remove?
