@@ -385,6 +385,8 @@ class Ui_Dialog(object):
         self.prop_check_concentratesc.setObjectName("prop_check_concentratesc")
         self.horizontalLayout_14.addWidget(self.prop_check_concentratesc)
         self.prop_sccalc_eiv = QtWidgets.QSpinBox(self.groupBox_11)
+        self.prop_sccalc_eiv.setMinimum(1)
+        self.prop_sccalc_eiv.setMaximum(3)
         self.prop_sccalc_eiv.setObjectName("prop_sccalc_eiv")
         self.horizontalLayout_14.addWidget(self.prop_sccalc_eiv)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)

@@ -1110,7 +1110,14 @@
                </widget>
               </item>
               <item>
-               <widget class="QSpinBox" name="prop_sccalc_eiv"/>
+               <widget class="QSpinBox" name="prop_sccalc_eiv">
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>3</number>
+                </property>
+               </widget>
               </item>
               <item>
                <spacer name="horizontalSpacer_3">

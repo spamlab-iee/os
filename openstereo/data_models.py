@@ -562,7 +562,7 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
             projection = self.treeWidget().window().projection()
             if self.check_settings["concentratesc"]:
                 eiv = self.auttitude_data.eigenvectors[
-                    self.sccalc_settings["eiv"]
+                    self.sccalc_settings["eiv"] - 1
                 ]
                 data = data * np.where(data.dot(eiv) > 0, 1, -1)[:, None]
             elif projection.settings.check_settings["rotate"]:
@@ -1044,8 +1044,8 @@ class SmallCircleData(DataItem):
 # Kim Wilde
 class FaultData(DataItem):
     data_type = "fault_data"
-    plot_item_name = {"SC": "Small Circles"}
-    default_checked = ["Dihedra", "Michael"]
+    plot_item_name = {"Dihedra": "Right Dihedra", "Slip": "Slip-Linear"}
+    default_checked = ["Right Dihedra", "Michael"]
     properties_ui = fault_Ui_Dialog
 
     def __init__(self, name, data, parent, item_id, **kwargs):
@@ -1175,7 +1175,7 @@ class FaultData(DataItem):
         else:
             self.data_settings["line_id"] = self.line_item.id
 
-    def get_lines_with_sense(self):
+    def get_oriented_data(self):
         if not (
             self.data_settings["sense"]
             and self.data_settings["sensecolumncheck"]
@@ -1192,6 +1192,7 @@ class FaultData(DataItem):
             else:
                 sense_data.append(line[sense_column])
         oriented_lines = []
+        planes = []
         has_sense = []
         tolerance = sin(radians(self.data_settings["filterangle"]))
         for plane, line, sense in zip(
@@ -1200,25 +1201,27 @@ class FaultData(DataItem):
             oriented_line, defined_sense = resolve_sense(plane, line, sense)
             if not self.data_settings["filteranglecheck"]:
                 oriented_lines.append(oriented_line)
+                planes.append(plane)
                 has_sense.append(defined_sense)
             else:
                 lp = oriented_line.dot(plane)
                 if abs(lp) <= tolerance:  # should this be a tool?
                     oriented_line = oriented_line - lp*plane
                     oriented_lines.append(oriented_line/oriented_line.length)
+                    planes.append(plane)
                     has_sense.append(defined_sense)
 
         if not self.data_settings["invertsense"]:
-            return au.LineSet(oriented_lines), has_sense
+            return au.LineSet(oriented_lines), au.PlaneSet(planes), has_sense
         else:
-            return -au.LineSet(oriented_lines), has_sense
+            return -au.LineSet(oriented_lines), au.PlaneSet(planes), has_sense
 
     def plot_Dihedra(self):
         self.ensure_data()
-        line_data, sense = self.get_lines_with_sense()
+        line_data, plane_data, sense = self.get_oriented_data()
 
         dihedra = stress.angelier_graphical(
-            self.plane_item.au_object[sense], line_data[sense]
+            plane_data[sense], line_data[sense]
         )
 
         return (
@@ -1228,16 +1231,16 @@ class FaultData(DataItem):
                 self.contour_settings,
                 self.contour_line_settings,
                 self.contour_check_settings,
-                n=len(self.plane_item.au_object),
+                n=len(plane_data),
             ),
         )
 
     def plot_Michael(self):
         self.ensure_data()
-        line_data, sense = self.get_lines_with_sense()
+        line_data, plane_data, sense = self.get_oriented_data()
         plot_data = []
         stress_matrix, residuals = stress.michael(
-            self.plane_item.au_object[sense], line_data[sense]
+            plane_data[sense], line_data[sense]
         )
         stress_directions, (s1, s2, s3) = stress.principal_stresses(
             stress_matrix
@@ -1264,7 +1267,7 @@ class FaultData(DataItem):
 
     def plot_Slickenlines(self):  # TODO: fix this plot
         self.ensure_data()
-        line_data, sense = self.get_lines_with_sense()
+        line_data, plane_data, sense = self.get_oriented_data()
         if self.legend_settings["slickenlines"]:
             # try:
             #     legend_text = self.legend_settings["slickenlines"].format(
@@ -1279,7 +1282,7 @@ class FaultData(DataItem):
             )
         return (
             ArrowPlotData(
-                [self.plane_item.au_object, line_data],
+                [plane_data, line_data],
                 self.slickenline_settings,
                 sense,
                 self.checklegend_settings["slickenlines"],
@@ -1290,7 +1293,7 @@ class FaultData(DataItem):
 
     def plot_Slip(self):
         self.ensure_data()
-        line_data, sense = self.get_lines_with_sense()
+        line_data, plane_data, sense = self.get_oriented_data()
         if self.legend_settings["slip"]:
             # try:
             #     legend_text = self.legend_settings["slip"].format(
@@ -1304,7 +1307,7 @@ class FaultData(DataItem):
             )
         return (
             ArrowPlotData(
-                [self.plane_item.au_object, line_data],
+                [plane_data, line_data],
                 self.slip_settings,
                 sense,
                 self.checklegend_settings["slip"],

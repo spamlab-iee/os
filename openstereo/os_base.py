@@ -20,9 +20,9 @@ utf8_reader = codecs.getreader("utf-8")
 
 from appdirs import user_data_dir
 
-data_dir = user_data_dir("OpenStereo")
-if not path.exists(data_dir):
-    os.makedirs(data_dir)
+# data_dir = user_data_dir("OpenStereo")
+# if not path.exists(data_dir):
+#     os.makedirs(data_dir)
 
 # import importlib_resources
 
@@ -87,7 +87,7 @@ from ply2atti import extract_colored_faces
 extract_colored_faces = waiting_effects(extract_colored_faces)
 
 print(sys.version)
-print("current data_dir:", data_dir)
+# print("current data_dir:", data_dir)
 
 __version__ = "0.9u"
 
@@ -495,7 +495,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.update_recent_projects()
         self.statusBar().showMessage("Ready")
         self.set_title()
-        self.check_save_guard()
+        # self.check_save_guard()
 
     def projection(self):
         return self.projections[
@@ -582,7 +582,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             )
             fname = dialog.fname.text()
             data_type, letter = dialog.data_type
-            data_name = "({}){}".format(letter, path.basename(fname))
+            data_name = "({}) {}".format(letter, path.basename(fname))
             reader = dialog.get_data()
             self.import_data(
                 data_type,
@@ -692,7 +692,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 **lines_import_data
             )
 
-            merged_name = _translate("main", "Faults ({})").format(
+            merged_name = _translate("main", "(F) {}").format(
                 path.basename(fname)
             )
             faults_item = self.import_data(
@@ -2063,16 +2063,16 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             item = item.parent()
         return item
 
-    def check_save_guard(self):
-        save_guard_file = path.join(data_dir, "save_guard.txt")
-        if not path.exists(save_guard_file):
-            with open(save_guard_file, "w") as f:
-                f.write(str(datetime.now()))
+    # def check_save_guard(self):
+    #     save_guard_file = path.join(data_dir, "save_guard.txt")
+    #     if not path.exists(save_guard_file):
+    #         with open(save_guard_file, "w") as f:
+    #             f.write(str(datetime.now()))
 
-    def clear_save_guard(self):
-        save_guard_file = path.join(data_dir, "save_guard.txt")
-        if path.exists(save_guard_file):
-            os.remove(save_guard_file)
+    # def clear_save_guard(self):
+    #     save_guard_file = path.join(data_dir, "save_guard.txt")
+    #     if path.exists(save_guard_file):
+    #         os.remove(save_guard_file)
 
     def closeEvent(self, event):
         quit_msg = _translate(
@@ -2087,7 +2087,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         if reply == QtWidgets.QMessageBox.Yes:
-            self.clear_save_guard()
+            # self.clear_save_guard()
             event.accept()
         else:
             event.ignore()
