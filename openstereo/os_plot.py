@@ -517,15 +517,15 @@ class StereoPlot(PlotPanel):
 
     def plot_arrow(self, planes, lines, arrow_settings, has_sense, sliplinear):
         for plane, line, sense in zip(planes, lines, has_sense):
-            if not sliplinear:
+            if not sliplinear:  # FIXME: wrong name?
                 arrowsize = radians(arrow_settings["arrowsize"])
                 if plane[-1] > 0:
                     plane = -plane
-                arrow_to = (
+                arrow_from = (
                     cos(arrowsize / 2.0) * plane
                     + sin(arrowsize / 2.0) * line
                 )
-                arrow_from = (
+                arrow_to = (
                     cos(-arrowsize / 2.0) * plane
                     + sin(-arrowsize / 2.0) * line
                 )
