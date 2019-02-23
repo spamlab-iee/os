@@ -216,6 +216,8 @@
     <addaction name="actionAdd_Slope"/>
     <addaction name="actionAdd_Arc"/>
     <addaction name="actionAssemble_Fault"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_Group"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuData"/>
@@ -482,6 +484,11 @@
   <action name="actionOpen_fault_data_PlaneDir_Line_Sense">
    <property name="text">
     <string>Open fault data (Dir/Dip // Trend/Plunge // Sense)</string>
+   </property>
+  </action>
+  <action name="actionAdd_Group">
+   <property name="text">
+    <string>Add Group</string>
    </property>
   </action>
  </widget>

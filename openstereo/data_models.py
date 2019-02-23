@@ -60,6 +60,23 @@ import auttitude as au
 from auttitude.applications import stress
 
 
+class GroupItem(QtWidgets.QTreeWidgetItem):
+    def __init__(self, name, parent, item_id=None):
+        super(GroupItem, self).__init__(parent)
+        self.id = item_id
+
+        self.setText(0, name)
+        self.setCheckState(0, QtCore.Qt.Checked)
+        self.setFlags(
+            QtCore.Qt.ItemIsUserCheckable
+            | QtCore.Qt.ItemIsEnabled
+            | QtCore.Qt.ItemIsSelectable
+            | QtCore.Qt.ItemIsDragEnabled
+            | QtCore.Qt.ItemIsDropEnabled
+        )
+        self.setExpanded(True)
+
+
 class DataItem(QtWidgets.QTreeWidgetItem):
     plot_item_name = {}
     default_checked = []

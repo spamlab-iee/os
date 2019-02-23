@@ -53,6 +53,7 @@ from openstereo.data_models import (
     SingleSmallCircle,
     Slope,
 )
+from openstereo.data_models import DataItem, GroupItem
 from openstereo.os_math import net_grid, bearing, haversine, dcos_lines
 from openstereo.os_plot import ClassificationPlot, RosePlot, StereoPlot
 from openstereo.plot_data import (
@@ -359,6 +360,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionAssemble_Fault.triggered.connect(
             lambda: self.fault_data_dialog()
         )
+        self.actionAdd_Group.triggered.connect(lambda: self.add_group())
 
         self.actionNew.triggered.connect(self.new_project)
         self.actionSave.triggered.connect(self.save_project_dialog)
@@ -627,6 +629,11 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 **dialog.importer.import_data()
             )
 
+    def add_group(self):
+        return GroupItem(
+            name="Group", parent=self.treeWidget, item_id=self.assign_id()
+        )
+
     def import_fault_data(
         self,
         plane_columns,
@@ -658,7 +665,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             importer.longitude, importer.colatitude = plane_columns
             planes_import_data = importer.import_data()
             planes_data_reader = list(importer.get_data())
-            planes_data_name = "(P){}".format(path.basename(fname))
+            planes_data_name = "(P) {}".format(path.basename(fname))
             if len(line_columns) == 2:
                 importer.longitude, importer.colatitude = line_columns
                 importer.data_type = "line"
@@ -673,7 +680,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             importer.direction = False
             lines_import_data = importer.import_data()
             lines_data_reader = list(importer.get_data())
-            lines_data_name = "(L){}".format(path.basename(fname))
+            lines_data_name = "(L) {}".format(path.basename(fname))
 
             planes_item = self.import_data(
                 "plane_data",
@@ -1297,17 +1304,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 ).format(A.text(0))
             )
 
-    # @waiting_effects
-    def plot_data(self):
-        self.statusBar().showMessage(_translate("main", "Plotting data..."))
-
-        # experimental
-        if self.tabWidget.currentIndex() == 0:
-            self.projection_plot.clear_plot_element_data()
-
-        for index in range(self.treeWidget.topLevelItemCount() - 1, -1, -1):
-            item = self.treeWidget.topLevelItem(index)
-            if item.checkState(0):
+    def plot_tree_item(self, item):
+        if item.checkState(0):
+            if isinstance(item, GroupItem):
+                for i in range(item.childCount() - 1, -1, -1):
+                    subitem = item.child(i)
+                    self.plot_tree_item(subitem)
+            else:
                 for plot_item in item.checked_plots:
                     if (
                         isinstance(plot_item, ProjectionPlotData)
@@ -1324,6 +1327,18 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                         and self.tabWidget.currentIndex() == 2
                     ):
                         self.classification_plot.plot_data(plot_item)
+
+    # @waiting_effects
+    def plot_data(self):
+        self.statusBar().showMessage(_translate("main", "Plotting data..."))
+
+        # experimental
+        if self.tabWidget.currentIndex() == 0:
+            self.projection_plot.clear_plot_element_data()
+
+        for index in range(self.treeWidget.topLevelItemCount() - 1, -1, -1):
+            item = self.treeWidget.topLevelItem(index)
+            self.plot_tree_item(item)
         if (
             self.OS_settings.check_settings["grid"]
             and self.tabWidget.currentIndex() == 0
@@ -1758,6 +1773,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def expand_data(self, expand=True):
         for index in range(self.treeWidget.topLevelItemCount() - 1, -1, -1):
             item = self.treeWidget.topLevelItem(index)
+            self.expand_item(item, expand)
+
+    def expand_item(self, item, expand):
+        if isinstance(item, GroupItem):
+            item.setExpanded(expand)  # is this better?
+            for i in range(item.childCount() - 1, -1, -1):
+                subitem = item.child(i)
+                self.expand_item(subitem, expand)
+        else:
             item.setExpanded(expand)
 
     def remove_dataitem(self):
@@ -1983,40 +2007,45 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         menu = QtWidgets.QMenu()
 
         rename_action = menu.addAction(_translate("main", "Rename..."))
-        properties_action = menu.addAction(_translate("main", "Properties"))
-        item_table_action = menu.addAction(
-            _translate("main", "View item table")
-        )
-        menu.addSeparator()
-        copy_props_action = menu.addAction(
-            _translate("main", "Copy layer properties")
-        )
-        paste_props_action = menu.addAction(
-            _translate("main", "Paste layer properties")
-        )
-        export_props_action = menu.addAction(
-            _translate("main", "Export layer properties")
-        )  # Maybe save and load instead?
-        import_props_action = menu.addAction(
-            _translate("main", "Import layer properties")
-        )
-        menu.addSeparator()
-        extract_menu = menu.addMenu(_translate("main", "Extract..."))
-        extractable_items = item.extractable_items
-        for item_name, item_method in extractable_items:
-            item_action = extract_menu.addAction(item_name)
-            item_action.triggered.connect(
-                self.extractor_factory(item_name, item.text(0), item_method)
+        if isinstance(item, DataItem):
+            properties_action = menu.addAction(
+                _translate("main", "Properties")
             )
-        menu.addSeparator()
-        # merge_with_action = menu.addAction("Merge with...")
-        # rotate_action = menu.addAction("Rotate...")
-        # menu.addSeparator()
-        datasource_action = menu.addAction(
-            _translate("main", "Set data source")
-        )  # should this trigger reimport? They aren't really safe anymore...
-        reload_action = menu.addAction(_translate("main", "Reload data"))
-        # menu.addAction("Export data")
+            item_table_action = menu.addAction(
+                _translate("main", "View item table")
+            )
+            menu.addSeparator()
+            copy_props_action = menu.addAction(
+                _translate("main", "Copy layer properties")
+            )
+            paste_props_action = menu.addAction(
+                _translate("main", "Paste layer properties")
+            )
+            export_props_action = menu.addAction(
+                _translate("main", "Export layer properties")
+            )  # Maybe save and load instead?
+            import_props_action = menu.addAction(
+                _translate("main", "Import layer properties")
+            )
+            menu.addSeparator()
+            extract_menu = menu.addMenu(_translate("main", "Extract..."))
+            extractable_items = item.extractable_items
+            for item_name, item_method in extractable_items:
+                item_action = extract_menu.addAction(item_name)
+                item_action.triggered.connect(
+                    self.extractor_factory(
+                        item_name, item.text(0), item_method
+                    )
+                )
+            menu.addSeparator()
+            # merge_with_action = menu.addAction("Merge with...")
+            # rotate_action = menu.addAction("Rotate...")
+            # menu.addSeparator()
+            datasource_action = menu.addAction(
+                _translate("main", "Set data source")
+            )  # should this trigger reimport? They aren't really safe...
+            reload_action = menu.addAction(_translate("main", "Reload data"))
+            # menu.addAction("Export data")
         menu.addSeparator()
         up_action = menu.addAction(_translate("main", "Move item up"))
         down_action = menu.addAction(_translate("main", "Move item down"))
@@ -2031,16 +2060,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         delete_action = menu.addAction(_translate("main", "Delete item"))
 
         rename_action.triggered.connect(self.rename_dataitem)
-        properties_action.triggered.connect(self.properties_dataitem)
-        item_table_action.triggered.connect(self.item_table)
+        if isinstance(item, DataItem):
+            properties_action.triggered.connect(self.properties_dataitem)
+            item_table_action.triggered.connect(self.item_table)
 
-        copy_props_action.triggered.connect(self.copy_props_dataitem)
-        paste_props_action.triggered.connect(self.paste_props_dataitem)
-        export_props_action.triggered.connect(self.export_props_dataitem)
-        import_props_action.triggered.connect(self.import_props_dataitem)
+            copy_props_action.triggered.connect(self.copy_props_dataitem)
+            paste_props_action.triggered.connect(self.paste_props_dataitem)
+            export_props_action.triggered.connect(self.export_props_dataitem)
+            import_props_action.triggered.connect(self.import_props_dataitem)
 
-        datasource_action.triggered.connect(self.set_source_dataitem)
-        reload_action.triggered.connect(self.reload_data)
+            datasource_action.triggered.connect(self.set_source_dataitem)
+            reload_action.triggered.connect(self.reload_data)
 
         up_action.triggered.connect(self.up_dataitem)
         down_action.triggered.connect(self.down_dataitem)
@@ -2055,13 +2085,13 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         menu.exec_(self.treeWidget.viewport().mapToGlobal(position))
 
     def get_selected(self):
-        item = self.treeWidget.selectedItems()
+        item = self.treeWidget.selectedItems()  # TODO: use multiple selection!
         if not item:
             return
         item = item[0]
-        while item.parent():
+        while not (isinstance(item, DataItem) or isinstance(item, GroupItem)):
             item = item.parent()
-        return item
+        return item  # TODO: return type?
 
     # def check_save_guard(self):
     #     save_guard_file = path.join(data_dir, "save_guard.txt")

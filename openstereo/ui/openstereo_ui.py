@@ -191,6 +191,8 @@ class Ui_MainWindow(object):
         self.actionRotate_on_Drag.setObjectName("actionRotate_on_Drag")
         self.actionOpen_fault_data_PlaneDir_Line_Sense = QtWidgets.QAction(MainWindow)
         self.actionOpen_fault_data_PlaneDir_Line_Sense.setObjectName("actionOpen_fault_data_PlaneDir_Line_Sense")
+        self.actionAdd_Group = QtWidgets.QAction(MainWindow)
+        self.actionAdd_Group.setObjectName("actionAdd_Group")
         self.menuImport_Fault_Data.addAction(self.actionOpen_fault_data_Plane_Line_Sense)
         self.menuImport_Fault_Data.addAction(self.actionOpen_fault_data_PlaneDir_Line_Sense)
         self.menuImport_Fault_Data.addAction(self.actionOpen_TectonicsFP_Fault_Data)
@@ -238,6 +240,8 @@ class Ui_MainWindow(object):
         self.menuData.addAction(self.actionAdd_Slope)
         self.menuData.addAction(self.actionAdd_Arc)
         self.menuData.addAction(self.actionAssemble_Fault)
+        self.menuData.addSeparator()
+        self.menuData.addAction(self.actionAdd_Group)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuData.menuAction())
         self.menubar.addAction(self.menuSettings.menuAction())
@@ -311,4 +315,5 @@ class Ui_MainWindow(object):
         self.actionAdd_Arc.setText(_translate("MainWindow", "Add Arc"))
         self.actionRotate_on_Drag.setText(_translate("MainWindow", "Rotate on Drag"))
         self.actionOpen_fault_data_PlaneDir_Line_Sense.setText(_translate("MainWindow", "Open fault data (Dir/Dip // Trend/Plunge // Sense)"))
+        self.actionAdd_Group.setText(_translate("MainWindow", "Add Group"))
 
