@@ -42,7 +42,7 @@ from openstereo.os_math import (
 )
 from openstereo.os_auttitude import load, DirectionalData
 from openstereo import os_auttitude as autti
-from openstereo.data_import import get_data, split_attitude
+from openstereo.io import get_data, split_attitude
 from openstereo.plot_data import (
     PointPlotData,
     CirclePlotData,

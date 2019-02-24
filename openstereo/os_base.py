@@ -37,7 +37,7 @@ _translate = QtCore.QCoreApplication.translate
 
 import openstereo.os_auttitude as autti
 import auttitude as au
-from openstereo.data_import import get_data, ImportDialog, Importer
+from openstereo.io import get_data, ImportDialog, Importer
 from openstereo.data_models import (
     AttitudeData,
     CircularData,
@@ -360,7 +360,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionAssemble_Fault.triggered.connect(
             lambda: self.fault_data_dialog()
         )
-        self.actionAdd_Group.triggered.connect(lambda: self.add_group())
+        self.actionAdd_Group.triggered.connect(
+            lambda: self.add_group(name="Group")
+        )
 
         self.actionNew.triggered.connect(self.new_project)
         self.actionSave.triggered.connect(self.save_project_dialog)
@@ -554,11 +556,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 ),
             )
 
-    def import_data(self, data_type, name, item_id=None, **kwargs):
+    def import_data(
+        self, data_type, name, item_id=None, item_parent=None, **kwargs
+    ):
+        if item_parent is None:
+            item_parent = self.treeWidget
         if item_id is None:
             item_id = self.assign_id()
         item = self.data_types[data_type](
-            name=name, parent=self.treeWidget, item_id=item_id, **kwargs
+            name=name, parent=item_parent, item_id=item_id, **kwargs
         )
         item.set_root(self)
         return item
@@ -629,10 +635,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 **dialog.importer.import_data()
             )
 
-    def add_group(self):
-        return GroupItem(
-            name="Group", parent=self.treeWidget, item_id=self.assign_id()
-        )
+    def add_group(self, name, parent=None):
+        parent = parent if parent is not None else self.treeWidget
+        return GroupItem(name=name, parent=parent, item_id=self.assign_id())
 
     def import_fault_data(
         self,
@@ -1567,6 +1572,85 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         ozf.writestr("project_data.json", json.dumps(project_data, indent=3))
         ozf.close()
 
+    def save_project_item(
+        self,
+        item,
+        data,
+        ozf,
+        pack,
+        project_dir,
+        old_project_dir,
+        packed_paths,
+        item_settings_fnames
+    ):
+        if isinstance(item, GroupItem):
+            item_data = {
+                    "name": item.text(0),
+                    "id": getattr(item, "id", None),
+                    "checked": bool(item.checkState(0)),
+                    "items": []
+                }
+        else:
+            item_path = getattr(item, "data_path", None)
+            if item_path is not None:
+                item_fname = path.basename(item_path)
+                name, ext = path.splitext(item_fname)
+                if pack:
+                    # as packed data are stored flat, this bellow is to avoid
+                    # name colision.
+                    i = 1
+                    while (
+                        item_fname in packed_paths
+                        and item_path != packed_paths[item_fname]
+                    ):
+                        item_fname = "{}({}){}".format(name, i, ext)
+                        i += 1
+                    packed_paths[item_fname] = item_path
+                    # item_path = item_fname
+                    ozf.write(
+                        path.normpath(
+                            path.join(
+                                project_dir
+                                if self.old_project is None
+                                else old_project_dir,
+                                item_path,
+                            )
+                        ),
+                        item_fname,
+                    )
+            item_settings_name = (
+                name if item_path is not None else item.text(0)
+            )
+            item_settings_fname = item_settings_name + ".os_lyr"
+            i = 1
+            while item_settings_fname in item_settings_fnames:
+                item_settings_fname = "{}({}){}".format(
+                    item_settings_name, i, ".os_lyr"
+                )
+                i += 1
+            item_settings_fnames.add(item_settings_fname)
+
+            ozf.writestr(
+                item_settings_fname, json.dumps(item.item_settings, indent=2)
+            )
+            if item_path is not None and not pack:
+                item_path = path.relpath(item_path, project_dir)
+            if hasattr(item, "auttitude_data"):
+                auttitude_kwargs = item.auttitude_data.kwargs
+            else:
+                auttitude_kwargs = None
+            data["items"].append(
+                {
+                    "name": item.text(0),
+                    "path": item_path,
+                    "id": getattr(item, "id", None),
+                    "layer_settings_file": item_settings_fname,
+                    "checked": bool(item.checkState(0)),
+                    "checked_plots": item.get_checked_status(),
+                    "kwargs": auttitude_kwargs,
+                }
+            )
+
     def open_project(self, fname, ask_for_missing=False):
         ozf = zipfile.ZipFile(fname, mode="r")
         project_data = json.load(utf8_reader(ozf.open("project_data.json")))
@@ -1582,9 +1666,44 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         found_dirs = {}
 
         for data in reversed(project_data["items"]):
-            item_path = data["path"]
-            item_id = data.get("id", None)
-            if item_path is not None:
+            self.open_project_item(
+                data,
+                self.treeWidget,
+                found_dirs,
+                ask_for_missing,
+                ozf,
+                packed,
+                project_dir,
+            )
+        ozf.close()
+
+    def open_project_item(
+        self,
+        data,
+        parent,
+        found_dirs,
+        ask_for_missing,
+        ozf,
+        packed,
+        project_dir,
+    ):
+        item_path = data.get("path", None)
+        item_id = data.get("id", None)
+        item_subitems = data.get("items", None)
+        if item_subitems is not None:  # item is a GroupItem
+            item = self.add_group(name=data["name"], parent=parent)
+            for subdata in item_subitems:
+                self.open_project_item(
+                    subdata,
+                    item,
+                    found_dirs,
+                    ask_for_missing,
+                    ozf,
+                    packed,
+                    project_dir,
+                )
+        else:
+            if item_path is not None:  # item is a DataItem
                 item_basename = path.basename(item_path)
                 item_fname, ext = path.splitext(item_basename)
                 item_settings_name = data.get(
@@ -1614,7 +1733,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                             ).format(data["name"]),
                         )
                         if not fname:
-                            continue
+                            return None
                         found_dirs[path.dirname(item_file)] = path.dirname(
                             fname
                         )
@@ -1643,15 +1762,15 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 data_path=item_path,
                 data=item_data,
                 item_id=item_id,
+                item_parent=parent,
                 **auttitude_kwargs
             )
             item.item_settings = item_settings
-            item.setCheckState(
-                0,
-                QtCore.Qt.Checked if data["checked"] else QtCore.Qt.Unchecked,
-            )
             item.set_checked(data["checked_plots"])
-        ozf.close()
+        item.setCheckState(
+            0, QtCore.Qt.Checked if data["checked"] else QtCore.Qt.Unchecked
+        )
+        return item
 
     def unpack_data_dialog(self):
         if self.OS_settings.general_settings["packeddata"] == "no":
