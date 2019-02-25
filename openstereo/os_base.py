@@ -1508,66 +1508,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         packed_paths = {}
         item_settings_fnames = set()
-        for index in range(self.treeWidget.topLevelItemCount() - 1, -1, -1):
+        for index in range(self.treeWidget.topLevelItemCount()):
             item = self.treeWidget.topLevelItem(index)
-            item_path = getattr(item, "data_path", None)
-            if item_path is not None:
-                item_fname = path.basename(item_path)
-                name, ext = path.splitext(item_fname)
-                if pack:
-                    # as packed data are stored flat, this bellow is to avoid
-                    # name colision.
-                    i = 1
-                    while (
-                        item_fname in packed_paths
-                        and item_path != packed_paths[item_fname]
-                    ):
-                        item_fname = "{}({}){}".format(name, i, ext)
-                        i += 1
-                    packed_paths[item_fname] = item_path
-                    # item_path = item_fname
-                    ozf.write(
-                        path.normpath(
-                            path.join(
-                                project_dir
-                                if self.old_project is None
-                                else old_project_dir,
-                                item_path,
-                            )
-                        ),
-                        item_fname,
-                    )
-            item_settings_name = (
-                name if item_path is not None else item.text(0)
-            )
-            item_settings_fname = item_settings_name + ".os_lyr"
-            i = 1
-            while item_settings_fname in item_settings_fnames:
-                item_settings_fname = "{}({}){}".format(
-                    item_settings_name, i, ".os_lyr"
-                )
-                i += 1
-            item_settings_fnames.add(item_settings_fname)
-
-            ozf.writestr(
-                item_settings_fname, json.dumps(item.item_settings, indent=2)
-            )
-            if item_path is not None and not pack:
-                item_path = path.relpath(item_path, project_dir)
-            if hasattr(item, "auttitude_data"):
-                auttitude_kwargs = item.auttitude_data.kwargs
-            else:
-                auttitude_kwargs = None
-            project_data["items"].append(
-                {
-                    "name": item.text(0),
-                    "path": item_path,
-                    "id": getattr(item, "id", None),
-                    "layer_settings_file": item_settings_fname,
-                    "checked": bool(item.checkState(0)),
-                    "checked_plots": item.get_checked_status(),
-                    "kwargs": auttitude_kwargs,
-                }
+            self.save_project_item(
+                item,
+                project_data,
+                ozf,
+                pack,
+                project_dir,
+                old_project_dir,
+                packed_paths,
+                item_settings_fnames,
             )
         ozf.writestr("project_data.json", json.dumps(project_data, indent=3))
         ozf.close()
@@ -1581,15 +1532,28 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         project_dir,
         old_project_dir,
         packed_paths,
-        item_settings_fnames
+        item_settings_fnames,
     ):
         if isinstance(item, GroupItem):
             item_data = {
-                    "name": item.text(0),
-                    "id": getattr(item, "id", None),
-                    "checked": bool(item.checkState(0)),
-                    "items": []
-                }
+                "name": item.text(0),
+                "id": getattr(item, "id", None),
+                "checked": bool(item.checkState(0)),
+                "items": [],
+            }
+            data["items"].append(item_data)
+            for i in range(item.childCount()):
+                subitem = item.child(i)
+                self.save_project_item(
+                    subitem,
+                    item_data,
+                    ozf,
+                    pack,
+                    project_dir,
+                    old_project_dir,
+                    packed_paths,
+                    item_settings_fnames,
+                )
         else:
             item_path = getattr(item, "data_path", None)
             if item_path is not None:
@@ -1665,7 +1629,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.temp_dir = mkdtemp() if packed else None
         found_dirs = {}
 
-        for data in reversed(project_data["items"]):
+        for data in project_data["items"]:
             self.open_project_item(
                 data,
                 self.treeWidget,
@@ -1826,11 +1790,28 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             for index in range(self.treeWidget.topLevelItemCount())
         ]
 
-    def get_data_item_by_id(self, id):
-        for index in range(self.treeWidget.topLevelItemCount()):
-            item = self.treeWidget.topLevelItem(index)
-            if item.id == id:
-                return item
+    def get_data_item_by_id(self, id, parent=None):
+        if parent is None:
+            for index in range(self.treeWidget.topLevelItemCount()):
+                item = self.treeWidget.topLevelItem(index)
+                if isinstance(item, GroupItem):
+                    subitem = self.get_data_item_by_id(id, item)
+                    if subitem is not None:
+                        return subitem
+                else:
+                    if item.id == id:
+                        return item
+        else:  # parent is a group
+            for index in range(parent.childCount()):
+                item = parent.child(index)
+                if isinstance(item, GroupItem):
+                    subitem = self.get_data_item_by_id(id, item)
+                    if subitem is not None:
+                        return subitem
+                else:
+                    if item.id == id:
+                        return item
+        return None  # item not found
 
     def show_settings_dialog(self):
         if not hasattr(self, "settings_dialog"):
