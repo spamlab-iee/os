@@ -1598,7 +1598,17 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 item_settings_fname, json.dumps(item.item_settings, indent=2)
             )
             if item_path is not None and not pack:
-                item_path = path.relpath(item_path, project_dir)
+                item_path = path.relpath(
+                    path.normpath(
+                        path.join(
+                            project_dir
+                            if self.old_project is None
+                            else old_project_dir,
+                            item_path,
+                        )
+                    ),
+                    project_dir,
+                )
             if hasattr(item, "auttitude_data"):
                 auttitude_kwargs = item.auttitude_data.kwargs
             else:
@@ -1676,7 +1686,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 item_file = (
                     ozf.extract(item_path, self.temp_dir)
                     if packed
-                    else path.normpath(path.join(project_dir, data["path"]))
+                    else path.normpath(
+                        path.join(project_dir, data["path"])
+                    )  # TODO: change to item_path?
                 )
                 if not path.exists(item_file):
                     for original_dir, current_dir in list(found_dirs.items()):
@@ -1749,25 +1761,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         if not dirname:
             return
         packed_paths = {}
-        for index in range(self.treeWidget.topLevelItemCount() - 1, -1, -1):
+        for index in range(self.treeWidget.topLevelItemCount()):
             item = self.treeWidget.topLevelItem(index)
-            # item_fname = path.basename(item.data_path)
-            item_path = getattr(item, "data_path", None)
-            if item_path is None:
-                continue
-            item_fname = path.basename(item_path)
-            name, ext = path.splitext(item_path)
-            i = 1
-            while (
-                item_fname in packed_paths
-                and item_path != packed_paths[item_fname]
-            ):
-                item_fname = "{}({}){}".fomart(name, i, ext)
-                i += 1
-            packed_paths[item_fname] = item_path
-            target_path = path.join(dirname, item_fname)
-            shutil.copy2(item_path, target_path)
-            item.data_path = target_path
+            self.unpack_item(item, packed_paths, dirname)
         self.OS_settings.general_settings["packeddata"] = "no"
         target_project_path = path.join(
             dirname, path.basename(self.current_project)
@@ -1783,6 +1779,29 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             file={"name": self.current_project},
             update_data_only=True,
         )
+
+    def unpack_item(self, item, packed_paths, dirname):
+        if isinstance(item, GroupItem):
+            for i in range(item.childCount()):
+                subitem = item.child(i)
+                self.unpack_item(subitem, packed_paths, dirname)
+        else:
+            item_path = getattr(item, "data_path", None)
+            if item_path is None:
+                return
+            item_fname = path.basename(item_path)
+            name, ext = path.splitext(item_path)
+            i = 1
+            while (
+                item_fname in packed_paths
+                and item_path != packed_paths[item_fname]
+            ):
+                item_fname = "{}({}){}".format(name, i, ext)
+                i += 1
+            packed_paths[item_fname] = item_path
+            target_path = path.join(dirname, item_fname)
+            shutil.copy2(item_path, target_path)
+            item.data_path = target_path
 
     def get_data_items(self):
         return [
@@ -1886,35 +1905,53 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def remove_dataitem(self):
         item = self.get_selected()
-        index = self.treeWidget.indexOfTopLevelItem(item)
-        return (
-            self.treeWidget.takeTopLevelItem(index),
-            index,
-            item.isExpanded(),
-        )
+        parent = item.parent()
+        if parent is None:
+            index = self.treeWidget.indexOfTopLevelItem(item)
+            removed_item = self.treeWidget.takeTopLevelItem(index)
+        else:  # parent is a GroupItem
+            index = parent.indexOfChild(item)
+            removed_item = parent.takeChild(index)
+        return (removed_item, parent, index, item.isExpanded())
         self.statusBar().showMessage(
             _translate("main", "Removed item {}").format(item.text(0))
-        )
+        )  # FIXME: never reached?
 
     def up_dataitem(self):
-        item, index, expanded = self.remove_dataitem()
-        self.treeWidget.insertTopLevelItem(max(0, index - 1), item)
+        item, parent, index, expanded = self.remove_dataitem()
+        if parent is None:
+            self.treeWidget.insertTopLevelItem(max(0, index - 1), item)
+        else:
+            parent.insertChild(max(0, index - 1), item)
         # item.setExpanded(expanded)
 
     def down_dataitem(self):
-        n_items = self.treeWidget.topLevelItemCount()
-        item, index, expanded = self.remove_dataitem()
-        self.treeWidget.insertTopLevelItem(min(n_items - 1, index + 1), item)
+        item, parent, index, expanded = self.remove_dataitem()
+        if parent is None:
+            n_items = self.treeWidget.topLevelItemCount()
+            self.treeWidget.insertTopLevelItem(
+                min(n_items - 1, index + 1), item
+            )
+        else:
+            n_items = parent.childCount()
+            parent.insertChild(min(n_items - 1, index + 1), item)
         # item.setExpanded(expanded)
 
     def bottom_dataitem(self):
-        n_items = self.treeWidget.topLevelItemCount()
-        item, index, expanded = self.remove_dataitem()
-        self.treeWidget.insertTopLevelItem(n_items - 1, item)
+        item, parent, index, expanded = self.remove_dataitem()
+        if parent is None:
+            n_items = self.treeWidget.topLevelItemCount()
+            self.treeWidget.insertTopLevelItem(n_items, item)
+        else:
+            n_items = parent.childCount()
+            parent.insertChild(n_items - 1, item)
 
     def top_dataitem(self):
-        item, index, expanded = self.remove_dataitem()
-        self.treeWidget.insertTopLevelItem(0, item)
+        item, parent, index, expanded = self.remove_dataitem()
+        if parent is None:
+            self.treeWidget.insertTopLevelItem(0, item)
+        else:
+            parent.insertChild(0, item)
 
     def rename_dataitem(self):
         item = self.get_selected()
@@ -1988,14 +2025,25 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
             populate_item_table(item)
         item.item_table_dialog.show()
 
+    def group_selected(self):
+        items = self.get_selected(multiple_selection=True)
+        parent = self.get_nearest_commmon_parent(items)
+        group = self.add_group("Group", parent=parent)
+        for item in items:
+            item_object, parent, index, expanded = self.remove_dataitem()
+            group.addChild(item_object)
+            # if expanded:  # why not?
+        return group
+
     def copy_props_dataitem(self):
         item = self.get_selected()
-        self.cb.setText(json.dumps(item.item_settings, indent=2))
-        self.statusBar().showMessage(
-            _translate("main", "Copied properties of {} to clipboard").format(
-                item.text(0)
+        if hasattr(item, "item_settings"):
+            self.cb.setText(json.dumps(item.item_settings, indent=2))
+            self.statusBar().showMessage(
+                _translate(
+                    "main", "Copied properties of {} to clipboard"
+                ).format(item.text(0))
             )
-        )
 
     def export_props_dataitem(self):
         item = self.get_selected()
@@ -2016,6 +2064,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def paste_props_dataitem(self):
         item = self.get_selected()
+        if not hasattr(item, "item_settings"):
+            return
         try:
             item.item_settings = json.loads(self.cb.text())
             self.statusBar().showMessage(
@@ -2101,58 +2151,64 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         return extractor
 
     def tree_context_menu(self, position):
-        item = self.get_selected()
-        if item is None:
+        items = self.get_selected(multiple_selection=True)
+        if items is None:
             return
         menu = QtWidgets.QMenu()
 
         rename_action = menu.addAction(_translate("main", "Rename..."))
-        if isinstance(item, DataItem):
-            properties_action = menu.addAction(
-                _translate("main", "Properties")
-            )
-            item_table_action = menu.addAction(
-                _translate("main", "View item table")
-            )
-            menu.addSeparator()
-            copy_props_action = menu.addAction(
-                _translate("main", "Copy layer properties")
-            )
-            paste_props_action = menu.addAction(
-                _translate("main", "Paste layer properties")
-            )
-            export_props_action = menu.addAction(
-                _translate("main", "Export layer properties")
-            )  # Maybe save and load instead?
-            import_props_action = menu.addAction(
-                _translate("main", "Import layer properties")
-            )
-            menu.addSeparator()
-            extract_menu = menu.addMenu(_translate("main", "Extract..."))
-            extractable_items = item.extractable_items
-            for item_name, item_method in extractable_items:
-                item_action = extract_menu.addAction(item_name)
-                item_action.triggered.connect(
-                    self.extractor_factory(
-                        item_name, item.text(0), item_method
-                    )
+        if len(items) == 1:
+            item = items[0]
+            if isinstance(item, DataItem):
+                properties_action = menu.addAction(
+                    _translate("main", "Properties")
                 )
+                item_table_action = menu.addAction(
+                    _translate("main", "View item table")
+                )
+                menu.addSeparator()
+                copy_props_action = menu.addAction(
+                    _translate("main", "Copy layer properties")
+                )
+                paste_props_action = menu.addAction(
+                    _translate("main", "Paste layer properties")
+                )
+                export_props_action = menu.addAction(
+                    _translate("main", "Export layer properties")
+                )  # Maybe save and load instead?
+                import_props_action = menu.addAction(
+                    _translate("main", "Import layer properties")
+                )
+                menu.addSeparator()
+                extract_menu = menu.addMenu(_translate("main", "Extract..."))
+                extractable_items = item.extractable_items
+                for item_name, item_method in extractable_items:
+                    item_action = extract_menu.addAction(item_name)
+                    item_action.triggered.connect(
+                        self.extractor_factory(
+                            item_name, item.text(0), item_method
+                        )
+                    )
+                menu.addSeparator()
+                # merge_with_action = menu.addAction("Merge with...")
+                # rotate_action = menu.addAction("Rotate...")
+                # menu.addSeparator()
+                datasource_action = menu.addAction(
+                    _translate("main", "Set data source")
+                )  # should this trigger reimport? They aren't really safe...
+                reload_action = menu.addAction(
+                    _translate("main", "Reload data")
+                )
+                # menu.addAction("Export data")
             menu.addSeparator()
-            # merge_with_action = menu.addAction("Merge with...")
-            # rotate_action = menu.addAction("Rotate...")
-            # menu.addSeparator()
-            datasource_action = menu.addAction(
-                _translate("main", "Set data source")
-            )  # should this trigger reimport? They aren't really safe...
-            reload_action = menu.addAction(_translate("main", "Reload data"))
-            # menu.addAction("Export data")
+            up_action = menu.addAction(_translate("main", "Move item up"))
+            down_action = menu.addAction(_translate("main", "Move item down"))
+            top_action = menu.addAction(_translate("main", "Move item to top"))
+            bottom_action = menu.addAction(
+                _translate("main", "Move item to botton")
+            )
         menu.addSeparator()
-        up_action = menu.addAction(_translate("main", "Move item up"))
-        down_action = menu.addAction(_translate("main", "Move item down"))
-        top_action = menu.addAction(_translate("main", "Move item to top"))
-        bottom_action = menu.addAction(
-            _translate("main", "Move item to botton")
-        )
+        group_action = menu.addAction(_translate("main", "Group selected"))
         menu.addSeparator()
         expand_action = menu.addAction(_translate("main", "Expand all"))
         collapse_action = menu.addAction(_translate("main", "Collapse all"))
@@ -2160,22 +2216,30 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         delete_action = menu.addAction(_translate("main", "Delete item"))
 
         rename_action.triggered.connect(self.rename_dataitem)
-        if isinstance(item, DataItem):
-            properties_action.triggered.connect(self.properties_dataitem)
-            item_table_action.triggered.connect(self.item_table)
+        if len(items) == 1:
+            item = items[0]
+            if isinstance(item, DataItem):
+                properties_action.triggered.connect(self.properties_dataitem)
+                item_table_action.triggered.connect(self.item_table)
 
-            copy_props_action.triggered.connect(self.copy_props_dataitem)
-            paste_props_action.triggered.connect(self.paste_props_dataitem)
-            export_props_action.triggered.connect(self.export_props_dataitem)
-            import_props_action.triggered.connect(self.import_props_dataitem)
+                copy_props_action.triggered.connect(self.copy_props_dataitem)
+                paste_props_action.triggered.connect(self.paste_props_dataitem)
+                export_props_action.triggered.connect(
+                    self.export_props_dataitem
+                )
+                import_props_action.triggered.connect(
+                    self.import_props_dataitem
+                )
 
-            datasource_action.triggered.connect(self.set_source_dataitem)
-            reload_action.triggered.connect(self.reload_data)
+                datasource_action.triggered.connect(self.set_source_dataitem)
+                reload_action.triggered.connect(self.reload_data)
 
-        up_action.triggered.connect(self.up_dataitem)
-        down_action.triggered.connect(self.down_dataitem)
-        top_action.triggered.connect(self.top_dataitem)
-        bottom_action.triggered.connect(self.bottom_dataitem)
+            up_action.triggered.connect(self.up_dataitem)
+            down_action.triggered.connect(self.down_dataitem)
+            top_action.triggered.connect(self.top_dataitem)
+            bottom_action.triggered.connect(self.bottom_dataitem)
+
+        group_action.triggered.connect(lambda: self.group_selected())
 
         expand_action.triggered.connect(lambda: self.expand_data(True))
         collapse_action.triggered.connect(lambda: self.expand_data(False))
@@ -2184,14 +2248,44 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
 
         menu.exec_(self.treeWidget.viewport().mapToGlobal(position))
 
-    def get_selected(self):
-        item = self.treeWidget.selectedItems()  # TODO: use multiple selection!
-        if not item:
+    def get_selected(self, multiple_selection=False):
+        selected_items = self.treeWidget.selectedItems()
+        if not selected_items:
             return
-        item = item[0]
-        while not (isinstance(item, DataItem) or isinstance(item, GroupItem)):
-            item = item.parent()
-        return item  # TODO: return type?
+        # item = item[0]
+        items = []
+        for item in selected_items:
+            while not (
+                isinstance(item, DataItem) or isinstance(item, GroupItem)
+            ):
+                item = item.parent()
+            if item not in items:
+                items.append(item)
+        if multiple_selection:
+            return items
+        else:
+            return items[0]
+
+    def get_nearest_commmon_parent(self, items):  # could be a function
+        remaining_parents = []
+        parent = items[0].parent()
+        while parent is not None:
+            remaining_parents.append(parent)
+            parent = parent.parent()
+        for item in items[1:]:
+            if not remaining_parents:
+                return None
+            candidate_parents = []
+            parent = item.parent()
+            while parent is not None:
+                if parent in remaining_parents:
+                    candidate_parents.append(parent)
+                parent = parent.parent()
+            remaining_parents = candidate_parents
+        if not remaining_parents:
+            return None
+        else:
+            return remaining_parents[0]
 
     # def check_save_guard(self):
     #     save_guard_file = path.join(data_dir, "save_guard.txt")

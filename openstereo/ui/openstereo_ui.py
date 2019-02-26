@@ -29,6 +29,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.treeWidget.sizePolicy().hasHeightForWidth())
         self.treeWidget.setSizePolicy(sizePolicy)
         self.treeWidget.setMinimumSize(QtCore.QSize(0, 0))
+        self.treeWidget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.treeWidget.setObjectName("treeWidget")
         self.treeWidget.header().setVisible(False)
         self.verticalLayoutWidget = QtWidgets.QWidget(self.splitter)
