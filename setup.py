@@ -62,7 +62,7 @@ class BuildUICommand(distutils.cmd.Command):
 
 setup(
     name="OpenStereo",
-    version="0.9.0",
+    version="2.0b",
     packages=find_packages(),
     entry_points={
         'console_scripts': [

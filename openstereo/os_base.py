@@ -90,7 +90,7 @@ extract_colored_faces = waiting_effects(extract_colored_faces)
 print(sys.version)
 # print("current data_dir:", data_dir)
 
-__version__ = "0.9u"
+__version__ = "2.0b"
 
 os_qsettings = QtCore.QSettings("OpenStereo", "OpenStereo")
 
@@ -524,7 +524,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         self.clear_plot()
 
     def set_title(self):
-        title = _translate("main", "OpenStereo - ")
+        title = _translate("main", "OpenStereo {} - ").format(__version__)
         if self.OS_settings.general_settings["title"]:
             title += self.OS_settings.general_settings["title"]
         elif self.current_project is not None:
@@ -967,7 +967,9 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
     def show_about(self):
         msg = QtWidgets.QMessageBox()
         # msg.setIcon(QtWidgets.QMessageBox.Information)
-        msg.setWindowTitle(_translate("main", "About OpenStereo 1.0"))
+        msg.setWindowTitle(
+            _translate("main", "About OpenStereo {}").format(__version__)
+        )
         msg.setText(
             _translate(
                 "main",
@@ -981,7 +983,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         OpenStereo is free software: you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
         the Free Software Foundation, either version 3 of the License, or
-        (at your option) any later version. 
+        (at your option) any later version.
 
         OpenStereo is distributed in the hope that it will be useful,
         but WITHOUT ANY WARRANTY; without even the implied warranty of
