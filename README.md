@@ -124,7 +124,3 @@ or
 ```bash
 $ python -m openstereo
 ```
-
-## Known Issues
-
-1. Python 2.7 only works with excel spreadsheet files (.xls|.xlsx) for now, thanks to unicode literals headaches. Should sort this soon, if possible.
