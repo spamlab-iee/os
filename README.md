@@ -31,7 +31,7 @@ First install pyqt5 (python3 will be installed as well for this) using
 [homebrew](https://brew.sh/):
 
 ```bash
-$ brew install pytqt
+$ brew install pyqt
 ```
 
 Once that is done, install OpenStereo from this repository using pip3:

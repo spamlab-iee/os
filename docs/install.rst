@@ -50,7 +50,7 @@ macOS Installation
 First install pyqt5 and python3 (python3 is automatically installed as a
 dependency of pyqt5) using `homebrew`_::
 
-    $ brew install pytqt
+    $ brew install pyqt
 
 .. _homebrew: https://brew.sh/
 
