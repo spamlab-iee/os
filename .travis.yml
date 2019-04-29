@@ -24,7 +24,7 @@ before_install:
 - if [ "$TRAVIS_OS_NAME" = "linux" ]; then virtualenv venv --python=python3; fi
 - if [ "$TRAVIS_OS_NAME" = "linux" ]; then source venv/bin/activate; fi
 install:
-- pip install -r requirements.txt
+- pip install -r requires.txt
 - pip install briefcase
 - pip install dmgbuild
 - pip install pytest-faulthandler
