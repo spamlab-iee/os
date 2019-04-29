@@ -91,8 +91,8 @@ setup(
     description="Software for analysis of structural data",
     license="GPLv3",
     keywords="geology attitude stereonet projection structural",
-    url="https://github.com/endarthur/os",
-    download_url="https://github.com/endarthur/os/archive/v0.9.0.tar.gz",
+    url="https://github.com/spamlab-iee/os",
+    download_url="https://github.com/spamlab-iee/os/archive/v0.9.0.tar.gz",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Scientific/Engineering",

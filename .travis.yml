@@ -1,0 +1,55 @@
+matrix:
+  include:
+  - os: osx
+    osx_image: xcode8.3
+    sudo: required
+    language: generic
+    python: 3.6
+before_install:
+- uname -a
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then sw_vers; fi
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then bash package/install_osx.sh; fi
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then pyenv install 3.6.5; fi
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then pyenv versions; fi
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then pyenv global 3.6.5; fi
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then eval "$(pyenv init -)"; fi
+- pip install --upgrade pip
+- echo $PATH
+- python --version
+- python -c "import struct; print(struct.calcsize('P') * 8)"
+- python -c "import sys; print(sys.executable)"
+- python -m pip --version
+- pip --version
+- if [ "$TRAVIS_OS_NAME" = "linux" ]; then virtualenv venv --python=python3; fi
+- if [ "$TRAVIS_OS_NAME" = "linux" ]; then source venv/bin/activate; fi
+install:
+- pip install -r requirements.txt
+- pip install briefcase
+- pip install dmgbuild
+- pip install pytest-faulthandler
+- pip freeze
+script:
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then make check; fi
+- if [ "$TRAVIS_OS_NAME" = "linux" ]; then xvfb-run make check; fi
+- make clean
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then python setup.py macos; fi
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then mkdir dist; fi
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then zip -r -X dist/mu-editor.zip macOS/openstereo.app;
+  fi
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then du -sk dist/; fi
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then mv dist/openstereo.zip dist/openstereo_$(date
+  '+%Y-%m-%d_%H_%M')_${TRAVIS_BRANCH}_${TRAVIS_COMMIT:0:7}.zip; fi
+
+deploy:
+  provider: releases
+  api_key:
+    secure: aOVW70E9RwHSMyJ6zYUAZil8RD0H7zQv2tRyWPKVUPv5mmR1DizjEAYgqVi8qjfYf/GY+RTRUMQolstMddNuCtzyxVnCc8Pg80TMMad3v/syBD8L0fyqmaQIKXnZvlOc98WCfAeyHOtuSvSPKn49NTfkHENwgMElsHNKys7wpoa9R4RraLavO/sq/Wah8+iyVaJ89vdgm9LFUq5RCt6/OOWe5hOiXiJdQ20DzfqyYiwRNb6PLZfHmoO25qnUCTm3JtlHQZrvJzKg9KkkJOLu5ZpX17ERwhDEmOeeqH67MQ6LoQTJGa4rih3dwliANPm4Qf471XGUUpTmqSGFp/EiZz+sogjIjmnXYHzb8ApgbV4pNv/KleVYDC4eMOVcCxOF1Ro8mlzyRbJ8omIjRKPbpab8CIywmR4s+vHrb4lTruoA/r4XFVakCuKDvcY/z4FvpIsF/gnuzXk7LMBRY+C+gJkZY88lfAFsSVvLPlFvnGLaIkQWos8yMXrO/KlElxGVz584kWyqBQUsPQo8KV38Ivwnus8kWNox3k2NaBHoSRemd6jaYiyxdyC+yiDXcigQD2pkPfBECu52Sy9NKAOcSzHj0Tx2wbnW0BRADlbLUiJuQtBDFxE/emo4ObT/PYeeTo9E4t/uM3T5FmSQoTgCWbeR6t3QVz9GRxJgV0lKZBQ=
+  local-dir: dist/
+  skip_cleanup: true
+  on:
+    repo: spamlab-iee/os
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
