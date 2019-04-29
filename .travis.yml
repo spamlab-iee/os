@@ -30,9 +30,8 @@ install:
 - pip install pytest-faulthandler
 - pip freeze
 script:
-- if [ "$TRAVIS_OS_NAME" = "osx" ]; then make check; fi
-- if [ "$TRAVIS_OS_NAME" = "linux" ]; then xvfb-run make check; fi
-- make clean
+# - if [ "$TRAVIS_OS_NAME" = "osx" ]; then make check; fi
+# - make clean
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then python setup.py macos; fi
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then mkdir dist; fi
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then zip -r -X dist/openstereo.zip macOS/openstereo.app >/dev/null;
