@@ -35,11 +35,12 @@ script:
 - make clean
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then python setup.py macos; fi
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then mkdir dist; fi
-- if [ "$TRAVIS_OS_NAME" = "osx" ]; then zip -r -X dist/openstereo.zip macOS/openstereo.app;
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then zip -r -X dist/openstereo.zip macOS/openstereo.app >/dev/null;
   fi
-- if [ "$TRAVIS_OS_NAME" = "osx" ]; then du -sk dist/; fi
-- if [ "$TRAVIS_OS_NAME" = "osx" ]; then mv dist/openstereo.zip dist/openstereo_$(date
-  '+%Y-%m-%d_%H_%M')_${TRAVIS_BRANCH}_${TRAVIS_COMMIT:0:7}.zip; fi
+# - if [ "$TRAVIS_OS_NAME" = "osx" ]; then du -sk dist/; fi
+# - if [ "$TRAVIS_OS_NAME" = "osx" ]; then mv dist/openstereo.zip dist/openstereo_$(date
+#   '+%Y-%m-%d_%H_%M')_${TRAVIS_BRANCH}_${TRAVIS_COMMIT:0:7}.zip; fi
+- ls -lh;
 
 deploy:
   provider: releases
