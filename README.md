@@ -1,7 +1,7 @@
 OpenStereo
 ==========
 
-[![Build status](https://ci.appveyor.com/api/projects/status/hur1k36y06c3x7nr?svg=true)](https://ci.appveyor.com/project/endarthur/os)
+[![Build status](https://ci.appveyor.com/api/projects/status/pbjhw57vo0hq4lf9?svg=true)](https://ci.appveyor.com/project/endarthur/os-wv5v5)
 [![Documentation Status](https://readthedocs.org/projects/openstereo/badge/?version=latest)](https://openstereo.readthedocs.io/en/latest/?badge=latest)
 [![Gitter chat](https://badges.gitter.im/endarthur/os.png)](https://gitter.im/openstereo)
 
@@ -21,7 +21,7 @@ https://openstereo.readthedocs.io/
 
 Download the installer .exe from the latest release:
 
-https://github.com/endarthur/os/releases/latest
+https://github.com/spamlab-iee/os/releases/latest
 
 When updating, please uninstall the previous version before installing the new.
 
@@ -37,7 +37,7 @@ $ brew install pyqt
 Once that is done, install OpenStereo from this repository using pip3:
 
 ```bash
-$ pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
+$ pip3 install https://github.com/spamlab-iee/os/tarball/master#egg=openstereo
 ```
 
 ## Linux Installation
@@ -53,7 +53,7 @@ $ sudo apt install python3-pyqt5 python3-pip
 Once that is done, install OpenStereo from this repository using pip3:
 
 ```bash
-$ pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
+$ pip3 install https://github.com/spamlab-iee/os/tarball/master#egg=openstereo
 ```
 
 ### Mint Cinnamon
@@ -73,7 +73,7 @@ $ pip3 install wheel
 Once that is done, install OpenStereo from this repository using pip3:
 
 ```bash
-$ pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
+$ pip3 install https://github.com/spamlab-iee/os/tarball/master#egg=openstereo
 ```
 
 ### Fedora
@@ -86,7 +86,7 @@ $ sudo yum install python3-qt5
 Once that is done, install OpenStereo from this repository using pip3:
 
 ```bash
-$ sudo pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
+$ sudo pip3 install https://github.com/spamlab-iee/os/tarball/master#egg=openstereo
 ```
 
 ### openSUSE
@@ -99,7 +99,7 @@ $ sudo zypper install python3-qt5
 Once that is done, install OpenStereo from this repository using pip3:
 
 ```bash
-$ sudo pip3 install https://github.com/endarthur/os/tarball/master#egg=openstereo
+$ sudo pip3 install https://github.com/spamlab-iee/os/tarball/master#egg=openstereo
 ```
 
 
@@ -108,7 +108,7 @@ $ sudo pip3 install https://github.com/endarthur/os/tarball/master#egg=openstere
 You can install this version of openstereo using:
 
 ```bash
-$ pip install https://github.com/endarthur/os/tarball/master#egg=openstereo
+$ pip install https://github.com/spamlab-iee/os/tarball/master#egg=openstereo
 ```
 
 Additionally, install PyQt5 from PyPI (for python 2.7, use package python-qt5 instead).
