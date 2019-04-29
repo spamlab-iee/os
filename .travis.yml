@@ -35,7 +35,7 @@ script:
 - make clean
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then python setup.py macos; fi
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then mkdir dist; fi
-- if [ "$TRAVIS_OS_NAME" = "osx" ]; then zip -r -X dist/mu-editor.zip macOS/openstereo.app;
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then zip -r -X dist/openstereo.zip macOS/openstereo.app;
   fi
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then du -sk dist/; fi
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then mv dist/openstereo.zip dist/openstereo_$(date
