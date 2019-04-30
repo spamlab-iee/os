@@ -37,8 +37,7 @@ script:
 - if [ "$TRAVIS_OS_NAME" = "osx" ]; then zip -r -X dist/openstereo.zip macOS/openstereo.app >/dev/null;
   fi
 # - if [ "$TRAVIS_OS_NAME" = "osx" ]; then du -sk dist/; fi
-# - if [ "$TRAVIS_OS_NAME" = "osx" ]; then mv dist/openstereo.zip dist/openstereo_$(date
-#   '+%Y-%m-%d_%H_%M')_${TRAVIS_BRANCH}_${TRAVIS_COMMIT:0:7}.zip; fi
+- if [ "$TRAVIS_OS_NAME" = "osx" ]; then mv dist/openstereo.zip dist/OpenStereo_MacOS_$(date '+%Y-%m-%d_%H_%M').zip; fi
 - ls -lh;
 
 # before_deploy:
@@ -53,7 +52,7 @@ deploy:
   api_key:
     secure: aOVW70E9RwHSMyJ6zYUAZil8RD0H7zQv2tRyWPKVUPv5mmR1DizjEAYgqVi8qjfYf/GY+RTRUMQolstMddNuCtzyxVnCc8Pg80TMMad3v/syBD8L0fyqmaQIKXnZvlOc98WCfAeyHOtuSvSPKn49NTfkHENwgMElsHNKys7wpoa9R4RraLavO/sq/Wah8+iyVaJ89vdgm9LFUq5RCt6/OOWe5hOiXiJdQ20DzfqyYiwRNb6PLZfHmoO25qnUCTm3JtlHQZrvJzKg9KkkJOLu5ZpX17ERwhDEmOeeqH67MQ6LoQTJGa4rih3dwliANPm4Qf471XGUUpTmqSGFp/EiZz+sogjIjmnXYHzb8ApgbV4pNv/KleVYDC4eMOVcCxOF1Ro8mlzyRbJ8omIjRKPbpab8CIywmR4s+vHrb4lTruoA/r4XFVakCuKDvcY/z4FvpIsF/gnuzXk7LMBRY+C+gJkZY88lfAFsSVvLPlFvnGLaIkQWos8yMXrO/KlElxGVz584kWyqBQUsPQo8KV38Ivwnus8kWNox3k2NaBHoSRemd6jaYiyxdyC+yiDXcigQD2pkPfBECu52Sy9NKAOcSzHj0Tx2wbnW0BRADlbLUiJuQtBDFxE/emo4ObT/PYeeTo9E4t/uM3T5FmSQoTgCWbeR6t3QVz9GRxJgV0lKZBQ=
   file:
-    - dist/openstereo.zip
+    - dist/OpenStereo_MacOS_$(date '+%Y-%m-%d_%H_%M').zip
   skip_cleanup: true
   on:
     tags: true
