@@ -73,7 +73,7 @@ setup(
         "numpy",
         "matplotlib",
         "appdirs",
-        'PyQt5',
+        "PyQt5",
         "xlrd",
         "PyShp",
         "networkx",
@@ -99,6 +99,7 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
     options={
-        "app": {"formal_name": "openstereo", "bundle": "io.github.endarthur"}
+        "app": {"formal_name": "openstereo", "bundle": "io.github.endarthur"},
+        "macos": {"icon": "ui_files/icons/openstereo_mac"},
     },
 )
