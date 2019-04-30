@@ -73,7 +73,7 @@ setup(
         "numpy",
         "matplotlib",
         "appdirs",
-        # 'PyQt5',
+        'PyQt5',
         "xlrd",
         "PyShp",
         "networkx",
