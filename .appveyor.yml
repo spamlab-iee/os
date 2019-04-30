@@ -1,9 +1,9 @@
 # modified from mu's config file https://github.com/mu-editor/mu/blob/master/.appveyor.yml
 
-only_commits:
-  message: /\[build\]/
+# only_commits:
+#   message: /\[build\]/
 
-skip_tags: true
+# skip_tags: true
 
 environment:
   matrix:
@@ -80,7 +80,7 @@ before_deploy:
   - ps: foreach($artifactName in $artifacts.keys) { $artifacts[$artifactName] }
 
 deploy:
-  release: os-v$(appveyor_build_version)
+  release: $(APPVEYOR_REPO_TAG_NAME)
   description: 'OpenStereo automatic build'
   provider: GitHub
   auth_token:
@@ -89,3 +89,4 @@ deploy:
   prerelease: false
   on:
     branch: master                 # release from master branch only
+    APPVEYOR_REPO_TAG: true
