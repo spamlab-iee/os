@@ -27,8 +27,15 @@ When updating, please uninstall the previous version before installing the new.
 
 ## macOS Installation
 
-First install pyqt5 (python3 will be installed as well for this) using
-[homebrew](https://brew.sh/):
+Downloader the .app executable from the latest release:
+
+https://github.com/spamlab-iee/os/releases/latest
+
+On the first time executing a new download of OpenStereo, right click the .app file
+select `Open` from the context menu and click open on the window that will appear.
+
+Alternativelly, you can install OpenStereo from source by first installing pyqt5
+(python3 will be installed as well for this) using [homebrew](https://brew.sh/):
 
 ```bash
 $ brew install pyqt
