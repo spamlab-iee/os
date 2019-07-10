@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_files\openstereo.ui'
 #
-# Created by: PyQt5 UI code generator 5.6
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -194,6 +194,8 @@ class Ui_MainWindow(object):
         self.actionOpen_fault_data_PlaneDir_Line_Sense.setObjectName("actionOpen_fault_data_PlaneDir_Line_Sense")
         self.actionAdd_Group = QtWidgets.QAction(MainWindow)
         self.actionAdd_Group.setObjectName("actionAdd_Group")
+        self.actionConvert_Shapefile_to_Azimuth_Data_UTM = QtWidgets.QAction(MainWindow)
+        self.actionConvert_Shapefile_to_Azimuth_Data_UTM.setObjectName("actionConvert_Shapefile_to_Azimuth_Data_UTM")
         self.menuImport_Fault_Data.addAction(self.actionOpen_fault_data_Plane_Line_Sense)
         self.menuImport_Fault_Data.addAction(self.actionOpen_fault_data_PlaneDir_Line_Sense)
         self.menuImport_Fault_Data.addAction(self.actionOpen_TectonicsFP_Fault_Data)
@@ -227,6 +229,7 @@ class Ui_MainWindow(object):
         self.menuTools.addAction(self.actionRotate_Data)
         self.menuTools.addSeparator()
         self.menuTools.addAction(self.actionConvert_Shapefile_to_Azimuth_data)
+        self.menuTools.addAction(self.actionConvert_Shapefile_to_Azimuth_Data_UTM)
         self.menuTools.addAction(self.actionConvert_Mesh_to_Plane_Data)
         self.menuTools.addSeparator()
         self.menuTools.addAction(self.actionCalculate_difference_vectors)
@@ -296,7 +299,7 @@ class Ui_MainWindow(object):
         self.actionPlot_on_Accept.setText(_translate("MainWindow", "Plot on Accept"))
         self.actionPreferences.setText(_translate("MainWindow", "Preferences"))
         self.actionImport_Small_Circle_Data.setText(_translate("MainWindow", "Import Small Circle Data"))
-        self.actionConvert_Shapefile_to_Azimuth_data.setText(_translate("MainWindow", "Convert Shapefile to Azimuth Data"))
+        self.actionConvert_Shapefile_to_Azimuth_data.setText(_translate("MainWindow", "Convert Shapefile to Azimuth Data (geographic)"))
         self.actionConvert_Mesh_to_Plane_Data.setText(_translate("MainWindow", "Convert Mesh to Plane Data"))
         self.actionSubmit_Issue.setText(_translate("MainWindow", "Submit Issue"))
         self.actionPlot_on_Update_Table.setText(_translate("MainWindow", "Plot on Update Table"))
@@ -317,4 +320,5 @@ class Ui_MainWindow(object):
         self.actionRotate_on_Drag.setText(_translate("MainWindow", "Rotate on Drag"))
         self.actionOpen_fault_data_PlaneDir_Line_Sense.setText(_translate("MainWindow", "Open fault data (Dir/Dip // Trend/Plunge // Sense)"))
         self.actionAdd_Group.setText(_translate("MainWindow", "Add Group"))
+        self.actionConvert_Shapefile_to_Azimuth_Data_UTM.setText(_translate("MainWindow", "Convert Shapefile to Azimuth Data (UTM)"))
 

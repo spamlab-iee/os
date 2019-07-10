@@ -195,6 +195,7 @@
     <addaction name="actionRotate_Data"/>
     <addaction name="separator"/>
     <addaction name="actionConvert_Shapefile_to_Azimuth_data"/>
+    <addaction name="actionConvert_Shapefile_to_Azimuth_Data_UTM"/>
     <addaction name="actionConvert_Mesh_to_Plane_Data"/>
     <addaction name="separator"/>
     <addaction name="actionCalculate_difference_vectors"/>
@@ -382,7 +383,7 @@
   </action>
   <action name="actionConvert_Shapefile_to_Azimuth_data">
    <property name="text">
-    <string>Convert Shapefile to Azimuth Data</string>
+    <string>Convert Shapefile to Azimuth Data (geographic)</string>
    </property>
   </action>
   <action name="actionConvert_Mesh_to_Plane_Data">
@@ -492,6 +493,11 @@
   <action name="actionAdd_Group">
    <property name="text">
     <string>Add Group</string>
+   </property>
+  </action>
+  <action name="actionConvert_Shapefile_to_Azimuth_Data_UTM">
+   <property name="text">
+    <string>Convert Shapefile to Azimuth Data (UTM)</string>
    </property>
   </action>
  </widget>

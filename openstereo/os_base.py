@@ -14,7 +14,7 @@ from tempfile import mkdtemp
 import traceback
 import webbrowser
 import codecs
-from math import degrees
+from math import degrees, atan2, hypot
 
 utf8_reader = codecs.getreader("utf-8")
 
@@ -390,7 +390,10 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         )
 
         self.actionConvert_Shapefile_to_Azimuth_data.triggered.connect(
-            self.import_shapefile
+            lambda: self.import_shapefile(geographic=True)
+        )
+        self.actionConvert_Shapefile_to_Azimuth_Data_UTM.triggered.connect(
+            lambda: self.import_shapefile(geographic=False)
         )
         self.actionConvert_Mesh_to_Plane_Data.triggered.connect(
             self.import_mesh
@@ -717,7 +720,7 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 faults_item.data_settings["sensecolumncheck"] = False
             return planes_item, lines_item, faults_item
 
-    def import_shapefile(self):
+    def import_shapefile(self, geographic):
         fname, extension = QtWidgets.QFileDialog.getOpenFileName(
             self,
             _translate("main", "Select Shapefile to convert"),
@@ -735,6 +738,12 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
         )
         if not fname_out:
             return
+        if geographic:
+            azimuth = bearing
+            length = haversine
+        else:
+            azimuth = lambda x0, x1, y0, y1: degrees(atan2(x1 - x0, y1 - y0))
+            length = lambda x0, x1, y0, y1: hypot(x1 - x0, y1 - y0)
         with open(fname_out, "w") as f:
             sf = shapefile.Reader(fname)
             f.write("azimuth;length\n")
@@ -742,8 +751,8 @@ class Main(QtWidgets.QMainWindow, Ui_MainWindow):
                 for A, B in pairwise(shape.points):
                     f.write(
                         "{};{}\n".format(
-                            bearing(A[0], B[0], A[1], B[1]),
-                            haversine(A[0], B[0], A[1], B[1]),
+                            azimuth(A[0], B[0], A[1], B[1]),
+                            length(A[0], B[0], A[1], B[1]),
                         )
                     )
         self.import_dialog(
