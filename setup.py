@@ -78,7 +78,7 @@ setup(
         "PyShp",
         "networkx",
         "ply2atti",
-        "auttitude",
+        "auttitude==0.1.3",
         "chardet",
     ],
     cmdclass={

@@ -2,7 +2,7 @@ import math
 from math import pi, sin, cos, acos, atan2, degrees, radians, sqrt
 import re
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from matplotlib.pyplot import colorbar, imread, get_cmap
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (
@@ -16,7 +16,7 @@ from matplotlib.collections import (
     PolyCollection,
     LineCollection,
 )
-from matplotlib.mlab import griddata
+# from matplotlib.mlab import griddata
 import matplotlib.patheffects as PathEffects
 from matplotlib.font_manager import FontProperties
 from mpl_toolkits.axes_grid.axislines import Subplot
@@ -148,6 +148,7 @@ class StereoPlot(PlotPanel):
         self.circle_elements = []
         self.drag_rotate_mode = False
         self.current_rotation = np.eye(3)
+        self.scroll_rotation = 0.0
         self.last_rotation = np.eye(3)
         self.last_rotation_I = np.eye(3)
 
@@ -161,6 +162,9 @@ class StereoPlot(PlotPanel):
         )
         self.cidmotion = self.plotFigure.canvas.mpl_connect(
             "motion_notify_event", self.measure_motion
+        )
+        self.cidmotion = self.plotFigure.canvas.mpl_connect(
+            "scroll_event", self.measure_motion
         )
         # http://stackoverflow.com/a/18145817/1457481
 
@@ -208,6 +212,7 @@ class StereoPlot(PlotPanel):
         self.last_rotation = self.current_rotation
         self.last_rotation_I = np.linalg.inv(self.current_rotation)
         self.current_rotation = np.eye(3)
+        self.scroll_rotation = 0.0
         self.plot_canvas.draw()
 
     # thanks forever to http://stackoverflow.com/a/8956211/1457481 for basics on blit
@@ -272,9 +277,25 @@ class StereoPlot(PlotPanel):
         c_sphere = sphere(*c)
 
         if self.drag_rotate_mode:
+            if event.name == "scroll_event":
+                # https://stackoverflow.com/q/49316067/1457481
+                self.scroll_rotation += (
+                    5 * event.step
+                    if QtWidgets.QApplication.keyboardModifiers()
+                    == QtCore.Qt.ControlModifier
+                    else event.step
+                )
             rotation_matrix = self.last_rotation.dot(
                 au_c.get_rotation_matrix(-theta)
-            )
+            ) if self.button_pressed == 1 else self.last_rotation
+            if self.button_pressed == 1:
+                rotation_matrix = rotation_matrix.dot(
+                    b.get_rotation_matrix(radians(self.scroll_rotation))
+                )
+            else:
+                rotation_matrix = rotation_matrix.dot(
+                    a.get_rotation_matrix(radians(self.scroll_rotation))
+                )
             self.current_rotation = rotation_matrix
             for point, element in self.point_elements:
                 Xp, Yp = self.project(*(point.dot(rotation_matrix)).T)
@@ -522,8 +543,7 @@ class StereoPlot(PlotPanel):
                 if plane[-1] > 0:
                     plane = -plane
                 arrow_from = (
-                    cos(arrowsize / 2.0) * plane
-                    + sin(arrowsize / 2.0) * line
+                    cos(arrowsize / 2.0) * plane + sin(arrowsize / 2.0) * line
                 )
                 arrow_to = (
                     cos(-arrowsize / 2.0) * plane
@@ -536,8 +556,8 @@ class StereoPlot(PlotPanel):
                     invert_positive=False
                 )
             else:
-                line_direction = line[:2]/np.linalg.norm(line[:2])
-                dx, dy = line_direction * arrow_settings["arrowsize"]*0.0075
+                line_direction = line[:2] / np.linalg.norm(line[:2])
+                dx, dy = line_direction * arrow_settings["arrowsize"] * 0.0075
                 x, y = self.project(*line, invert_positive=True)
                 X, Y = [x - dx, x + dx], [y - dy, y + dy]
             if not sense:
@@ -654,15 +674,16 @@ class StereoPlot(PlotPanel):
                     b"[^-\\d\\.]+", contour_settings["intervals"]
                 )
             ]
-        xi = yi = np.linspace(-1.1, 1.1, contour_settings["cresolution"])
-        X, Y = self.project(*nodes.T, ztol=0.1)
+        # xi = yi = np.linspace(-1.1, 1.1, contour_settings["cresolution"])
+        # X, Y = self.project(*nodes.T, ztol=0.1)
+        X, Y = self.project(*nodes.T, invert_positive=False)
 
-        zi = griddata(X, Y, count, xi, yi, interp="linear")
+        # zi = griddata(X, Y, count, xi, yi, interp="linear")
         if contour_check_settings["fillcontours"]:
-            contour_plot = axes.contourf(
-                xi,
-                yi,
-                zi,
+            contour_plot = axes.tricontourf(
+                X,
+                Y,
+                count,
                 intervals,
                 cmap=contour_settings["cmap"],
                 linestyles=contour_settings["linestyles"],
@@ -684,20 +705,20 @@ class StereoPlot(PlotPanel):
             or not contour_check_settings["fillcontours"]
         ):
             if contour_check_settings["solidline"]:
-                contour_lines_plot = axes.contour(
-                    xi,
-                    yi,
-                    zi,
+                contour_lines_plot = axes.tricontour(
+                    X,
+                    Y,
+                    count,
                     intervals,
                     colors=contour_line_settings["colors"],
                     linestyles=contour_settings["linestyles"],
                     linewidths=contour_line_settings["linewidths"],
                 )
             else:
-                contour_lines_plot = axes.contour(
-                    xi,
-                    yi,
-                    zi,
+                contour_lines_plot = axes.tricontour(
+                    X,
+                    Y,
+                    count,
                     intervals,
                     cmap=contour_line_settings["cmap"],
                     linestyles=contour_settings["linestyles"],

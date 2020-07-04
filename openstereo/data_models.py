@@ -705,16 +705,17 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
         return plot_data
 
     def plot_Contours(self):
-        grid = self.auttitude_data.grid
-        grid.change_spacing(self.contour_calc_settings["spacing"])
-        nodes = self.auttitude_data.grid_nodes
+        # grid = self.auttitude_data.grid
+        # grid.change_spacing(self.contour_calc_settings["spacing"])
+        grid = au.stats.SphericalGrid(self.contour_calc_settings["spacing"])
+        nodes = grid.grid
         if self.contour_check_settings["fisher"]:
             if self.contour_check_settings["autocount"]:
                 if self.contour_check_settings["robinjowett"]:
                     k = None
                 else:
                     try:
-                        k = grid.optimize_k(self.auttitude_data.data)
+                        k = grid.optimize_k(self.au_object)
                     except ImportError:
                         QtWidgets.QMessageBox.warning(
                             self.parent(),
@@ -724,7 +725,7 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
                         k = None
             else:
                 k = self.contour_calc_settings["K"]
-            count = self.auttitude_data.grid_fisher(k)
+            count = self.au_object.count_fisher(k, grid=grid)
         else:
             if self.contour_check_settings["autocount"]:
                 if self.contour_check_settings["robinjowett"]:
@@ -735,7 +736,7 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
                             acos(
                                 1.0
                                 - 1.0
-                                / grid.optimize_k(self.auttitude_data.data)
+                                / grid.optimize_k(self.au_object)
                             )
                         )
                     except ImportError:
@@ -753,7 +754,7 @@ class AttitudeData(CircularData):  # TODO: change name to VectorData
                         0.141536 * self.contour_calc_settings["scperc"]
                     )
                 )
-            count = self.auttitude_data.grid_kamb(theta)
+            count = self.au_object.count_kamb(theta, grid=grid)
         return (
             ContourPlotData(
                 nodes,

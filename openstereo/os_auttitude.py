@@ -119,16 +119,16 @@ def regular_grid(node_spacing):
 Builds a regular grid over the hemisphere, with the given average node spacing."""
     nodes = [(0.0, 90.0)]
     spacing = math.radians(node_spacing)
-    for phi in np.linspace(
-        node_spacing, 90.0, 90.0 / node_spacing, endpoint=False
+    for phi in np.arange(
+        node_spacing, 90.0, node_spacing
     ):
         azimuth_spacing = math.degrees(
             2
             * math.asin((math.sin(spacing / 2) / math.sin(math.radians(phi))))
         )
-        for theta in np.linspace(0.0, 360.0, 360.0 / azimuth_spacing):
+        for theta in np.arange(0.0, 360.0, azimuth_spacing):
             nodes.append((theta + phi + node_spacing / 2, 90.0 - phi))
-    for theta in np.linspace(0.0, 360.0, 360.0 / azimuth_spacing):
+    for theta in np.arange(0.0, 360.0, azimuth_spacing):
         nodes.append(((theta + 90.0 + node_spacing / 2) % 360.0, 0.0))
     return np.array(nodes)
 
@@ -138,17 +138,17 @@ def sphere_regular_grid(node_spacing):
 Builds a regular grid over the sphere, with the given average node spacing."""
     nodes = [(0.0, 90.0), (0, -90.0)]
     spacing = math.radians(node_spacing)
-    for phi in np.linspace(
-        node_spacing, 90.0, 90.0 / node_spacing, endpoint=False
+    for phi in np.arange(
+        node_spacing, 90.0,  node_spacing
     ):
         azimuth_spacing = math.degrees(
             2
             * math.asin((math.sin(spacing / 2) / math.sin(math.radians(phi))))
         )
-        for theta in np.linspace(0.0, 360.0, 360.0 / azimuth_spacing):
+        for theta in np.arange(0.0, 360.0, azimuth_spacing):
             nodes.append((theta + phi + node_spacing / 2, 90.0 - phi))
             nodes.append((theta + phi + node_spacing / 2, phi - 90.0))
-    for theta in np.linspace(0.0, 360.0, 360.0 / azimuth_spacing):
+    for theta in np.arange(0.0, 360.0, azimuth_spacing):
         nodes.append(((theta + 90.0 + node_spacing / 2) % 360.0, 0.0))
     return np.array(nodes)
 
@@ -630,13 +630,13 @@ class DirectionalData(object):
             )
             if not self.kwargs.get("line"):
                 circular_data = -circular_data
-        if type(self.grid) == CircularGrid:
-            grid = self.grid
+    #    if type(self.grid) == CircularGrid:
+    #         grid = self.grid
+    #     else: 
+        if self._cgrid is None:
+            grid = self._cgrid = CircularGrid()
         else:
-            if self._cgrid is None:
-                grid = self._cgrid = CircularGrid()
-            else:
-                grid = self._cgrid
+            grid = self._cgrid
             # count(self, data, aperture=None,\
             #                        axial=False, spacing=None, offset=0, nodes=None)
         if direction:
@@ -1151,7 +1151,7 @@ class CircularGrid(object):
             1.0
             + 2.0
             * np.power(
-                weight, np.linspace(0.0, aperture, radians(spacing))
+                weight, np.arange(0.0, aperture, radians(spacing))
             ).sum()
         )
         return (
