@@ -64,7 +64,7 @@ class BuildUICommand(distutils.cmd.Command):
 
 setup(
     name="OpenStereo",
-    version="2.0b11",
+    version="2.0b12",
     packages=find_packages(),
     entry_points={
         "console_scripts": ["openstereo = openstereo.os_base:os_main"]
@@ -92,7 +92,7 @@ setup(
     license="GPLv3",
     keywords="geology attitude stereonet projection structural",
     url="https://github.com/spamlab-iee/os",
-    download_url="https://github.com/spamlab-iee/os/archive/v0.9.0.tar.gz",
+    download_url="https://github.com/spamlab-iee/os/archive/v2.0b12.tar.gz",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Topic :: Scientific/Engineering",

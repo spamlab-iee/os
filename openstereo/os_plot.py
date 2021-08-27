@@ -671,7 +671,7 @@ class StereoPlot(PlotPanel):
             intervals = [
                 float(i)
                 for i in re.split(
-                    b"[^-\\d\\.]+", contour_settings["intervals"]
+                    "[^-\\d\\.]+", contour_settings["intervals"]
                 )
             ]
         # xi = yi = np.linspace(-1.1, 1.1, contour_settings["cresolution"])
